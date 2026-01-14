@@ -1,7 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 
-import tailwindcss from '@tailwindcss/vite';
+import tailwind from '@astrojs/tailwind';
 import vercel from '@astrojs/vercel/static';
 
 // https://astro.build/config
@@ -9,7 +9,7 @@ import vercel from '@astrojs/vercel/static';
  * Astro Configuration
  *
  * This configuration sets up:
- * - Tailwind CSS v4 for styling via Vite plugin
+ * - Tailwind CSS v3 for styling via @astrojs/tailwind integration
  * - Vercel adapter for static site generation and deployment
  * - RSS feed generation for blog and podcast
  *
@@ -29,6 +29,9 @@ export default defineConfig({
   // This pre-renders all pages at build time
   output: 'static',
 
+  // Astro integrations for enhanced functionality
+  integrations: [tailwind()],
+
   // Vercel adapter configuration for static site deployment
   adapter: vercel({
     // Enable Vercel Web Analytics for performance monitoring
@@ -37,9 +40,4 @@ export default defineConfig({
       enabled: true,
     },
   }),
-
-  // Configure Vite with Tailwind plugin
-  vite: {
-    plugins: [tailwindcss()],
-  },
 });

@@ -1,8 +1,10 @@
 /* Import Google Fonts for Internal Transit brand typography */
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@400;500;600;700&family=VT323&display=swap');
 
-/* Tailwind CSS core imports */
-@import "tailwindcss";
+/* Tailwind CSS core imports - Tailwind 3 syntax */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 /* Design system for Internal Transit brand */
 /* CSS Variables for brand colors that work with Tailwind utilities */
