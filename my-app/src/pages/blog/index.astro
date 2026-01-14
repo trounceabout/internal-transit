@@ -1,0 +1,152 @@
+---
+// Blog listing page
+// Displays all published blog posts sorted by date (newest first)
+// Filters out draft posts from the public listing
+import { getCollection } from 'astro:content';
+
+// Query all blog posts and filter/sort them
+const allPosts = await getCollection('blog');
+
+// Filter out drafts and sort by publication date (newest first)
+const posts = allPosts
+  .filter(post => !post.data.draft)
+  .sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime());
+
+// Format a date for display
+function formatDate(date: Date): string {
+  return new Date(date).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+}
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Exploring thoughts, ideas, and observations about design, technology, and personal growth."
+    />
+    <title>Blog - Internal Transit</title>
+  </head>
+  <body class="bg-gray-50">
+    <!-- Page header with transit-line visual -->
+    <header class="bg-white border-b-4 border-blue-500">
+      <div class="max-w-4xl mx-auto px-4 py-12">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="text-3xl">📝</span>
+          {/* Transit-line visual divider */}
+          <div class="flex-1 h-1 bg-gradient-to-r from-blue-400 to-blue-600"></div>
+        </div>
+
+        <h1 class="text-4xl font-bold text-gray-900 mb-2">Blog</h1>
+        <p class="text-lg text-gray-600">
+          Thoughts, ideas, and explorations on design, technology, and more.
+        </p>
+      </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 py-12">
+      {/* Post count summary */}
+      <div class="mb-8 text-gray-600">
+        <p class="text-sm">
+          {posts.length} {posts.length === 1 ? 'post' : 'posts'} published
+        </p>
+      </div>
+
+      {/* Blog posts grid */}
+      {posts.length > 0 ? (
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {posts.map(post => (
+            <article
+              key={post.slug}
+              class="group bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg hover:border-blue-300 transition-all"
+            >
+              {/* Post card header */}
+              <div class="p-6">
+                <h2 class="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors mb-2">
+                  {post.data.title}
+                </h2>
+
+                {/* Post metadata */}
+                <div class="flex items-center gap-2 text-sm text-gray-600 mb-3">
+                  <span>{post.data.author}</span>
+                  <span>•</span>
+                  <time datetime={post.data.pubDate.toISOString()}>
+                    {formatDate(post.data.pubDate)}
+                  </time>
+                </div>
+
+                {/* Post description */}
+                <p class="text-gray-600 mb-4 line-clamp-3">
+                  {post.data.description}
+                </p>
+
+                {/* Tags if present */}
+                {post.data.tags && post.data.tags.length > 0 && (
+                  <div class="flex gap-2 flex-wrap mb-4">
+                    {post.data.tags.map((tag: string) => (
+                      <span
+                        key={tag}
+                        class="inline-block px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                {/* Read more link */}
+                <a
+                  href={`/blog/${post.slug}/`}
+                  class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 font-semibold group-hover:gap-3 transition-all"
+                >
+                  Read More
+                  <span class="text-lg">→</span>
+                </a>
+              </div>
+            </article>
+          ))}
+        </div>
+      ) : (
+        /* Empty state when no posts exist */
+        <div class="bg-white rounded-lg border border-gray-200 p-12 text-center">
+          <p class="text-2xl mb-2">📝</p>
+          <p class="text-gray-600">
+            No blog posts yet. Check back soon for thoughts and ideas!
+          </p>
+        </div>
+      )}
+    </main>
+
+    <!-- Footer placeholder -->
+    <footer class="bg-white border-t border-gray-200 mt-16">
+      <div class="max-w-4xl mx-auto px-4 py-8 text-center text-sm text-gray-600">
+        <p>Internal Transit - A personal space for exploration and growth</p>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style>
+  :global(html) {
+    scroll-behavior: smooth;
+  }
+
+  :global(body) {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+      Ubuntu, Cantarell, sans-serif;
+  }
+
+  /* Limit description text to 3 lines */
+  :global(.line-clamp-3) {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

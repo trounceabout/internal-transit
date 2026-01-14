@@ -1,0 +1,206 @@
+---
+// Podcast listing page
+// Displays all podcast episodes sorted by episode number or publication date
+// Prominently links to RSS feed and subscription options
+import { getCollection } from 'astro:content';
+
+// Query all podcast episodes
+const allEpisodes = await getCollection('podcast');
+
+// Sort episodes by episode number (descending - newest first)
+const episodes = allEpisodes.sort((a, b) => b.data.episode - a.data.episode);
+
+// Format a date for display
+function formatDate(date: Date): string {
+  return new Date(date).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+}
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Conversations, interviews, and explorations in audio format. Subscribe to stay updated with new episodes."
+    />
+    <title>Podcast - Internal Transit</title>
+  </head>
+  <body class="bg-gray-50">
+    <!-- Page header with transit-line visual -->
+    <header class="bg-gradient-to-r from-purple-50 to-pink-50 border-b-4 border-purple-500">
+      <div class="max-w-4xl mx-auto px-4 py-12">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="text-3xl">🎙️</span>
+          {/* Transit-line visual divider */}
+          <div class="flex-1 h-1 bg-gradient-to-r from-purple-400 to-pink-600"></div>
+        </div>
+
+        <h1 class="text-4xl font-bold text-gray-900 mb-2">Podcast</h1>
+        <p class="text-lg text-gray-600">
+          Conversations and explorations on ideas, design, and personal growth.
+        </p>
+      </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 py-12">
+      {/* Subscription and RSS section - prominent placement */}
+      <section class="mb-12 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg p-8 text-white">
+        <h2 class="text-2xl font-bold mb-4">Subscribe to the Podcast</h2>
+        <p class="mb-6 text-purple-100">
+          Get new episodes delivered to your favorite podcast app. Never miss an episode!
+        </p>
+
+        <div class="flex flex-wrap gap-3">
+          {/* Apple Podcasts */}
+          <a
+            href="#"
+            class="inline-flex items-center gap-2 px-4 py-2 bg-white text-purple-600 rounded-lg hover:bg-gray-100 transition-colors font-semibold"
+          >
+            <span>🍎</span>
+            Apple Podcasts
+          </a>
+
+          {/* Spotify */}
+          <a
+            href="#"
+            class="inline-flex items-center gap-2 px-4 py-2 bg-white text-green-600 rounded-lg hover:bg-gray-100 transition-colors font-semibold"
+          >
+            <span>🎵</span>
+            Spotify
+          </a>
+
+          {/* RSS Feed */}
+          <a
+            href="/podcast-rss.xml"
+            class="inline-flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 rounded-lg transition-colors font-semibold"
+          >
+            <span>📡</span>
+            RSS Feed
+          </a>
+        </div>
+      </section>
+
+      {/* Episode count summary */}
+      <div class="mb-8 text-gray-600">
+        <p class="text-sm">
+          {episodes.length} {episodes.length === 1 ? 'episode' : 'episodes'} published
+        </p>
+      </div>
+
+      {/* Podcast episodes list */}
+      {episodes.length > 0 ? (
+        <div class="space-y-6">
+          {episodes.map(episode => (
+            <article
+              key={episode.slug}
+              class="group bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg hover:border-purple-300 transition-all"
+            >
+              <div class="p-6">
+                {/* Episode number badge */}
+                <div class="flex items-center gap-3 mb-3">
+                  <span class="inline-block px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm font-semibold">
+                    Episode {episode.data.episode}
+                  </span>
+                  {/* Duration badge */}
+                  <span class="text-sm text-gray-600 px-3 py-1 bg-gray-100 rounded-full">
+                    {episode.data.duration}
+                  </span>
+                </div>
+
+                {/* Episode title */}
+                <h2 class="text-xl font-bold text-gray-900 group-hover:text-purple-600 transition-colors mb-2">
+                  {episode.data.title}
+                </h2>
+
+                {/* Episode metadata */}
+                <div class="flex flex-wrap items-center gap-2 text-sm text-gray-600 mb-3">
+                  <time datetime={episode.data.pubDate.toISOString()}>
+                    {formatDate(episode.data.pubDate)}
+                  </time>
+
+                  {/* Guest info if present */}
+                  {episode.data.guests && episode.data.guests.length > 0 && (
+                    <>
+                      <span>•</span>
+                      <span class="font-semibold">
+                        {episode.data.guests.join(', ')}
+                      </span>
+                    </>
+                  )}
+                </div>
+
+                {/* Episode description */}
+                <p class="text-gray-600 mb-4 line-clamp-2">
+                  {episode.data.description}
+                </p>
+
+                {/* Tags if present */}
+                {episode.data.tags && episode.data.tags.length > 0 && (
+                  <div class="flex gap-2 flex-wrap mb-4">
+                    {episode.data.tags.map((tag: string) => (
+                      <span
+                        key={tag}
+                        class="inline-block px-2 py-1 text-xs font-medium bg-purple-100 text-purple-800 rounded"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                {/* Listen button */}
+                <a
+                  href={`/podcast/${episode.slug}/`}
+                  class="inline-flex items-center gap-2 text-purple-600 hover:text-purple-800 font-semibold group-hover:gap-3 transition-all"
+                >
+                  Listen & Read Notes
+                  <span class="text-lg">→</span>
+                </a>
+              </div>
+            </article>
+          ))}
+        </div>
+      ) : (
+        /* Empty state when no episodes exist */
+        <div class="bg-white rounded-lg border border-gray-200 p-12 text-center">
+          <p class="text-2xl mb-2">🎙️</p>
+          <p class="text-gray-600">
+            No episodes yet. Check back soon for conversations and explorations!
+          </p>
+        </div>
+      )}
+    </main>
+
+    <!-- Footer placeholder -->
+    <footer class="bg-white border-t border-gray-200 mt-16">
+      <div class="max-w-4xl mx-auto px-4 py-8 text-center text-sm text-gray-600">
+        <p>Internal Transit - A personal space for exploration and growth</p>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style>
+  :global(html) {
+    scroll-behavior: smooth;
+  }
+
+  :global(body) {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+      Ubuntu, Cantarell, sans-serif;
+  }
+
+  /* Limit description text to 2 lines */
+  :global(.line-clamp-2) {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

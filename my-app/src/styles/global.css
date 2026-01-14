@@ -1,0 +1,228 @@
+/* Import Google Fonts for Internal Transit brand typography */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@400;500;600;700&family=VT323&display=swap');
+
+/* Tailwind CSS core imports */
+@import "tailwindcss";
+
+/* Design system for Internal Transit brand */
+/* CSS Variables for brand colors that work with Tailwind utilities */
+@layer base {
+  :root {
+    /* Brand Colors - Transit inspired palette */
+    --transit-orange: #FF6B00;     /* Vibrant transit orange */
+    --transit-beige: #F5F3F0;      /* Warm, approachable background */
+    --transit-charcoal: #2D2D2D;   /* Deep text color */
+
+    /* Semantic colors */
+    --text-primary: var(--transit-charcoal);
+    --text-secondary: #666666;
+    --background-light: var(--transit-beige);
+    --color-accent: var(--transit-orange);
+    --color-border: #E8E6E3;
+  }
+}
+
+/* Typography - Custom font configurations */
+@layer components {
+  /* Pixel/Retro font - VT323 for headings and special emphasis */
+  .font-pixel {
+    @apply font-[VT323];
+  }
+
+  /* Monospace - IBM Plex Mono for code and technical content */
+  .font-mono-brand {
+    @apply font-[IBM\ Plex\ Mono];
+  }
+
+  /* Sans serif - Inter for body text and general UI */
+  .font-sans-brand {
+    @apply font-[Inter];
+  }
+}
+
+/* Card Component - Magazine-style layout base */
+@layer components {
+  .card {
+    @apply rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-md;
+  }
+
+  /* Card variant with transit accent */
+  .card-accent {
+    @apply card overflow-hidden;
+    border-left: 4px solid var(--transit-orange);
+  }
+
+  /* Featured card with image support */
+  .card-featured {
+    @apply card overflow-hidden;
+  }
+}
+
+/* Transit Line - Divider element inspired by transit routes */
+@layer components {
+  /* Horizontal transit line - used as visual separator */
+  .transit-line {
+    height: 0.25rem;
+    background-color: var(--transit-orange);
+    @apply my-8;
+  }
+
+  /* Thin transit line accent */
+  .transit-line-thin {
+    height: 0.125rem;
+    background-color: var(--transit-orange);
+    @apply my-4;
+  }
+
+  /* Transit line decoration - for headers and sections */
+  .transit-line-accent {
+    @apply relative;
+  }
+
+  .transit-line-accent::after {
+    content: '';
+    @apply absolute left-0 top-full w-12 mt-2;
+    height: 0.25rem;
+    background-color: var(--transit-orange);
+  }
+}
+
+/* Tag Component Styles */
+@layer components {
+  .tag {
+    @apply inline-block px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-700 border border-gray-200;
+  }
+
+  .tag-accent {
+    @apply inline-block px-3 py-1 rounded-full text-sm font-medium border;
+    background-color: rgba(255, 107, 0, 0.1);
+    color: var(--transit-orange);
+    border-color: rgba(255, 107, 0, 0.3);
+  }
+}
+
+/* Header and Navigation Styles */
+@layer components {
+  .nav-link {
+    @apply font-medium transition-colors duration-200 relative;
+    color: var(--transit-charcoal);
+  }
+
+  .nav-link:hover {
+    color: var(--transit-orange);
+  }
+
+  .nav-link::after {
+    content: '';
+    @apply absolute left-0 bottom-0 w-0 transition-all duration-300;
+    height: 0.125rem;
+    background-color: var(--transit-orange);
+  }
+
+  .nav-link:hover::after {
+    @apply w-full;
+  }
+}
+
+/* Form Elements - Newsletter and interactive components */
+@layer components {
+  .input-base {
+    @apply px-4 py-2 rounded-lg border border-gray-300 placeholder-gray-400 transition-colors duration-200;
+    font-family: inherit;
+    color: var(--transit-charcoal);
+  }
+
+  .input-base:focus {
+    @apply outline-none;
+    border-color: var(--transit-orange);
+    box-shadow: 0 0 0 2px rgba(255, 107, 0, 0.1);
+  }
+
+  .btn-primary {
+    @apply px-6 py-2 rounded-lg text-white font-medium transition-all duration-300 active:scale-95;
+    background-color: var(--transit-orange);
+  }
+
+  .btn-primary:hover {
+    opacity: 0.9;
+  }
+
+  .btn-secondary {
+    @apply px-6 py-2 rounded-lg border-2 font-medium transition-all duration-300;
+    border-color: var(--transit-orange);
+    color: var(--transit-orange);
+  }
+
+  .btn-secondary:hover {
+    background-color: var(--transit-orange);
+    color: white;
+  }
+}
+
+/* Audio Player Styles */
+@layer components {
+  .audio-player {
+    @apply w-full rounded-lg bg-white border border-gray-200 p-4 shadow-sm;
+  }
+
+  audio {
+    @apply w-full;
+    accent-color: var(--transit-orange);
+  }
+}
+
+/* Responsive utility for mobile-first design */
+@layer utilities {
+  /* Ensures brand colors are consistently applied */
+  .text-accent {
+    color: var(--transit-orange);
+  }
+
+  .bg-accent {
+    background-color: var(--transit-orange);
+  }
+
+  .border-accent {
+    border-color: var(--transit-orange);
+  }
+
+  /* Container max-width for consistent layout */
+  .container-narrow {
+    @apply max-w-2xl mx-auto px-4;
+  }
+
+  .container-wide {
+    @apply max-w-6xl mx-auto px-4;
+  }
+}
+
+/* Global Styles */
+@layer base {
+  body {
+    @apply font-sans-brand bg-white;
+    color: var(--transit-charcoal);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-pixel;
+    color: var(--transit-charcoal);
+  }
+
+  /* Ensure links have proper styling throughout */
+  a {
+    color: var(--transit-orange);
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  /* Remove default link underline styling */
+  a.no-underline {
+    text-decoration: none;
+  }
+
+  a.no-underline:hover {
+    color: var(--transit-orange);
+  }
+}

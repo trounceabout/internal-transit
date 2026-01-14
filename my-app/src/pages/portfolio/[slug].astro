@@ -1,0 +1,188 @@
+---
+// Dynamic portfolio project page template
+// Renders individual projects by slug from the projects content collection
+import { getCollection, getEntryBySlug } from 'astro:content';
+import ProjectLayout from '../../layouts/ProjectLayout.astro';
+
+// Generate static paths for all projects
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+
+  return projects.map(project => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+}
+
+// Type definition for the component props
+interface Props {
+  project: Awaited<ReturnType<typeof getEntryBySlug<'projects'>>>;
+}
+
+const { project } = Astro.props;
+
+// If somehow no project is found, this shouldn't happen with static generation
+if (!project) {
+  return Astro.redirect('/404');
+}
+
+// Extract the project data and render the markdown content (case study)
+const { data, slug } = project;
+const { Content } = await project.render();
+
+// Format the project date
+const formattedDate = new Date(data.date).toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+
+// Get all projects for navigation (next/previous)
+const allProjects = await getCollection('projects');
+const currentIndex = allProjects.findIndex(p => p.slug === slug);
+const previousProject = currentIndex > 0 ? allProjects[currentIndex - 1] : null;
+const nextProject = currentIndex < allProjects.length - 1 ? allProjects[currentIndex + 1] : null;
+---
+
+<ProjectLayout title={data.title} description={data.description}>
+  <article class="max-w-4xl mx-auto px-4 py-8">
+    {/* Project header with metadata */}
+    <header class="mb-10 border-b border-gray-200 pb-6">
+      <h1 class="text-4xl font-bold mb-4">{data.title}</h1>
+
+      <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 text-sm mb-4">
+        {/* Client information if present */}
+        {data.client && (
+          <div>
+            <p class="font-semibold text-gray-700">Client</p>
+            <p class="text-gray-600">{data.client}</p>
+          </div>
+        )}
+
+        {/* Role/Discipline */}
+        <div>
+          <p class="font-semibold text-gray-700">Role</p>
+          <p class="text-gray-600">{data.role}</p>
+        </div>
+
+        {/* Project date */}
+        <div>
+          <p class="font-semibold text-gray-700">Date</p>
+          <time datetime={data.date.toISOString()} class="text-gray-600">
+            {formattedDate}
+          </time>
+        </div>
+
+        {/* Project status/type via tags */}
+        {data.tags && data.tags.length > 0 && (
+          <div>
+            <p class="font-semibold text-gray-700">Type</p>
+            <div class="flex gap-1 flex-wrap mt-1">
+              {data.tags.map((tag: string) => (
+                <span
+                  key={tag}
+                  class="px-2 py-0.5 bg-blue-100 text-blue-800 rounded text-xs font-medium"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Project description summary */}
+      <p class="text-lg text-gray-700">{data.description}</p>
+    </header>
+
+    {/* Project images gallery */}
+    {data.images && data.images.length > 0 && (
+      <section class="mb-12">
+        <h2 class="text-2xl font-bold mb-6">Project Gallery</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {data.images.map((imagePath: string) => (
+            <figure key={imagePath} class="overflow-hidden rounded-lg bg-gray-100">
+              <img
+                src={imagePath}
+                alt={`${data.title} project image`}
+                class="w-full h-auto object-cover hover:scale-105 transition-transform duration-300"
+                loading="lazy"
+              />
+            </figure>
+          ))}
+        </div>
+      </section>
+    )}
+
+    {/* Main project content/case study rendered from markdown */}
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold mb-6">Case Study</h2>
+      <div class="prose prose-sm sm:prose lg:prose-lg mx-auto max-w-none">
+        <Content />
+      </div>
+    </section>
+
+    {/* Project link if available */}
+    {data.link && (
+      <section class="mb-12">
+        <a
+          href={data.link}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold"
+        >
+          View Live Project
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4m-4-6l6 6m0 0l-6 6m6-6H3"
+            />
+          </svg>
+        </a>
+      </section>
+    )}
+
+    {/* Next/Previous project navigation */}
+    <nav class="mt-16 pt-8 border-t border-gray-200">
+      <div class="grid grid-cols-2 gap-4">
+        {/* Previous project link */}
+        {previousProject ? (
+          <a
+            href={`/portfolio/${previousProject.slug}/`}
+            class="p-4 border border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all group"
+          >
+            <p class="text-sm text-gray-600 mb-1 group-hover:text-blue-600">Previous Project</p>
+            <p class="font-semibold text-gray-900 group-hover:text-blue-700">
+              {previousProject.data.title}
+            </p>
+          </a>
+        ) : (
+          <div />
+        )}
+
+        {/* Next project link */}
+        {nextProject ? (
+          <a
+            href={`/portfolio/${nextProject.slug}/`}
+            class="p-4 border border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all group text-right"
+          >
+            <p class="text-sm text-gray-600 mb-1 group-hover:text-blue-600">Next Project</p>
+            <p class="font-semibold text-gray-900 group-hover:text-blue-700">
+              {nextProject.data.title}
+            </p>
+          </a>
+        ) : (
+          <div />
+        )}
+      </div>
+    </nav>
+  </article>
+</ProjectLayout>

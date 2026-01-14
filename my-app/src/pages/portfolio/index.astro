@@ -1,0 +1,252 @@
+---
+// Portfolio listing page
+// Displays all projects sorted with featured projects first, then by date
+// Shows all projects in a grid layout with no pagination needed for MVP
+import { getCollection } from 'astro:content';
+
+// Query all projects
+const allProjects = await getCollection('projects');
+
+// Sort: featured projects first, then by date (newest first)
+const projects = allProjects.sort((a, b) => {
+  // Featured projects come first
+  if (a.data.featured !== b.data.featured) {
+    return a.data.featured ? -1 : 1;
+  }
+
+  // Then sort by date (newest first)
+  return new Date(b.data.date).getTime() - new Date(a.data.date).getTime();
+});
+
+// Format a date for display
+function formatDate(date: Date): string {
+  return new Date(date).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+  });
+}
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="A selection of projects, case studies, and creative work in design and technology."
+    />
+    <title>Portfolio - Internal Transit</title>
+  </head>
+  <body class="bg-gray-50">
+    <!-- Page header with transit-line visual -->
+    <header class="bg-gradient-to-r from-teal-50 to-cyan-50 border-b-4 border-teal-500">
+      <div class="max-w-6xl mx-auto px-4 py-12">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="text-3xl">🎨</span>
+          {/* Transit-line visual divider */}
+          <div class="flex-1 h-1 bg-gradient-to-r from-teal-400 to-cyan-600"></div>
+        </div>
+
+        <h1 class="text-4xl font-bold text-gray-900 mb-2">Portfolio</h1>
+        <p class="text-lg text-gray-600">
+          Projects, case studies, and creative work in design and technology.
+        </p>
+      </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-12">
+      {/* Project count summary */}
+      <div class="mb-8 text-gray-600">
+        <p class="text-sm">
+          {projects.length} {projects.length === 1 ? 'project' : 'projects'} showcased
+        </p>
+      </div>
+
+      {/* Featured projects section (if any exist) */}
+      {projects.filter(p => p.data.featured).length > 0 && (
+        <section class="mb-16">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+            <span class="text-yellow-500">⭐</span>
+            Featured Projects
+          </h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+            {projects
+              .filter(p => p.data.featured)
+              .map(project => (
+                <article
+                  key={project.slug}
+                  class="group bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg hover:border-teal-300 transition-all"
+                >
+                  {/* Project card content */}
+                  <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-900 group-hover:text-teal-600 transition-colors mb-2">
+                      {project.data.title}
+                    </h3>
+
+                    {/* Project metadata */}
+                    <div class="flex flex-wrap items-center gap-2 text-sm text-gray-600 mb-3">
+                      {project.data.client && (
+                        <>
+                          <span class="font-semibold">{project.data.client}</span>
+                          <span>•</span>
+                        </>
+                      )}
+                      <span>{project.data.role}</span>
+                      <span>•</span>
+                      <time datetime={project.data.date.toISOString()}>
+                        {formatDate(project.data.date)}
+                      </time>
+                    </div>
+
+                    {/* Project description */}
+                    <p class="text-gray-600 mb-4 line-clamp-3">
+                      {project.data.description}
+                    </p>
+
+                    {/* Tags if present */}
+                    {project.data.tags && project.data.tags.length > 0 && (
+                      <div class="flex gap-2 flex-wrap mb-4">
+                        {project.data.tags.map((tag: string) => (
+                          <span
+                            key={tag}
+                            class="inline-block px-2 py-1 text-xs font-medium bg-teal-100 text-teal-800 rounded"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* View project link */}
+                    <a
+                      href={`/portfolio/${project.slug}/`}
+                      class="inline-flex items-center gap-2 text-teal-600 hover:text-teal-800 font-semibold group-hover:gap-3 transition-all"
+                    >
+                      View Project
+                      <span class="text-lg">→</span>
+                    </a>
+                  </div>
+                </article>
+              ))}
+          </div>
+        </section>
+      )}
+
+      {/* All projects section */}
+      <section>
+        <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+          <span class="text-blue-500">📁</span>
+          All Projects
+        </h2>
+
+        {projects.length > 0 ? (
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {projects
+              .filter(p => !p.data.featured)
+              .map(project => (
+                <article
+                  key={project.slug}
+                  class="group bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg hover:border-blue-300 transition-all flex flex-col"
+                >
+                  {/* Project card content */}
+                  <div class="p-6 flex flex-col flex-1">
+                    <h3 class="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors mb-2">
+                      {project.data.title}
+                    </h3>
+
+                    {/* Project metadata */}
+                    <div class="flex flex-wrap items-center gap-2 text-xs text-gray-600 mb-3">
+                      {project.data.client && (
+                        <>
+                          <span class="font-semibold">{project.data.client}</span>
+                          <span>•</span>
+                        </>
+                      )}
+                      <span>{project.data.role}</span>
+                    </div>
+
+                    {/* Project description */}
+                    <p class="text-gray-600 mb-4 text-sm line-clamp-2 flex-1">
+                      {project.data.description}
+                    </p>
+
+                    {/* Tags if present */}
+                    {project.data.tags && project.data.tags.length > 0 && (
+                      <div class="flex gap-1 flex-wrap mb-4">
+                        {project.data.tags.slice(0, 2).map((tag: string) => (
+                          <span
+                            key={tag}
+                            class="inline-block px-2 py-0.5 text-xs font-medium bg-blue-100 text-blue-800 rounded"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                        {project.data.tags.length > 2 && (
+                          <span class="text-xs text-gray-600">
+                            +{project.data.tags.length - 2}
+                          </span>
+                        )}
+                      </div>
+                    )}
+
+                    {/* View project link */}
+                    <a
+                      href={`/portfolio/${project.slug}/`}
+                      class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 font-semibold text-sm group-hover:gap-3 transition-all mt-auto"
+                    >
+                      View
+                      <span>→</span>
+                    </a>
+                  </div>
+                </article>
+              ))}
+          </div>
+        ) : (
+          /* Empty state when no projects exist */
+          <div class="bg-white rounded-lg border border-gray-200 p-12 text-center">
+            <p class="text-2xl mb-2">🎨</p>
+            <p class="text-gray-600">
+              No projects yet. Check back soon for case studies and creative work!
+            </p>
+          </div>
+        )}
+      </section>
+    </main>
+
+    <!-- Footer placeholder -->
+    <footer class="bg-white border-t border-gray-200 mt-16">
+      <div class="max-w-6xl mx-auto px-4 py-8 text-center text-sm text-gray-600">
+        <p>Internal Transit - A personal space for exploration and growth</p>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style>
+  :global(html) {
+    scroll-behavior: smooth;
+  }
+
+  :global(body) {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+      Ubuntu, Cantarell, sans-serif;
+  }
+
+  /* Limit text to 3 lines */
+  :global(.line-clamp-3) {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Limit text to 2 lines */
+  :global(.line-clamp-2) {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

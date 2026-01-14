@@ -1,0 +1,114 @@
+---
+// Dynamic blog post page template
+// Renders individual blog posts by slug from the blog content collection
+import { getCollection, getEntryBySlug } from 'astro:content';
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+// Generate static paths for all blog posts
+export async function getStaticPaths() {
+  const blogPosts = await getCollection('blog');
+
+  // Filter out draft posts from public routes
+  return blogPosts
+    .filter(post => !post.data.draft)
+    .map(post => ({
+      params: { slug: post.slug },
+      props: { post },
+    }));
+}
+
+// Type definition for the component props
+interface Props {
+  post: Awaited<ReturnType<typeof getEntryBySlug<'blog'>>>;
+}
+
+const { post } = Astro.props;
+
+// If somehow no post is found, this shouldn't happen with static generation
+// but TypeScript needs the check
+if (!post) {
+  return Astro.redirect('/404');
+}
+
+// Extract the blog data and render the markdown content
+const { data, slug } = post;
+const { Content } = await post.render();
+
+// Format the publication date for display
+const formattedDate = new Date(data.pubDate).toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<BlogLayout title={data.title} description={data.description}>
+  <article class="max-w-3xl mx-auto px-4 py-8">
+    {/* Article header with metadata */}
+    <header class="mb-8 border-b border-gray-200 pb-6">
+      <h1 class="text-4xl font-bold mb-3">{data.title}</h1>
+
+      <div class="flex flex-wrap items-center gap-4 text-sm text-gray-600">
+        {/* Author and date */}
+        <div class="flex items-center gap-2">
+          <span>{data.author}</span>
+          <span>•</span>
+          <time datetime={data.pubDate.toISOString()}>
+            {formattedDate}
+          </time>
+        </div>
+
+        {/* Tags if present */}
+        {data.tags && data.tags.length > 0 && (
+          <div class="flex gap-2">
+            {data.tags.map((tag: string) => (
+              <span
+                key={tag}
+                class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+    </header>
+
+    {/* Main blog content rendered from markdown */}
+    <div class="prose prose-sm sm:prose lg:prose-lg mx-auto max-w-none">
+      <Content />
+    </div>
+
+    {/* Social sharing buttons */}
+    <footer class="mt-12 pt-8 border-t border-gray-200">
+      <div class="flex gap-4 items-center">
+        <span class="text-sm font-semibold text-gray-700">Share:</span>
+
+        {/* Twitter/X share button */}
+        <a
+          href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(data.title)}&url=${encodeURIComponent(Astro.url.href)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-blue-500 hover:text-blue-700 transition-colors"
+          aria-label="Share on Twitter"
+        >
+          Twitter/X
+        </a>
+
+        {/* LinkedIn share button */}
+        <a
+          href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(Astro.url.href)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-blue-700 hover:text-blue-900 transition-colors"
+          aria-label="Share on LinkedIn"
+        >
+          LinkedIn
+        </a>
+      </div>
+    </footer>
+  </article>
+
+  {/* Newsletter component would go here when available from Agent 1 */}
+  {/* <Newsletter /> */}
+</BlogLayout>

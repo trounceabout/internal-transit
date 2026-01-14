@@ -1,0 +1,126 @@
+---
+// AudioPlayer.astro - Podcast episode audio player component
+// Uses native HTML5 <audio> element with controls
+// Displays episode metadata above player
+// No external dependencies or JavaScript required
+
+interface Props {
+  // Audio file URL (external hosting URL)
+  audioUrl: string;
+
+  // Episode metadata
+  title: string;
+  episode: number;
+
+  // Optional metadata
+  duration?: string; // Format: "45:23"
+  description?: string;
+}
+
+// Destructure and type props
+const {
+  audioUrl,
+  title,
+  episode,
+  duration,
+  description,
+} = Astro.props as Props;
+---
+
+<div class="audio-player-container">
+  {/* Episode Header */}
+  <div class="mb-4">
+    {/* Episode Number and Title */}
+    <h3 class="text-xl font-pixel text-transit-charcoal mb-2">
+      Episode {episode}: {title}
+    </h3>
+
+    {/* Transit Line Accent */}
+    <div class="transit-line-thin mb-3"></div>
+
+    {/* Episode Metadata */}
+    <div class="flex items-center gap-4 text-sm text-gray-600 mb-3">
+      {/* Episode Number Badge */}
+      <span class="inline-block px-3 py-1 bg-transit-orange bg-opacity-10 text-transit-orange rounded-full font-medium">
+        EP {episode}
+      </span>
+
+      {/* Duration */}
+      {duration && (
+        <span class="flex items-center gap-1">
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          {duration}
+        </span>
+      )}
+    </div>
+
+    {/* Description */}
+    {description && (
+      <p class="text-gray-700 text-sm mb-4">
+        {description}
+      </p>
+    )}
+  </div>
+
+  {/* Audio Player - Native HTML5 */}
+  <audio
+    controls
+    class="audio-player w-full"
+    controlsList="nodownload"
+    preload="metadata"
+  >
+    <source src={audioUrl} type="audio/mpeg" />
+    Your browser does not support the audio element.
+  </audio>
+
+  {/* Player Info */}
+  <p class="text-xs text-gray-500 mt-3">
+    Click play to listen or use your preferred podcast app to subscribe.
+  </p>
+</div>
+
+<style>
+  /* Audio Player Container */
+  .audio-player-container {
+    @apply p-6 bg-white border border-gray-200 rounded-lg shadow-sm;
+  }
+
+  /* Native audio player styling */
+  audio.audio-player {
+    width: 100%;
+    height: 40px;
+    border-radius: 0.5rem;
+
+    /* Custom styling for audio controls (browser-dependent) */
+    accent-color: #ff6b00; /* Transit orange */
+  }
+
+  /* Ensure audio player is responsive */
+  @media (max-width: 640px) {
+    .audio-player-container {
+      padding: 1rem;
+    }
+
+    audio.audio-player {
+      height: 36px;
+    }
+  }
+
+  /* Additional accessibility - focus styling */
+  audio.audio-player:focus {
+    outline: 2px solid #ff6b00;
+    outline-offset: 2px;
+  }
+</style>

@@ -1,0 +1,95 @@
+---
+// Project/Portfolio Layout Wrapper
+// Provides consistent styling and structure for portfolio projects
+// This layout will wrap the content from portfolio/[slug].astro pages
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+
+// Note: BaseLayout will be created by Agent 1
+// When available, import: import BaseLayout from './BaseLayout.astro';
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <title>{title} - Internal Transit Portfolio</title>
+  </head>
+  <body>
+    <!-- Header will be provided by BaseLayout or imported component -->
+    <!-- For now, providing a simple semantic structure -->
+
+    <main class="bg-white">
+      {/* Hero section with portfolio theme */}
+      <div class="bg-gradient-to-br from-teal-50 to-cyan-100 border-b-2 border-teal-300">
+        <div class="max-w-4xl mx-auto px-4 py-12">
+          <div class="flex items-center gap-3 mb-3">
+            <span class="text-2xl">🎨</span>
+            <span class="inline-block px-3 py-1 bg-teal-200 text-teal-800 rounded-full text-sm font-semibold">
+              Portfolio Project
+            </span>
+          </div>
+          <h1 class="text-4xl font-bold text-gray-900">{title}</h1>
+        </div>
+      </div>
+
+      {/* Main content area */}
+      <div class="bg-white">
+        <slot />
+      </div>
+    </main>
+
+    <!-- Footer would be provided by BaseLayout -->
+  </body>
+</html>
+
+<style>
+  /* Portfolio-specific typography and spacing */
+  :global(html) {
+    scroll-behavior: smooth;
+  }
+
+  :global(body) {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+      Ubuntu, Cantarell, sans-serif;
+    background-color: #f9fafb;
+  }
+
+  /* Image gallery styling */
+  :global(figure) {
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  :global(figure img) {
+    width: 100%;
+    height: auto;
+  }
+
+  /* Improve readability of project descriptions */
+  :global(.prose) {
+    --tw-prose-body: #1f2937;
+    --tw-prose-headings: #111827;
+    --tw-prose-links: #0891b2;
+    --tw-prose-bold: #111827;
+    --tw-prose-counters: #6b7280;
+    --tw-prose-bullets: #d1d5db;
+    --tw-prose-hr: #e5e7eb;
+    --tw-prose-quotes: #6b7280;
+    --tw-prose-quote-borders: #e5e7eb;
+    --tw-prose-captions: #6b7280;
+    --tw-prose-code: #0891b2;
+    --tw-prose-pre-code: #e5e7eb;
+    --tw-prose-pre-bg: #1f2937;
+    --tw-prose-th-borders: #d1d5db;
+    --tw-prose-td-borders: #e5e7eb;
+  }
+</style>

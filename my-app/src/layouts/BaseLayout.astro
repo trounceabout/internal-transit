@@ -1,0 +1,96 @@
+---
+// BaseLayout.astro - Main layout wrapper for all pages
+// Provides semantic HTML structure, metadata handling, and component integration
+// Handles header, footer, and main content area with proper accessibility
+
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  author?: string;
+}
+
+// Destructure props with defaults
+const {
+  title = 'Internal Transit',
+  description = 'A personal knowledge management and discussion space',
+  image = '/internal-transit-icon.png',
+  author = 'Cody'
+} = Astro.props as Props;
+
+// Generate proper canonical URL
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Character encoding and viewport for proper rendering -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Favicon - Using Internal Transit icon -->
+    <link rel="icon" type="image/png" href="/internal-transit-icon.png" />
+    <link rel="apple-touch-icon" href="/internal-transit-icon.png" />
+
+    <!-- Astro generator meta tag -->
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- SEO Meta Tags -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={author} />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Canonical URL for SEO -->
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(image, Astro.site)} />
+    <meta property="og:site_name" content="Internal Transit" />
+
+    <!-- Twitter Card Meta Tags -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonicalURL} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={new URL(image, Astro.site)} />
+
+    <!-- Theme color for mobile browsers -->
+    <meta name="theme-color" content="#FF6B00" />
+
+    <!-- Preconnect to Google Fonts for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  </head>
+
+  <body class="bg-white text-transit-charcoal">
+    <!-- Skip to main content link for accessibility -->
+    <a href="#main-content" class="sr-only focus:not-sr-only">Skip to main content</a>
+
+    <!-- Header with navigation -->
+    <Header />
+
+    <!-- Transit line visual separator under header -->
+    <div class="transit-line-thin"></div>
+
+    <!-- Main content area with proper landmark and ID for skip link -->
+    <main id="main-content" class="flex-grow">
+      <slot />
+    </main>
+
+    <!-- Transit line visual separator before footer -->
+    <div class="transit-line-thin"></div>
+
+    <!-- Footer with links and site info -->
+    <Footer />
+  </body>
+</html>

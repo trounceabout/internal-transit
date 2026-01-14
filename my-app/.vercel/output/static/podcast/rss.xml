@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Internal Transit Podcast</title><description>A podcast exploring thoughts, ideas, and conversations on design, technology, and personal growth</description><link>https://internal-transit.example.com/</link><itunes:author>Cody</itunes:author><itunes:category text="Technology"/><itunes:explicit>false</itunes:explicit><itunes:image href="https://internal-transit.example.com/podcast-cover.jpg"/><itunes:type>episodic</itunes:type><item><title>Designing for Impact: A Conversation on Purpose-Driven Design</title><link>https://internal-transit.example.com/podcast/episode-1/</link><guid isPermaLink="true">https://internal-transit.example.com/podcast/episode-1/</guid><description>In our inaugural episode, we explore what it means to design with purpose. How do designers balance aesthetics with function? What responsibility do we have to our users and communities? Join us for a thoughtful conversation about design philosophy and real-world impact.</description><pubDate>Mon, 12 Jan 2026 00:00:00 GMT</pubDate><itunes:episodeType>full</itunes:episodeType><itunes:episode>1</itunes:episode><itunes:duration>32:15</itunes:duration><itunes:author>Sarah Chen, Marcus Johnson</itunes:author><enclosure url="https://example.com/podcast/episode-1.mp3" length="29286400" type="audio/mpeg"/><content:encoded>[Intro music fades]
+
+Cody: Welcome to Internal Transit, a podcast exploring ideas at the intersection of design, technology, and personal growth. I&apos;m your host, Cody, and today we&apos;re diving into a question that I think more designers need to grapple with: What does it mean to design with purpose?
+
+Joining me are Sarah Chen, a design strategist focused on social impact, and Marcus Johnson, who leads design at a rapidly growing tech company. Welcome to both of you.
+
+Sarah: Thanks for having us, Cody. Excited to be here.
+
+Marcus: Great to be part of the conversation.
+
+Cody: Let&apos;s start with the basics. When we talk about &quot;purpose-driven design,&quot; what does that actually mean to you?
+
+Sarah: I think purpose-driven design is about being intentional with your choices. Every design decision, from color to typography to interaction patterns, should serve a specific purpose beyond just looking good. It&apos;s about understanding your users, their needs, and what impact your design is meant to have on their lives.
+
+[Full transcript would continue here...]
+</content:encoded></item></channel></rss>

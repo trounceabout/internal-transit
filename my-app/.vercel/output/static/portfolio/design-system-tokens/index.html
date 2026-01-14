@@ -1,0 +1,173 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-eo3wme6m> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Architected and implemented a comprehensive design token system enabling seamless design-to-code handoff"><title>Design Token Architecture - Internal Transit Portfolio</title><style>html{scroll-behavior:smooth}body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,sans-serif;background-color:#f9fafb}figure{border-radius:.5rem;overflow:hidden;box-shadow:0 4px 6px #0000001a}figure img{width:100%;height:auto}.prose{--tw-prose-body: #1f2937;--tw-prose-headings: #111827;--tw-prose-links: #0891b2;--tw-prose-bold: #111827;--tw-prose-counters: #6b7280;--tw-prose-bullets: #d1d5db;--tw-prose-hr: #e5e7eb;--tw-prose-quotes: #6b7280;--tw-prose-quote-borders: #e5e7eb;--tw-prose-captions: #6b7280;--tw-prose-code: #0891b2;--tw-prose-pre-code: #e5e7eb;--tw-prose-pre-bg: #1f2937;--tw-prose-th-borders: #d1d5db;--tw-prose-td-borders: #e5e7eb}
+</style><script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+		var script = document.createElement('script');
+		script.defer = true;
+		script.src = '/_vercel/insights/script.js';
+		var head = document.querySelector('head');
+		head.appendChild(script);
+	</script></head> <body data-astro-cid-eo3wme6m> <!-- Header will be provided by BaseLayout or imported component --> <!-- For now, providing a simple semantic structure --> <main class="bg-white" data-astro-cid-eo3wme6m>  <div class="bg-gradient-to-br from-teal-50 to-cyan-100 border-b-2 border-teal-300" data-astro-cid-eo3wme6m> <div class="max-w-4xl mx-auto px-4 py-12" data-astro-cid-eo3wme6m> <div class="flex items-center gap-3 mb-3" data-astro-cid-eo3wme6m> <span class="text-2xl" data-astro-cid-eo3wme6m>🎨</span> <span class="inline-block px-3 py-1 bg-teal-200 text-teal-800 rounded-full text-sm font-semibold" data-astro-cid-eo3wme6m>
+Portfolio Project
+</span> </div> <h1 class="text-4xl font-bold text-gray-900" data-astro-cid-eo3wme6m>Design Token Architecture</h1> </div> </div>  <div class="bg-white" data-astro-cid-eo3wme6m>  <article class="max-w-4xl mx-auto px-4 py-8">  <header class="mb-10 border-b border-gray-200 pb-6"> <h1 class="text-4xl font-bold mb-4">Design Token Architecture</h1> <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 text-sm mb-4">  <div> <p class="font-semibold text-gray-700">Client</p> <p class="text-gray-600">Tech Startup</p> </div>  <div> <p class="font-semibold text-gray-700">Role</p> <p class="text-gray-600">Design Lead</p> </div>  <div> <p class="font-semibold text-gray-700">Date</p> <time datetime="2025-08-20T00:00:00.000Z" class="text-gray-600"> August 19, 2025 </time> </div>  <div> <p class="font-semibold text-gray-700">Type</p> <div class="flex gap-1 flex-wrap mt-1"> <span key="design systems" class="px-2 py-0.5 bg-blue-100 text-blue-800 rounded text-xs font-medium"> design systems </span><span key="design tokens" class="px-2 py-0.5 bg-blue-100 text-blue-800 rounded text-xs font-medium"> design tokens </span><span key="implementation" class="px-2 py-0.5 bg-blue-100 text-blue-800 rounded text-xs font-medium"> implementation </span> </div> </div> </div>  <p class="text-lg text-gray-700">Architected and implemented a comprehensive design token system enabling seamless design-to-code handoff</p> </header>  <section class="mb-12"> <h2 class="text-2xl font-bold mb-6">Project Gallery</h2> <div class="grid grid-cols-1 md:grid-cols-2 gap-6"> <figure key="/images/design-tokens-overview.png" class="overflow-hidden rounded-lg bg-gray-100"> <img src="/images/design-tokens-overview.png" alt="Design Token Architecture project image" class="w-full h-auto object-cover hover:scale-105 transition-transform duration-300" loading="lazy"> </figure><figure key="/images/design-tokens-implementation.png" class="overflow-hidden rounded-lg bg-gray-100"> <img src="/images/design-tokens-implementation.png" alt="Design Token Architecture project image" class="w-full h-auto object-cover hover:scale-105 transition-transform duration-300" loading="lazy"> </figure> </div> </section>  <section class="mb-12"> <h2 class="text-2xl font-bold mb-6">Case Study</h2> <div class="prose prose-sm sm:prose lg:prose-lg mx-auto max-w-none"> <h1 id="design-token-architecture-building-scalable-design-systems">Design Token Architecture: Building Scalable Design Systems</h1>
+<h2 id="overview">Overview</h2>
+<p>This project involved architecting and implementing a comprehensive design token system for a rapidly scaling tech company. The system needed to support multiple platforms (web, iOS, Android) while maintaining consistency and enabling rapid iteration.</p>
+<h2 id="challenge">Challenge</h2>
+<p>The company was experiencing inconsistency across products. Different teams used different color values, spacing scales, and typography sizes. This led to:</p>
+<ul>
+<li>User confusion about visual consistency</li>
+<li>Inefficient design-to-code handoff</li>
+<li>Difficult updates to design language</li>
+<li>Duplication of effort across teams</li>
+</ul>
+<h2 id="solution">Solution</h2>
+<h3 id="design-token-strategy">Design Token Strategy</h3>
+<p>We implemented a <strong>three-tier token system</strong>:</p>
+<ol>
+<li><strong>Global Tokens</strong>: Core values (colors, spacing, typography, etc.)</li>
+<li><strong>Component Tokens</strong>: Component-specific overrides and variations</li>
+<li><strong>Context Tokens</strong>: Theme-specific and context-specific values</li>
+</ol>
+<h3 id="implementation-approach">Implementation Approach</h3>
+<p><strong>Token Storage &#x26; Management:</strong></p>
+<ul>
+<li>YAML files as source of truth</li>
+<li>Version controlled in main repository</li>
+<li>Automated distribution to web, iOS, and Android</li>
+</ul>
+<p><strong>Tooling:</strong></p>
+<ul>
+<li>Design tokens plugin in Figma</li>
+<li>Automated export to JSON format</li>
+<li>Token validation in CI/CD pipeline</li>
+<li>SDK generation for each platform</li>
+</ul>
+<h3 id="token-categories">Token Categories</h3>
+<ol>
+<li><strong>Color</strong>: 100+ color tokens organized by role and state</li>
+<li><strong>Spacing</strong>: 12-point scale for consistent layout rhythm</li>
+<li><strong>Typography</strong>: 8 text styles with responsive sizing</li>
+<li><strong>Elevation</strong>: 5 shadow levels for depth</li>
+<li><strong>Motion</strong>: Duration and easing curves</li>
+<li><strong>Borders</strong>: Radius and width values</li>
+</ol>
+<h2 id="key-features">Key Features</h2>
+<h3 id="single-source-of-truth">Single Source of Truth</h3>
+<p>Tokens defined once in Figma, automatically distributed to:</p>
+<ul>
+<li>Web (CSS variables)</li>
+<li>iOS (Swift enums)</li>
+<li>Android (XML and Kotlin)</li>
+</ul>
+<h3 id="theme-support">Theme Support</h3>
+<p>Built-in support for multiple themes:</p>
+<ul>
+<li>Light theme (default)</li>
+<li>Dark theme</li>
+<li>High contrast mode</li>
+<li>Custom brand themes</li>
+</ul>
+<h3 id="velocity--scale">Velocity &#x26; Scale</h3>
+<p>The system enabled:</p>
+<ul>
+<li>40% faster design handoff</li>
+<li>Reduced color inconsistencies by 95%</li>
+<li>Single-point updates for platform-wide changes</li>
+<li>Faster A/B testing with theme variants</li>
+</ul>
+<h2 id="design-process">Design Process</h2>
+<h3 id="phase-1-audit--analysis">Phase 1: Audit &#x26; Analysis</h3>
+<ul>
+<li>Audited existing design inconsistencies</li>
+<li>Mapped current usage across products</li>
+<li>Identified optimization opportunities</li>
+</ul>
+<h3 id="phase-2-token-definition">Phase 2: Token Definition</h3>
+<ul>
+<li>Defined semantic naming convention</li>
+<li>Established organizational structure</li>
+<li>Created token documentation</li>
+</ul>
+<h3 id="phase-3-implementation">Phase 3: Implementation</h3>
+<ul>
+<li>Built Figma plugins</li>
+<li>Implemented code generation</li>
+<li>Created SDK documentation</li>
+</ul>
+<h3 id="phase-4-adoption--support">Phase 4: Adoption &#x26; Support</h3>
+<ul>
+<li>Trained design and engineering teams</li>
+<li>Provided documentation and examples</li>
+<li>Gathered feedback for refinement</li>
+</ul>
+<h2 id="outcomes">Outcomes</h2>
+<h3 id="metrics">Metrics</h3>
+<ul>
+<li>100+ tokens across all categories</li>
+<li>3 platforms with identical token implementation</li>
+<li>15+ active users across design and engineering</li>
+<li>40% reduction in design-to-code time</li>
+</ul>
+<h3 id="qualitative-benefits">Qualitative Benefits</h3>
+<ul>
+<li><strong>Consistency</strong>: Visual consistency across all products</li>
+<li><strong>Velocity</strong>: Faster iteration and deployment</li>
+<li><strong>Scalability</strong>: System grew with product needs</li>
+<li><strong>Collaboration</strong>: Stronger design-engineering partnership</li>
+</ul>
+<h3 id="team-impact">Team Impact</h3>
+<ul>
+<li>Designers could focus on creativity, not pixel values</li>
+<li>Engineers had clear specifications</li>
+<li>New team members could get up to speed quickly</li>
+<li>Cross-team coordination improved dramatically</li>
+</ul>
+<h2 id="learnings">Learnings</h2>
+<ol>
+<li>
+<p><strong>Naming Conventions Matter</strong>: Clear, semantic token names prevent confusion and enable self-documentation</p>
+</li>
+<li>
+<p><strong>Platform-Specific Considerations</strong>: Each platform has different constraints and conventions—the token system needed to accommodate these</p>
+</li>
+<li>
+<p><strong>Change Management is Critical</strong>: Rolling out new systems requires education and support, not just technical implementation</p>
+</li>
+<li>
+<p><strong>Governance Enables Scale</strong>: Clear processes for token addition/modification prevent chaos as the system grows</p>
+</li>
+<li>
+<p><strong>Living Systems Evolve</strong>: Regular audits and refinements keep the system valuable as products evolve</p>
+</li>
+</ol>
+<h2 id="technical-deep-dive">Technical Deep Dive</h2>
+<h3 id="token-naming-convention">Token Naming Convention</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>{category}-{property}-{state}</span></span>
+<span class="line"><span>color-primary-default</span></span>
+<span class="line"><span>spacing-lg</span></span>
+<span class="line"><span>typography-body-regular</span></span>
+<span class="line"><span>elevation-md</span></span></code></pre>
+<h3 id="implementation-example">Implementation Example</h3>
+<p>Tokens distributed to different platforms:</p>
+<p><strong>Figma Design Tokens:</strong></p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>$color-primary-default: #2563eb</span></span>
+<span class="line"><span>$spacing-lg: 24px</span></span>
+<span class="line"><span>$typography-body-regular: 16px / 1.5</span></span></code></pre>
+<p><strong>CSS (Web):</strong></p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="css"><code><span class="line"><span style="color:#E1E4E8">--color-primary-default: </span><span style="color:#FDAEB7;font-style:italic">#2563eb</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#E1E4E8">--spacing-lg: 24px;</span></span>
+<span class="line"><span style="color:#E1E4E8">--typography-body-regular: 16px;</span></span></code></pre>
+<p><strong>Swift (iOS):</strong></p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="swift"><code><span class="line"><span style="color:#F97583">let</span><span style="color:#E1E4E8"> colorPrimaryDefault </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> UIColor</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">red</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">0.145</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">green</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">0.388</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">blue</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">0.933</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#F97583">let</span><span style="color:#E1E4E8"> spacingLg: CGFloat </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 24</span></span></code></pre>
+<h2 id="future-enhancements">Future Enhancements</h2>
+<ul>
+<li>AI-assisted token suggestions for new components</li>
+<li>Real-time token validation in design</li>
+<li>Token usage analytics and optimization</li>
+<li>Multi-brand token management</li>
+<li>Advanced theming capabilities</li>
+</ul>
+<hr>
+<p><em>Project completed: August 2025</em>
+<em>Technologies: Figma, YAML, JSON, CSS, Swift, Kotlin</em></p> </div> </section>  <section class="mb-12"> <a href="https://example.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold">
+View Live Project
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4m-4-6l6 6m0 0l-6 6m6-6H3"></path> </svg> </a> </section>  <nav class="mt-16 pt-8 border-t border-gray-200"> <div class="grid grid-cols-2 gap-4">  <a href="/portfolio/portfolio-website/" class="p-4 border border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all group"> <p class="text-sm text-gray-600 mb-1 group-hover:text-blue-600">Previous Project</p> <p class="font-semibold text-gray-900 group-hover:text-blue-700"> Internal Transit - Personal Website </p> </a>  <div></div> </div> </nav> </article>  </div> </main> <!-- Footer would be provided by BaseLayout --> </body></html>
