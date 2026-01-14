@@ -22,6 +22,42 @@ Once the tech stack is chosen, organize the codebase with:
 
 ## Development Workflow
 
+### Branch and PR Workflow
+
+**All new work MUST follow this workflow:**
+
+1. **Create a new branch** for each task/feature:
+   ```bash
+   git checkout -b feature/descriptive-name
+   ```
+   Branch naming convention: `feature/`, `fix/`, `docs/`, `refactor/` followed by kebab-case description
+
+2. **Make changes** on the feature branch (not on `main`)
+
+3. **Create a Pull Request** once work is complete:
+   - Use the Skill tool: `/commit` to commit changes
+   - Then create PR with `gh pr create` or similar tooling
+   - Add a clear description of what changed and why
+
+4. **Merge to main** only after review/verification
+   - Do NOT push directly to main
+   - All changes must go through a PR
+
+**Example workflow:**
+```bash
+# Create feature branch
+git checkout -b feature/add-dark-mode
+
+# Make changes and commit
+git add .
+git commit -m "Add dark mode toggle"
+
+# Create PR
+gh pr create --title "Add dark mode" --body "..."
+
+# After review, merge through GitHub UI or PR merge command
+```
+
 ### Common Commands (To Be Established)
 Add these once the project is configured:
 ```bash
@@ -60,7 +96,15 @@ Define linting setup once dependencies are added:
 
 ## Important Notes for Future Instances
 
+- **ALWAYS use the branch and PR workflow** - no direct commits to main
 - Always verify larger changes before implementing them
 - Break changes into small, incremental steps
 - When this project matures, prioritize keeping this document updated with architectural patterns and common workflows
 - Reference specific file locations using the `file_path:line_number` format when discussing code changes
+
+### Branch Protection Rules (Recommended)
+Consider enabling these on GitHub for added safety:
+- Require pull request reviews before merging
+- Require status checks to pass before merging
+- Dismiss stale pull request approvals when new commits are pushed
+- Require branches to be up to date before merging
