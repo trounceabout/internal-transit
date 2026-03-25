@@ -2,13 +2,47 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
-@import "@fontsource-variable/figtree";
+
+/* ─── Font faces ──────────────────────────────────────────────────────────── */
+
+/* Geist Sans — variable font, covers all weights from 100–900 */
+@font-face {
+  font-family: 'Geist Sans';
+  src: url('/node_modules/geist/dist/fonts/geist-sans/Geist-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Geist Pixel Square — display/headline font */
+@font-face {
+  font-family: 'Geist Pixel';
+  src: url('/node_modules/geist/dist/fonts/geist-pixel/GeistPixel-Square.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Redaction 35 Italic — accent display font, self-hosted in /public/fonts/ */
+@font-face {
+  font-family: 'Redaction 35';
+  src: url('/fonts/Redaction_35-Italic.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-    --font-heading: var(--font-sans);
-    --font-sans: 'Figtree Variable', sans-serif;
+    /* font-display  → Geist Pixel Square (most headlines and display text) */
+    --font-display: 'Geist Pixel', monospace;
+    /* font-sans     → Geist Sans (body text and UI) */
+    --font-sans: 'Geist Sans', sans-serif;
+    /* font-accent   → Redaction 35 Italic (special display moments) */
+    --font-accent: 'Redaction 35', serif;
+    /* Keep --font-heading pointing to display for Shadcn compatibility */
+    --font-heading: var(--font-display);
     --color-sidebar-ring: var(--sidebar-ring);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
