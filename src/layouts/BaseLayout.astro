@@ -2,6 +2,7 @@
 // BaseLayout.astro — the HTML shell that wraps every page.
 // Import global styles here so Tailwind applies everywhere.
 import '@/styles/global.css';
+import SpeedInsights from '@vercel/speed-insights/astro';
 
 interface Props {
   title: string;
@@ -24,5 +25,7 @@ const { title, description = 'The personal site of a product designer.' } = Astr
   </head>
   <body>
     <slot />
+    <!-- Vercel Speed Insights — tracks real user performance data -->
+    <SpeedInsights />
   </body>
 </html>
