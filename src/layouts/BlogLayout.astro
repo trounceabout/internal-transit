@@ -1,0 +1,32 @@
+---
+// BlogLayout.astro — wraps individual blog posts.
+// Receives the post's frontmatter and renders it above the content.
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  publishDate: Date;
+}
+
+const { title, description, publishDate } = Astro.props;
+
+// Format the date nicely, e.g. "March 24, 2026"
+const formattedDate = publishDate.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<BaseLayout title={title} description={description}>
+  <article>
+    <header>
+      <h1>{title}</h1>
+      <time datetime={publishDate.toISOString()}>{formattedDate}</time>
+      <p>{description}</p>
+    </header>
+    <!-- slot is where the MDX post content gets injected -->
+    <slot />
+  </article>
+</BaseLayout>
