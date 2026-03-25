@@ -29,7 +29,7 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
   experimental: {
-    rustCompiler: true,
+    // rustCompiler: true, — disabled: native binary fails to install on Vercel's build environment
     // Queued rendering replaces recursive rendering with a two-pass queue.
     // Planned to become the default in Astro v7 — safe to enable now.
     queuedRendering: { enabled: true },
