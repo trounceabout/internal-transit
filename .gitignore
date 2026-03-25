@@ -20,6 +20,9 @@ pnpm-debug.log*
 # macOS-specific files
 .DS_Store
 
+# bun pack artifacts
+*.tgz
+
 # jetbrains setting folder
 .idea/
 .vercel

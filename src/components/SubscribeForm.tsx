@@ -21,7 +21,7 @@ export default function SubscribeForm() {
 
     if (res.ok) {
       setStatus('success');
-      setMessage('You're subscribed! Check your inbox to confirm.');
+      setMessage("You're subscribed! Check your inbox to confirm.");
       setEmail('');
     } else {
       setStatus('error');
