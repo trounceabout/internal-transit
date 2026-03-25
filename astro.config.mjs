@@ -30,5 +30,8 @@ export default defineConfig({
   },
   experimental: {
     rustCompiler: true,
+    // Queued rendering replaces recursive rendering with a two-pass queue.
+    // Planned to become the default in Astro v7 — safe to enable now.
+    queuedRendering: { enabled: true },
   },
 });
