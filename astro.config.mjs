@@ -1,15 +1,15 @@
 // @ts-check
-import { defineConfig } from 'astro/config';
-import react from '@astrojs/react';
-import mdx from '@astrojs/mdx';
-import vercel from '@astrojs/vercel';
-import tailwindcss from '@tailwindcss/vite';
-import sentry from '@sentry/astro';
+import { defineConfig } from "astro/config";
+import react from "@astrojs/react";
+import mdx from "@astrojs/mdx";
+import vercel from "@astrojs/vercel";
+import tailwindcss from "@tailwindcss/vite";
+import sentry from "@sentry/astro";
 
 // https://astro.build/config
 export default defineConfig({
   // Update this to your real domain when you have one
-  site: 'https://internaltransit.com',
+  site: "https://internaltransit.com",
   integrations: [
     react(),
     mdx(),
@@ -18,7 +18,7 @@ export default defineConfig({
     sentry({
       dsn: import.meta.env.SENTRY_DSN,
       sourceMapsUploadOptions: {
-        project: 'internal-transit',
+        project: "internal-transit",
         authToken: import.meta.env.SENTRY_AUTH_TOKEN,
       },
     }),
@@ -27,5 +27,8 @@ export default defineConfig({
   vite: {
     // Tailwind v4 is a Vite plugin, not an Astro integration
     plugins: [tailwindcss()],
+  },
+  experimental: {
+    rustCompiler: true,
   },
 });
