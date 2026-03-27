@@ -1,22 +1,38 @@
 # Internal Transit
 
-Personal site for a product designer. Includes a home page, portfolio work, and a blog/newsletter.
+My personal home on the internet. Lives at [internaltransit.com](https://internaltransit.com).
 
-Live at [internaltransit.com](https://internaltransit.com).
+This is a portfolio site for my work as a product designer and design engineer, a blog that doubles as a newsletter, and eventually a podcast home. The point is full ownership — no platform middleman, no algorithmic feed, no dependency on a service that might disappear or change its terms. Everything here is mine.
 
 ---
 
-## Stack
+## What it is
 
-| Layer | Technology |
-| --- | --- |
-| Framework | [Astro 6](https://astro.build) |
-| Styling | [Tailwind CSS v4](https://tailwindcss.com) (Vite plugin) |
-| UI components | [shadcn/ui](https://ui.shadcn.com) with [Base UI](https://base-ui.com) |
-| Interactive islands | React 19 via `@astrojs/react` |
-| Hosting | [Vercel](https://vercel.com) |
-| Newsletter | [Buttondown](https://buttondown.email) |
-| Error monitoring | [Sentry](https://sentry.io) |
+- **Portfolio** — case studies and work samples for product design and design engineering
+- **Blog / newsletter** — writing that goes out as email to subscribers and lives permanently on the site
+- **Podcast** — planned, not yet built
+
+---
+
+## The stack and why
+
+**[Astro 6](https://astro.build)**
+This is a content-first site, not an app. Astro generates static HTML by default, ships zero JavaScript unless you need it, and has first-class support for MDX content collections. Next.js would have been overkill — you don't need a full app framework to publish writing and show work.
+
+**[Tailwind CSS v4](https://tailwindcss.com)**
+v4 runs as a Vite plugin, which plays well with Astro's build pipeline. The new CSS-native config (no `tailwind.config.js`) keeps things cleaner. Utility-first means the design tokens live directly in the markup, which suits a solo project where there's no need for a separate design token layer.
+
+**[shadcn/ui](https://ui.shadcn.com) + React 19 islands**
+Most of the site is static Astro components. When something needs interactivity — a newsletter signup form, a toggle, a dialog — React drops in as an island via `@astrojs/react`. shadcn provides accessible, unstyled-first components that are copied into the project (not imported from a package), so there's no library lock-in and the code is fully under my control.
+
+**[Buttondown](https://buttondown.email)**
+API-first newsletter tooling. Subscribers are mine — I can export them anytime, point them at a different service, or self-host if I need to. It's the opposite of building your audience inside someone else's platform. The integration is a single API call.
+
+**[Vercel](https://vercel.com)**
+Astro has an official Vercel adapter and the deployment integration is seamless — push to `main`, site updates. Preview deployments per PR make it easy to review changes before they go live. No server config to manage.
+
+**[Sentry](https://sentry.io)**
+Error monitoring in production. Lightweight to set up, catches real-world issues that don't show up locally, and source map uploads mean stack traces point to actual source lines rather than minified output.
 
 ---
 
