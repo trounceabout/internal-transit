@@ -8,7 +8,6 @@ import sentry from "@sentry/astro";
 
 // https://astro.build/config
 export default defineConfig({
-  // Update this to your real domain when you have one
   site: "https://internaltransit.com",
   integrations: [
     react(),
