@@ -10,7 +10,9 @@ interface Props {
   description?: string;
 }
 
-const { title, description = 'The personal site of a product designer.' } = Astro.props;
+// Default description used when a page doesn't supply its own.
+// Pulled from the site tagline — kept under 160 chars for SEO.
+const { title, description = 'Internal Transit — thoughts on product design, craft, and the ideas making their way through my head.' } = Astro.props;
 ---
 
 <!doctype html>
@@ -19,7 +21,9 @@ const { title, description = 'The personal site of a product designer.' } = Astr
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
-    <title>{title}</title>
+    <!-- Format: "Page Title — Internal Transit" for inner pages.
+         The em-dash separator is a common SEO/UX convention for site branding. -->
+    <title>{title} — Internal Transit</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <!-- RSS autodiscovery — browsers and feed readers will find this automatically -->
     <link rel="alternate" type="application/rss+xml" title="Blog RSS Feed" href="/rss.xml" />
