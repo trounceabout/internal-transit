@@ -8,16 +8,25 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
 ---
 
 <BaseLayout title="Blog" description="Thoughts and writing.">
-  <main>
-    <h1>Blog</h1>
-    <ul>
+  <main class="mx-auto max-w-[800px] px-6 py-16">
+    <ul class="flex flex-col gap-8">
       {posts.map((post) => (
-        <li>
-          <a href={`/blog/${post.id}`}>{post.data.title}</a>
-          <time datetime={post.data.publishDate.toISOString()}>
-            {post.data.publishDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+        <li class="flex flex-col gap-1">
+          <a
+            href={`/blog/${post.id}`}
+            class="text-xl font-medium text-foreground hover:text-brand-highlight transition-colors"
+          >
+            {post.data.title}
+          </a>
+          <p class="text-sm text-foreground">{post.data.description}</p>
+          <time
+            datetime={post.data.publishDate.toISOString()}
+            class="text-xs text-muted-foreground"
+          >
+            {post.data.publishDate.toLocaleDateString('en-US', {
+              year: 'numeric', month: 'long', day: 'numeric'
+            })}
           </time>
-          <p>{post.data.description}</p>
         </li>
       ))}
     </ul>
