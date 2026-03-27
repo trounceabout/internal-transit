@@ -14,9 +14,11 @@ export default defineConfig({
     react(),
     mdx(),
     // Sentry monitors errors on both server and client.
-    // DSN is read from the SENTRY_DSN environment variable.
+    // DSN is now set in src/sentry.client.config.ts and src/sentry.server.config.ts
+    // (passing dsn directly here is deprecated).
+    // sourceMapsUploadOptions stays here because it controls the build-time
+    // source map upload step, not the runtime SDK.
     sentry({
-      dsn: import.meta.env.SENTRY_DSN,
       sourceMapsUploadOptions: {
         project: "internal-transit",
         authToken: import.meta.env.SENTRY_AUTH_TOKEN,
