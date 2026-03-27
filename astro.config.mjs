@@ -8,9 +8,6 @@ import sentry from "@sentry/astro";
 
 // https://astro.build/config
 export default defineConfig({
-  // ⚠️ TODO: Domain not yet confirmed — update this before launch.
-  // This value is used by Astro to build absolute URLs (e.g. for the RSS feed
-  // and Open Graph tags). Replace with the real domain once it is locked in.
   site: "https://internaltransit.com",
   integrations: [
     react(),
