@@ -1,34 +1,43 @@
 ---
-import BaseLayout from '@/layouts/BaseLayout.astro';
-import { getCollection } from 'astro:content';
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
 
 // Fetch all blog posts, filter out drafts, sort newest first
-const posts = (await getCollection('blog', ({ data }) => !data.draft))
-  .sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf());
+const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
+    (a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf(),
+);
 ---
 
 <BaseLayout title="Blog" description="Thoughts and writing.">
-  <main class="mx-auto max-w-[800px] px-6 py-16">
-    <ul class="flex flex-col gap-8">
-      {posts.map((post) => (
-        <li class="flex flex-col gap-1">
-          <a
-            href={`/blog/${post.id}`}
-            class="text-xl font-medium text-foreground hover:text-brand-highlight transition-colors"
-          >
-            {post.data.title}
-          </a>
-          <p class="text-sm text-foreground">{post.data.description}</p>
-          <time
-            datetime={post.data.publishDate.toISOString()}
-            class="text-xs text-muted-foreground"
-          >
-            {post.data.publishDate.toLocaleDateString('en-US', {
-              year: 'numeric', month: 'long', day: 'numeric'
-            })}
-          </time>
-        </li>
-      ))}
-    </ul>
-  </main>
+    <main class="mx-auto max-w-[800px] px-6 py-16">
+        <ul class="flex flex-col gap-8">
+            {
+                posts.map((post) => (
+                    <li class="flex flex-col gap-5">
+                        <div class="flex flex-col gap-1">
+                            <a
+                                href={`/blog/${post.id}`}
+                                class="text-3xl font-medium text-foreground hover:text-brand-highlight hover:underline transition-colors"
+                            >
+                                {post.data.title}
+                            </a>
+                            <p class="text-md text-foreground">
+                                {post.data.description}
+                            </p>
+                        </div>
+                        <time
+                            datetime={post.data.publishDate.toISOString()}
+                            class="text-sm text-muted-foreground"
+                        >
+                            {post.data.publishDate.toLocaleDateString("en-US", {
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                            })}
+                        </time>
+                    </li>
+                ))
+            }
+        </ul>
+    </main>
 </BaseLayout>
