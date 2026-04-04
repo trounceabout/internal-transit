@@ -19,55 +19,66 @@ const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
     (a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf(),
 );
 
-// Maps each category tag to a HugeIcon and a Tailwind background + text color pair
-const categoryConfig: Record<string, { icon: any; bg: string; text: string }> =
-    {
-        design: {
-            icon: PencilRulerIcon,
-            bg: "bg-indigo-100",
-            text: "text-indigo-700",
-        },
-        philosophy: {
-            icon: Brain02Icon,
-            bg: "bg-purple-100",
-            text: "text-purple-700",
-        },
-        craft: {
-            icon: AnvilIcon,
-            bg: "bg-orange-100",
-            text: "text-orange-700",
-        },
-        creativity: {
-            icon: IdeaIcon,
-            bg: "bg-yellow-100",
-            text: "text-yellow-700",
-        },
-        culture: {
-            icon: MaskTheater02Icon,
-            bg: "bg-teal-100",
-            text: "text-teal-700",
-        },
-        games: {
-            icon: Joystick03Icon,
-            bg: "bg-green-100",
-            text: "text-green-700",
-        },
-        art: {
-            icon: BrushIcon,
-            bg: "bg-fuchsia-100",
-            text: "text-fuchsia-700",
-        },
-        outdoors: {
-            icon: CampfireIcon,
-            bg: "bg-amber-100",
-            text: "text-amber-700",
-        },
-    };
+// Maps each category tag to a HugeIcon and Tailwind color classes.
+// hoverText must be a complete literal string so Tailwind includes it in the build.
+const categoryConfig: Record<
+    string,
+    { icon: any; bg: string; text: string; hoverText: string }
+> = {
+    design: {
+        icon: PencilRulerIcon,
+        bg: "bg-indigo-100",
+        text: "text-indigo-700",
+        hoverText: "group-hover:text-indigo-700",
+    },
+    philosophy: {
+        icon: Brain02Icon,
+        bg: "bg-purple-100",
+        text: "text-purple-700",
+        hoverText: "group-hover:text-purple-700",
+    },
+    craft: {
+        icon: AnvilIcon,
+        bg: "bg-orange-100",
+        text: "text-orange-700",
+        hoverText: "group-hover:text-orange-700",
+    },
+    creativity: {
+        icon: IdeaIcon,
+        bg: "bg-yellow-100",
+        text: "text-yellow-700",
+        hoverText: "group-hover:text-yellow-700",
+    },
+    culture: {
+        icon: MaskTheater02Icon,
+        bg: "bg-teal-100",
+        text: "text-teal-700",
+        hoverText: "group-hover:text-teal-700",
+    },
+    games: {
+        icon: Joystick03Icon,
+        bg: "bg-green-100",
+        text: "text-green-700",
+        hoverText: "group-hover:text-green-700",
+    },
+    art: {
+        icon: BrushIcon,
+        bg: "bg-fuchsia-100",
+        text: "text-fuchsia-700",
+        hoverText: "group-hover:text-fuchsia-700",
+    },
+    outdoors: {
+        icon: CampfireIcon,
+        bg: "bg-amber-100",
+        text: "text-amber-700",
+        hoverText: "group-hover:text-amber-700",
+    },
+};
 ---
 
 <BaseLayout title="Blog" description="Thoughts and writing.">
     <main class="mx-auto max-w-200 px-6 py-16">
-        <ul class="flex flex-col gap-10">
+        <ul class="flex flex-col gap-12">
             {
                 posts.map((post) => (
                     <li class="flex flex-col gap-3">
@@ -85,7 +96,7 @@ const categoryConfig: Record<string, { icon: any; bg: string; text: string }> =
 
                         {/* Date + category pills on the same row */}
                         <div class="flex items-center gap-9 flex-wrap">
-                            <div class="flex items-center gap-2">
+                            <div class="flex items-center gap-1.5">
                                 <HugeiconsIcon
                                     icon={Calendar04Icon}
                                     size={16}
@@ -106,22 +117,25 @@ const categoryConfig: Record<string, { icon: any; bg: string; text: string }> =
                                 </time>
                             </div>
 
-                            {/* Pills in their own div so gap between them can be tuned independently */}
+                            {/* Tags: icon gets the category color, text matches and underlines on hover */}
                             <div class="flex items-center gap-3">
                                 {post.data.tags.map((tag) => {
                                     const config = categoryConfig[tag];
-                                    // Skip tags we haven't configured yet
                                     if (!config) return null;
                                     return (
-                                        <span
-                                            class={`flex items-center gap-1.5 px-1.5 py-1 rounded-full text-sm font-medium ${config.bg} ${config.text}`}
-                                        >
-                                            <HugeiconsIcon
-                                                icon={config.icon}
-                                                size={16}
-                                                color="currentColor"
-                                            />
-                                            {tag}
+                                        <span class="flex items-center gap-1.5 text-sm font-medium cursor-default group">
+                                            <span class={config.text}>
+                                                <HugeiconsIcon
+                                                    icon={config.icon}
+                                                    size={16}
+                                                    color="currentColor"
+                                                />
+                                            </span>
+                                            <span
+                                                class={`font-mono text-muted-foreground group-hover:underline ${config.hoverText}`}
+                                            >
+                                                {tag}
+                                            </span>
                                         </span>
                                     );
                                 })}
