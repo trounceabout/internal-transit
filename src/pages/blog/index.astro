@@ -1,25 +1,144 @@
 ---
-import BaseLayout from '@/layouts/BaseLayout.astro';
-import { getCollection } from 'astro:content';
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+import { HugeiconsIcon } from "@hugeicons/react";
+import type { IconSvgElement } from "@hugeicons/react";
+import {
+    Calendar04Icon,
+    AnvilIcon,
+    Brain02Icon,
+    PencilRulerIcon,
+    IdeaIcon,
+    MaskTheater02Icon,
+    Joystick03Icon,
+    BrushIcon,
+    CampfireIcon,
+} from "@hugeicons/core-free-icons";
 
 // Fetch all blog posts, filter out drafts, sort newest first
-const posts = (await getCollection('blog', ({ data }) => !data.draft))
-  .sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf());
+const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
+    (a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf(),
+);
+
+// Maps each category tag to a HugeIcon and Tailwind color classes.
+// hoverText must be a complete literal string so Tailwind includes it in the build.
+const categoryConfig: Record<
+    string,
+    { icon: IconSvgElement; text: string; hoverText: string }
+> = {
+    design: {
+        icon: PencilRulerIcon,
+        text: "text-indigo-700",
+        hoverText: "group-hover:text-indigo-700",
+    },
+    philosophy: {
+        icon: Brain02Icon,
+        text: "text-purple-700",
+        hoverText: "group-hover:text-purple-700",
+    },
+    craft: {
+        icon: AnvilIcon,
+        text: "text-orange-700",
+        hoverText: "group-hover:text-orange-700",
+    },
+    creativity: {
+        icon: IdeaIcon,
+        text: "text-yellow-700",
+        hoverText: "group-hover:text-yellow-700",
+    },
+    culture: {
+        icon: MaskTheater02Icon,
+        text: "text-teal-700",
+        hoverText: "group-hover:text-teal-700",
+    },
+    games: {
+        icon: Joystick03Icon,
+        text: "text-green-700",
+        hoverText: "group-hover:text-green-700",
+    },
+    art: {
+        icon: BrushIcon,
+        text: "text-fuchsia-700",
+        hoverText: "group-hover:text-fuchsia-700",
+    },
+    outdoors: {
+        icon: CampfireIcon,
+        text: "text-amber-700",
+        hoverText: "group-hover:text-amber-700",
+    },
+};
 ---
 
 <BaseLayout title="Blog" description="Thoughts and writing.">
-  <main>
-    <h1>Blog</h1>
-    <ul>
-      {posts.map((post) => (
-        <li>
-          <a href={`/blog/${post.id}`}>{post.data.title}</a>
-          <time datetime={post.data.publishDate.toISOString()}>
-            {post.data.publishDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-          </time>
-          <p>{post.data.description}</p>
-        </li>
-      ))}
-    </ul>
-  </main>
+    <main class="mx-auto max-w-3xl px-6 py-16">
+        {/* Visually hidden h1 for screen readers and SEO */}
+        <h1 class="sr-only">Blog</h1>
+        <ul class="flex flex-col gap-12">
+            {
+                posts.map((post) => (
+                    <li class="flex flex-col gap-3">
+                        <div class="flex flex-col gap-1">
+                            <a
+                                href={`/blog/${post.id}`}
+                                class="text-xl font-semibold text-foreground hover:text-brand-highlight hover:underline transition-colors"
+                            >
+                                {post.data.title}
+                            </a>
+                            <p class="text-md text-foreground">
+                                {post.data.description}
+                            </p>
+                        </div>
+
+                        {/* Date + category tags on the same row */}
+                        <div class="flex items-center gap-9 flex-wrap">
+                            <div class="flex items-center gap-1.5">
+                                <HugeiconsIcon
+                                    icon={Calendar04Icon}
+                                    size={16}
+                                    className="text-muted-foreground"
+                                />
+                                <time
+                                    datetime={post.data.publishDate.toISOString()}
+                                    class="text-sm font-mono text-muted-foreground"
+                                >
+                                    {post.data.publishDate.toLocaleDateString(
+                                        "en-US",
+                                        {
+                                            year: "numeric",
+                                            month: "long",
+                                            day: "numeric",
+                                        },
+                                    )}
+                                </time>
+                            </div>
+
+                            {/* Tags: icon gets the category color, text is muted and adopts color + underline on hover */}
+                            <div class="flex items-center gap-3">
+                                {post.data.tags.map((tag) => {
+                                    const config = categoryConfig[tag];
+                                    if (!config) return null;
+                                    return (
+                                        <span class="flex items-center gap-1.5 text-sm font-medium cursor-default group">
+                                            <span class={config.text}>
+                                                <HugeiconsIcon
+                                                    icon={config.icon}
+                                                    size={16}
+                                                    color="currentColor"
+                                                />
+                                            </span>
+                                            <span
+                                                class={`font-mono text-muted-foreground group-hover:underline ${config.hoverText}`}
+                                            >
+                                                {tag}
+                                            </span>
+                                        </span>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    </li>
+                ))
+            }
+        </ul>
+    </main>
 </BaseLayout>
