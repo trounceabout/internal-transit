@@ -8,7 +8,7 @@ import sentry from "@sentry/astro";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://internaltransit.com",
+  site: "https://codykeisler.me",
   integrations: [
     react(),
     mdx(),
