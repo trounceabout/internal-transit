@@ -3,6 +3,10 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/* IBM Plex Mono — portfolio body/UI font, via @fontsource */
+@import "@fontsource/ibm-plex-mono/400.css";
+@import "@fontsource/ibm-plex-mono/600.css";
+
 /* ─── Font faces ──────────────────────────────────────────────────────────── */
 
 /* Geist Sans — variable font, covers all weights from 100–900 */
@@ -32,6 +36,37 @@
   font-display: swap;
 }
 
+/* Wilco Loft Sans — portfolio headline font, self-hosted in /public/fonts/.
+   Four named weights, not a variable font, so each gets its own family name. */
+@font-face {
+  font-family: 'Wilco Loft Sans Bass';
+  src: url('/fonts/WilcoLoftSans-Bass.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Wilco Loft Sans Low End';
+  src: url('/fonts/WilcoLoftSans-LowEnd.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Wilco Loft Sans Midrange';
+  src: url('/fonts/WilcoLoftSans-Midrange.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Wilco Loft Sans Treble';
+  src: url('/fonts/WilcoLoftSans-Treble.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -43,12 +78,26 @@
     --font-accent: 'Redaction 35', serif;
     /* Keep --font-heading pointing to display for Shadcn compatibility */
     --font-heading: var(--font-display);
+    /* font-mono     → IBM Plex Mono (portfolio page body/UI text) */
+    --font-mono: 'IBM Plex Mono', monospace;
+    /* font-wilco-*  → Wilco Loft Sans weights (portfolio headline only) */
+    --font-wilco-bass: 'Wilco Loft Sans Bass', sans-serif;
+    --font-wilco-low-end: 'Wilco Loft Sans Low End', sans-serif;
+    --font-wilco-midrange: 'Wilco Loft Sans Midrange', sans-serif;
+    --font-wilco-treble: 'Wilco Loft Sans Treble', sans-serif;
 
     /* ─── Brand colors ───────────────────────────────────────────────────────── */
     /* Use these as Tailwind utilities: bg-brand-bg, text-brand-ink, bg-brand-highlight */
     --color-brand-bg: #F2EEEA;
     --color-brand-ink: #292929;
     --color-brand-highlight: #FF6A00;
+
+    /* ─── Portfolio colors (codykeisler.me redesign) ─────────────────────────── */
+    /* Use these as Tailwind utilities: bg-portfolio-bg, text-portfolio-ink, etc. */
+    --color-portfolio-bg: #FFF9F2;
+    --color-portfolio-ink: #18181B;
+    --color-portfolio-muted: #9CA3AF;
+    --color-portfolio-muted-2: #71717A;
 
     --color-sidebar-ring: var(--sidebar-ring);
     --color-sidebar-border: var(--sidebar-border);
