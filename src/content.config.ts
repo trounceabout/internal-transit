@@ -16,19 +16,4 @@ const blog = defineCollection({
   }),
 });
 
-// Work collection — for portfolio case studies
-const work = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/work' }),
-  schema: z.object({
-    title: z.string(),
-    description: z.string(),
-    year: z.number(),
-    tags: z.array(z.string()).default([]),
-    // Optional external URL if the project lives elsewhere
-    url: z.string().url().optional(),
-    // Optional cover image path (relative to /public)
-    coverImage: z.string().optional(),
-  }),
-});
-
-export const collections = { blog, work };
+export const collections = { blog };

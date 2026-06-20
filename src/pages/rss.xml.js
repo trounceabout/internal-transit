@@ -7,8 +7,8 @@ export async function GET(context) {
     .sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf());
 
   return rss({
-    title: 'internal transit',
-    description: 'A place for thoughts as they make their way through my head.',
+    title: 'Cody Keisler',
+    description: 'Cody Keisler — product designer writing about design, craft, and the work in between.',
     // context.site comes from the `site` field in astro.config.mjs — we'll add that next
     site: context.site,
     items: posts.map((post) => ({
