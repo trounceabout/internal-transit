@@ -8,11 +8,13 @@ import Analytics from '@vercel/analytics/astro';
 interface Props {
   title: string;
   description?: string;
+  // Which nav link is the current page — controls the bold/muted styling below.
+  activeNav?: 'work' | 'blog';
 }
 
 // Default description used when a page doesn't supply its own.
 // Kept under 160 chars for SEO.
-const { title, description = 'Cody Keisler — product designer writing about design, craft, and the work in between.' } = Astro.props;
+const { title, description = 'Cody Keisler — product designer writing about design, craft, and the work in between.', activeNav } = Astro.props;
 ---
 
 <!doctype html>
@@ -28,7 +30,28 @@ const { title, description = 'Cody Keisler — product designer writing about de
     <!-- RSS autodiscovery — browsers and feed readers will find this automatically -->
     <link rel="alternate" type="application/rss+xml" title="Blog RSS Feed" href="/rss.xml" />
   </head>
-  <body>
+  <body class="bg-portfolio-bg font-mono">
+    {
+      /* ── Nav ─────────────────────────────────────────────────────────────
+      Shared across every page. Centered, uppercase, mono. Active link is
+      bold/ink-colored; the other is muted until hovered. */
+    }
+    <nav class="px-6 pt-12 pb-8">
+      <div class="flex items-center justify-center gap-12">
+        <a
+          href="/"
+          class={`text-sm font-mono uppercase tracking-wide transition-colors no-underline ${activeNav === 'work' ? 'font-semibold text-portfolio-ink' : 'text-portfolio-muted hover:text-portfolio-ink'}`}
+        >
+          Work
+        </a>
+        <a
+          href="/blog"
+          class={`text-sm font-mono uppercase tracking-wide transition-colors no-underline ${activeNav === 'blog' ? 'font-semibold text-portfolio-ink' : 'text-portfolio-muted hover:text-portfolio-ink'}`}
+        >
+          Blog
+        </a>
+      </div>
+    </nav>
     <slot />
     <!-- Vercel Speed Insights — tracks real user performance data -->
     <SpeedInsights />

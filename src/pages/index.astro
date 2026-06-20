@@ -1,44 +1,14 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    GithubLogo,
-    FigmaLogo,
-    LinkedinLogo,
-} from "@phosphor-icons/react/dist/ssr";
+    GithubIcon,
+    FigmaIcon,
+    LinkedinIcon,
+} from "@hugeicons/core-free-icons";
 ---
 
-<BaseLayout title="Work">
-    {
-        /* Page-level background override — this redesign uses a distinct
-        portfolio palette (#FFF9F2) from the rest of the site's shared
-        bg-background token, which other pages still rely on. */
-    }
-    <style>
-        body {
-            background-color: var(--color-portfolio-bg);
-        }
-    </style>
-    {
-        /* ── Nav ─────────────────────────────────────────────────────────────
-        Centered, uppercase, mono. Home page now doubles as the work page
-        (case studies land directly on this page later), so "Work" marks
-        the current page instead of a separate "Intro" label. */
-    }
-    <nav class="px-6 pt-12 pb-8">
-        <div class="flex items-center justify-center gap-12">
-            <span
-                class="text-sm font-mono font-semibold uppercase tracking-wide text-portfolio-ink"
-            >
-                Work
-            </span>
-            <a
-                href="/blog"
-                class="text-sm font-mono uppercase tracking-wide text-portfolio-muted hover:text-portfolio-ink transition-colors no-underline"
-            >
-                Blog
-            </a>
-        </div>
-    </nav>
+<BaseLayout title="Work" activeNav="work">
     <main
         class="flex flex-col items-center mx-auto px-6 pt-8 pb-24 max-w-[800px]"
     >
@@ -57,7 +27,7 @@ import {
         </div>
         <div class="flex flex-col gap-4 w-full font-mono text-portfolio-ink">
             <p class="text-2xl">
-                I use design to make experiences better for people.
+                I use design to make better experiences for people.
             </p>
             <div class="flex flex-col gap-4 text-base leading-6">
                 <p>
@@ -82,7 +52,7 @@ import {
                     class="inline-flex items-center gap-1 font-semibold hover:underline"
                     style="color: #4183C4;"
                 >
-                    <GithubLogo weight="duotone" size={20} />
+                    <HugeiconsIcon icon={GithubIcon} size={20} color="currentColor" />
                     GitHub
                 </a>,
                 <a
@@ -92,7 +62,7 @@ import {
                     class="inline-flex items-center gap-1 font-semibold hover:underline"
                     style="color: #FF3737;"
                 >
-                    <FigmaLogo weight="duotone" size={20} />
+                    <HugeiconsIcon icon={FigmaIcon} size={20} color="currentColor" />
                     Figma
                 </a>, and
                 <a
@@ -102,7 +72,7 @@ import {
                     class="inline-flex items-center gap-1 font-semibold hover:underline"
                     style="color: #0077B5;"
                 >
-                    <LinkedinLogo weight="duotone" size={20} />
+                    <HugeiconsIcon icon={LinkedinIcon} size={20} color="currentColor" />
                     LinkedIn
                 </a>.
             </p>

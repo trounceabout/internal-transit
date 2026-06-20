@@ -69,8 +69,8 @@ const categoryConfig: Record<
 };
 ---
 
-<BaseLayout title="Blog" description="Thoughts and writing.">
-    <main class="mx-auto max-w-3xl px-6 py-16">
+<BaseLayout title="Blog" description="Thoughts and writing." activeNav="blog">
+    <main class="mx-auto max-w-3xl px-6 py-16 font-mono">
         {/* Visually hidden h1 for screen readers and SEO */}
         <h1 class="sr-only">Blog</h1>
         <ul class="flex flex-col gap-12">
@@ -80,11 +80,11 @@ const categoryConfig: Record<
                         <div class="flex flex-col gap-1">
                             <a
                                 href={`/blog/${post.id}`}
-                                class="text-xl font-semibold text-foreground hover:text-brand-highlight hover:underline transition-colors"
+                                class="text-xl font-semibold text-portfolio-ink hover:text-portfolio-accent hover:underline transition-colors"
                             >
                                 {post.data.title}
                             </a>
-                            <p class="text-md text-foreground">
+                            <p class="text-md text-portfolio-ink">
                                 {post.data.description}
                             </p>
                         </div>
@@ -95,11 +95,11 @@ const categoryConfig: Record<
                                 <HugeiconsIcon
                                     icon={Calendar04Icon}
                                     size={16}
-                                    className="text-muted-foreground"
+                                    className="text-portfolio-muted-2"
                                 />
                                 <time
                                     datetime={post.data.publishDate.toISOString()}
-                                    class="text-sm font-mono text-muted-foreground"
+                                    class="text-sm text-portfolio-muted-2"
                                 >
                                     {post.data.publishDate.toLocaleDateString(
                                         "en-US",
@@ -127,7 +127,7 @@ const categoryConfig: Record<
                                                 />
                                             </span>
                                             <span
-                                                class={`font-mono text-muted-foreground group-hover:underline ${config.hoverText}`}
+                                                class={`text-portfolio-muted-2 group-hover:underline ${config.hoverText}`}
                                             >
                                                 {tag}
                                             </span>
