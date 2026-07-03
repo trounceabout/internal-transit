@@ -7,10 +7,10 @@
 @import "@fontsource/ibm-plex-mono/400.css";
 @import "@fontsource/ibm-plex-mono/600.css";
 
-/* IBM Plex Sans — portfolio long-form/label font (bio copy, section labels, footer) */
-@import "@fontsource/ibm-plex-sans/400.css";
-@import "@fontsource/ibm-plex-sans/500.css";
-@import "@fontsource/ibm-plex-sans/600.css";
+/* IBM Plex Sans — portfolio long-form/label font (bio copy, section labels, footer).
+   Variable weight (100–700) so any font-weight utility actually takes effect,
+   not just the handful of static cuts the non-variable package would ship. */
+@import "@fontsource-variable/ibm-plex-sans/wght.css";
 
 /* ─── Font faces ──────────────────────────────────────────────────────────── */
 
@@ -51,8 +51,8 @@
     --font-mono: 'IBM Plex Mono', monospace;
     /* font-redaction  → Redaction 35 (portfolio headline only) */
     --font-redaction: 'Redaction 35', serif;
-    /* font-plex-sans  → IBM Plex Sans (portfolio long-form/label text) */
-    --font-plex-sans: 'IBM Plex Sans', sans-serif;
+    /* font-plex-sans  → IBM Plex Sans Variable (portfolio long-form/label text) */
+    --font-plex-sans: 'IBM Plex Sans Variable', sans-serif;
 
     /* ─── Portfolio colors (codykeisler.me redesign) ─────────────────────────── */
     /* Use these as Tailwind utilities: bg-portfolio-bg, text-portfolio-ink, etc.

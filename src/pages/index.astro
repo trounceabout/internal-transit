@@ -40,11 +40,11 @@ const latestPosts = (await getCollection("blog", ({ data }) => !data.draft))
                 class="font-redaction text-[56px] sm:text-[80px] lg:text-[80px] leading-[0.94] tracking-[-1.68px] sm:tracking-[-2.4px] lg:tracking-[-3.36px] text-portfolio-ink text-left"
             >
                 Hi, I'm
-                <span class="relative inline-block align-middle mx-1">
+                <span class="whitespace-nowrap">
                     <img
                         src="/me-big-head.svg"
                         alt="Cody Keisler"
-                        class="inline-block w-[0.85em] h-[0.85em] rounded-full object-cover backdrop-blur-sm bg-white/30 shadow-[0_0_10px_2px_rgba(156,163,175,0.25)]"
+                        class="inline-block align-middle relative -top-[0.08em] w-[0.85em] h-[0.85em] rounded-full object-cover bg-white/30 mx-1"
                     />
                     <span class="text-portfolio-accent italic">Cody</span>
                 </span>
