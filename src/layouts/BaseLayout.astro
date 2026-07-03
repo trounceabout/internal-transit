@@ -4,6 +4,7 @@
 import '@/styles/global.css';
 import SpeedInsights from '@vercel/speed-insights/astro';
 import Analytics from '@vercel/analytics/astro';
+import Footer from '@/layouts/Footer.astro';
 
 interface Props {
   title: string;
@@ -21,6 +22,17 @@ const { title, description = 'Cody Keisler — product designer writing about de
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <!-- Applies the dark theme before first paint so there's no flash of the
+         wrong theme. Runs unhydrated/unbundled via is:inline, in document
+         order, ahead of any stylesheet. Defaults to dark unless the visitor
+         has explicitly chosen light before. -->
+    <script is:inline>
+      (function () {
+        var stored = localStorage.getItem('theme');
+        var isDark = stored !== 'light';
+        document.documentElement.classList.toggle('dark', isDark);
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
     <!-- Format: "Page Title — Cody Keisler" for inner pages.
@@ -33,29 +45,9 @@ const { title, description = 'Cody Keisler — product designer writing about de
     <!-- RSS autodiscovery — browsers and feed readers will find this automatically -->
     <link rel="alternate" type="application/rss+xml" title="Blog RSS Feed" href="/rss.xml" />
   </head>
-  <body class="bg-portfolio-bg font-mono">
-    {
-      /* ── Nav ─────────────────────────────────────────────────────────────
-      Shared across every page. Centered, uppercase, mono. Active link is
-      bold/ink-colored; the other is muted until hovered. */
-    }
-    <nav class="px-6 pt-12 pb-8">
-      <div class="flex items-center justify-center gap-12">
-        <a
-          href="/"
-          class={`text-sm font-mono uppercase tracking-wide transition-colors no-underline ${activeNav === 'work' ? 'font-semibold text-portfolio-ink' : 'text-portfolio-muted hover:text-portfolio-ink'}`}
-        >
-          Work
-        </a>
-        <a
-          href="/blog"
-          class={`text-sm font-mono uppercase tracking-wide transition-colors no-underline ${activeNav === 'blog' ? 'font-semibold text-portfolio-ink' : 'text-portfolio-muted hover:text-portfolio-ink'}`}
-        >
-          Blog
-        </a>
-      </div>
-    </nav>
+  <body class="bg-portfolio-page font-mono pt-16">
     <slot />
+    <Footer />
     <!-- Vercel Speed Insights — tracks real user performance data -->
     <SpeedInsights />
     <!-- Vercel Analytics — tracks page views and visitor data -->
