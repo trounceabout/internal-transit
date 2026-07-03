@@ -7,6 +7,11 @@
 @import "@fontsource/ibm-plex-mono/400.css";
 @import "@fontsource/ibm-plex-mono/600.css";
 
+/* IBM Plex Sans — portfolio long-form/label font (bio copy, section labels, footer).
+   Variable weight (100–700) so any font-weight utility actually takes effect,
+   not just the handful of static cuts the non-variable package would ship. */
+@import "@fontsource-variable/ibm-plex-sans/wght.css";
+
 /* ─── Font faces ──────────────────────────────────────────────────────────── */
 
 /* Geist Sans — variable font, covers all weights from 100–900 */
@@ -18,34 +23,22 @@
   font-display: swap;
 }
 
-/* Wilco Loft Sans — portfolio headline font, self-hosted in /public/fonts/.
-   Four named weights, not a variable font, so each gets its own family name. */
+/* Redaction 35 — portfolio headline font, self-hosted in /public/fonts/.
+   Regular and Italic are true cuts (not synthetic), so they share one family
+   name and map onto CSS's own font-style axis — the `italic` utility class
+   switches to the correct file automatically. */
 @font-face {
-  font-family: 'Wilco Loft Sans Bass';
-  src: url('/fonts/WilcoLoftSans-Bass.woff2') format('woff2');
+  font-family: 'Redaction 35';
+  src: url('/fonts/Redaction_35-Regular.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'Wilco Loft Sans Low End';
-  src: url('/fonts/WilcoLoftSans-LowEnd.woff2') format('woff2');
+  font-family: 'Redaction 35';
+  src: url('/fonts/Redaction_35-Italic.woff2') format('woff2');
   font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Wilco Loft Sans Midrange';
-  src: url('/fonts/WilcoLoftSans-Midrange.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Wilco Loft Sans Treble';
-  src: url('/fonts/WilcoLoftSans-Treble.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
+  font-style: italic;
   font-display: swap;
 }
 
@@ -56,19 +49,20 @@
     --font-sans: 'Geist Sans', sans-serif;
     /* font-mono     → IBM Plex Mono (portfolio page body/UI text) */
     --font-mono: 'IBM Plex Mono', monospace;
-    /* font-wilco-*  → Wilco Loft Sans weights (portfolio headline only) */
-    --font-wilco-bass: 'Wilco Loft Sans Bass', sans-serif;
-    --font-wilco-low-end: 'Wilco Loft Sans Low End', sans-serif;
-    --font-wilco-midrange: 'Wilco Loft Sans Midrange', sans-serif;
-    --font-wilco-treble: 'Wilco Loft Sans Treble', sans-serif;
+    /* font-redaction  → Redaction 35 (portfolio headline only) */
+    --font-redaction: 'Redaction 35', serif;
+    /* font-plex-sans  → IBM Plex Sans Variable (portfolio long-form/label text) */
+    --font-plex-sans: 'IBM Plex Sans Variable', sans-serif;
 
     /* ─── Portfolio colors (codykeisler.me redesign) ─────────────────────────── */
-    /* Use these as Tailwind utilities: bg-portfolio-bg, text-portfolio-ink, etc. */
-    --color-portfolio-bg: #FFF9F2;
-    --color-portfolio-ink: #18181B;
-    --color-portfolio-muted: #9CA3AF;
-    --color-portfolio-muted-2: #71717A;
-    --color-portfolio-accent: #9156F7;
+    /* Use these as Tailwind utilities: bg-portfolio-bg, text-portfolio-ink, etc.
+       Raw values live in :root / .dark below so theme switching is a variable
+       swap — see the `dark` custom-variant above. */
+    --color-portfolio-bg: var(--portfolio-bg);
+    --color-portfolio-ink: var(--portfolio-ink);
+    --color-portfolio-muted: var(--portfolio-muted);
+    --color-portfolio-muted-2: var(--portfolio-muted-2);
+    --color-portfolio-accent: var(--portfolio-accent);
 
     --color-sidebar-ring: var(--sidebar-ring);
     --color-sidebar-border: var(--sidebar-border);
@@ -111,6 +105,14 @@
 }
 
 :root {
+    /* Portfolio theme (light) — from the light-mode Figma frame */
+    --portfolio-bg: #FFF9F2;
+    --portfolio-bg-gradient: none;
+    --portfolio-ink: #18181B;
+    --portfolio-muted: #A69A8C;
+    --portfolio-muted-2: #817464;
+    --portfolio-accent: #40C6B0;
+
     --background: #F2EEEA;
     --foreground: #292929;
     --card: oklch(1 0 0);
@@ -146,6 +148,14 @@
 }
 
 .dark {
+    /* Portfolio theme (dark) — from the dark-mode Figma frame */
+    --portfolio-bg: #18181B;
+    --portfolio-bg-gradient: linear-gradient(to bottom, #242429, #18181B);
+    --portfolio-ink: #FFF9F2;
+    --portfolio-muted: #B4B4B4;
+    --portfolio-muted-2: #C5BDB4;
+    --portfolio-accent: #40C6B0;
+
     --background: oklch(0.145 0 0);
     --foreground: oklch(0.985 0 0);
     --card: oklch(0.205 0 0);
@@ -189,4 +199,11 @@
   html {
     @apply font-sans;
     }
+  /* Gradient-aware portfolio background — bg-portfolio-bg only sets a flat
+     background-color, but dark mode needs a background-image gradient too.
+     `none` in light mode means only the flat color paints. */
+  .bg-portfolio-page {
+    background-color: var(--portfolio-bg);
+    background-image: var(--portfolio-bg-gradient);
+  }
 }

@@ -1,0 +1,8 @@
+{
+  "name": "Project Compass",
+  "tagline": "A new way to navigate",
+  "icon": "CompassIcon",
+  "iconColor": "#7669FC",
+  "badgeColor": "#7669FC20",
+  "order": 5
+}
