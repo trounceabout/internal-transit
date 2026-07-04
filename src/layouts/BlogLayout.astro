@@ -45,8 +45,8 @@ const titleAfter = accentIndex >= 0 ? title.slice(accentIndex + (accentWord?.len
         {/* Meta row: date badge + one badge per tag */}
         <div class="flex items-center gap-8 flex-wrap">
           <div class="flex items-center gap-2">
-            <span class="flex items-center justify-center size-6 rounded-md bg-portfolio-muted/15">
-              <HugeiconsIcon icon={Calendar04Icon} size={14} color="currentColor" className="text-portfolio-ink" />
+            <span class="flex items-center justify-center size-7 rounded-md bg-portfolio-muted/15">
+              <HugeiconsIcon icon={Calendar04Icon} size={16} color="currentColor" className="text-portfolio-ink" />
             </span>
             <time datetime={publishDate.toISOString()} class="font-mono text-sm text-portfolio-ink">
               {formattedDate}
@@ -58,8 +58,8 @@ const titleAfter = accentIndex >= 0 ? title.slice(accentIndex + (accentWord?.len
               if (!config) return null;
               return (
                 <div class="flex items-center gap-2">
-                  <span class={`flex items-center justify-center size-6 rounded-md ${config.bg}`}>
-                    <HugeiconsIcon icon={config.icon} size={14} color="currentColor" className={config.text} />
+                  <span class={`flex items-center justify-center size-7 rounded-md ${config.bg}`}>
+                    <HugeiconsIcon icon={config.icon} size={16} color="currentColor" className={config.text} />
                   </span>
                   <span class="font-mono text-sm text-portfolio-ink">{tag}</span>
                 </div>
@@ -100,8 +100,8 @@ const titleAfter = accentIndex >= 0 ? title.slice(accentIndex + (accentWord?.len
      attach to it — every rule here needs :global() or it silently does nothing. */
   .article-body :global(h2) {
     font-family: var(--font-plex-sans);
-    font-weight: 600;
-    font-size: 1.25rem; /* 20px */
+    font-weight: 500;
+    font-size: 1.5rem; /* 24px */
     line-height: 2.5rem; /* 40px */
     color: var(--portfolio-ink);
     margin-bottom: 1rem; /* 16px, space after a heading before its paragraph */
@@ -109,9 +109,10 @@ const titleAfter = accentIndex >= 0 ? title.slice(accentIndex + (accentWord?.len
 
   .article-body :global(p) {
     font-family: var(--font-plex-sans);
-    font-size: 1rem; /* 16px */
+    font-size: 1.125rem; /* 18px */
     line-height: 2rem; /* 32px */
-    margin-bottom: 2rem; /* 32px between sibling paragraphs */
+    margin-bottom: 2.5rem; /* 40px between sibling paragraphs */
+    font-weight: 300;
   }
 
   .article-body :global(a) {

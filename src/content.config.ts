@@ -20,11 +20,11 @@ const blog = defineCollection({
   }),
 });
 
-// Projects collection — feeds the home page "Work" list. Data-only, no
-// per-project pages. JSON rather than Markdown since there's no long-form
-// body content, just structured fields.
+// Projects collection — feeds the home page "Work" list AND individual
+// case-study pages at /projects/[slug]. MDX rather than JSON since finished
+// case studies carry a long-form body, not just structured list fields.
 const projects = defineCollection({
-  loader: glob({ pattern: "**/*.json", base: "./src/content/projects" }),
+  loader: glob({ pattern: "**/*.mdx", base: "./src/content/projects" }),
   schema: z.object({
     name: z.string(),
     tagline: z.string(),
@@ -35,6 +35,23 @@ const projects = defineCollection({
     // Badge background color; omitted for the one plain-icon row.
     badgeColor: z.string().optional(),
     order: z.number().default(0),
+
+    // --- Case-study page only — all optional so a project can appear in the
+    // home page list before its case-study page is written. ---
+    // Longer dek paragraph shown on the case-study page; falls back to
+    // `tagline` when omitted, since the home-page-list tagline is often too
+    // short to work as full intro copy.
+    description: z.string().optional(),
+    // Substring of `description` (or `tagline`, as a fallback) to render
+    // italicized in the project's own `iconColor` — same technique as the
+    // blog's `accentWord`, just colored per-project instead of by category.
+    accentPhrase: z.string().optional(),
+    // Loom share URL, e.g. https://www.loom.com/share/<id>.
+    loomUrl: z.string().url().optional(),
+    embedCaption: z.string().optional(),
+    // Whether the case-study page is finished and should be linked to from
+    // the home page list. Stub projects stay `false` until written.
+    published: z.boolean().default(false),
   }),
 });
 

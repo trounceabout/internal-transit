@@ -45,8 +45,10 @@ const { title, description = 'Cody Keisler — product designer writing about de
     <!-- RSS autodiscovery — browsers and feed readers will find this automatically -->
     <link rel="alternate" type="application/rss+xml" title="Blog RSS Feed" href="/rss.xml" />
   </head>
-  <body class="bg-portfolio-page font-mono pt-16">
-    <slot />
+  <body class="bg-portfolio-page font-mono pt-16 min-h-screen flex flex-col">
+    <div class="flex-1">
+      <slot />
+    </div>
     <Footer />
     <!-- Vercel Speed Insights — tracks real user performance data -->
     <SpeedInsights />
