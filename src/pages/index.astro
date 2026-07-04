@@ -2,26 +2,9 @@
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
 import { HugeiconsIcon } from "@hugeicons/react";
-import type { IconSvgElement } from "@hugeicons/react";
-import {
-    BellDotIcon,
-    SurfboardIcon,
-    DashboardSquare01Icon,
-    Settings02Icon,
-    CompassIcon,
-    Calendar04Icon,
-} from "@hugeicons/core-free-icons";
+import { Calendar04Icon } from "@hugeicons/core-free-icons";
 import { categoryConfig } from "@/lib/categoryConfig";
-
-// Maps each project entry's `icon` string (from its JSON file) to the actual
-// imported HugeIcons component — JSON can't hold a JS/component reference.
-const iconMap: Record<string, IconSvgElement> = {
-    BellDotIcon,
-    SurfboardIcon,
-    DashboardSquare01Icon,
-    Settings02Icon,
-    CompassIcon,
-};
+import { projectIconMap } from "@/lib/projectIconMap";
 
 const projects = (await getCollection("projects")).sort(
     (a, b) => a.data.order - b.data.order,
@@ -65,8 +48,8 @@ const latestPosts = (await getCollection("blog", ({ data }) => !data.draft))
             </p>
             <div class="flex flex-col gap-4 w-full">
                 {
-                    projects.map((project, index) => (
-                        <>
+                    projects.map((project, index) => {
+                        const row = (
                             <div class="flex items-center justify-between gap-4 w-full flex-wrap">
                                 <div class="flex items-center gap-3">
                                     <span
@@ -74,7 +57,7 @@ const latestPosts = (await getCollection("blog", ({ data }) => !data.draft))
                                             style={{ backgroundColor: project.data.badgeColor }}
                                         >
                                             <HugeiconsIcon
-                                                icon={iconMap[project.data.icon]}
+                                                icon={projectIconMap[project.data.icon]}
                                                 size={18}
                                                 color={project.data.iconColor}
                                             />
@@ -87,11 +70,22 @@ const latestPosts = (await getCollection("blog", ({ data }) => !data.draft))
                                     {project.data.tagline}
                                 </p>
                             </div>
-                            {index < projects.length - 1 && (
-                                <div class="h-px w-full bg-portfolio-muted-2/20" />
-                            )}
-                        </>
-                    ))
+                        );
+                        return (
+                            <>
+                                {project.data.published ? (
+                                    <a href={`/projects/${project.id}`} class="w-full">
+                                        {row}
+                                    </a>
+                                ) : (
+                                    row
+                                )}
+                                {index < projects.length - 1 && (
+                                    <div class="h-px w-full bg-portfolio-muted-2/20" />
+                                )}
+                            </>
+                        );
+                    })
                 }
             </div>
         </div>

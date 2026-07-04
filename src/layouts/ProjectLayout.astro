@@ -1,0 +1,148 @@
+---
+// ProjectLayout.astro — wraps an individual project's case-study page.
+// Adapted from BlogLayout.astro: swaps the date+tags meta row for a single
+// icon+eyebrow badge, and adds a Loom embed + caption section that articles
+// don't have.
+import BaseLayout from './BaseLayout.astro';
+import { HugeiconsIcon } from '@hugeicons/react';
+import type { IconSvgElement } from '@hugeicons/react';
+
+interface Props {
+  name: string;
+  tagline: string;
+  icon: IconSvgElement;
+  iconColor?: string;
+  badgeColor?: string;
+  description?: string;
+  accentPhrase?: string;
+  loomUrl?: string;
+  embedCaption?: string;
+}
+
+const {
+  name,
+  tagline,
+  icon,
+  iconColor,
+  badgeColor,
+  description,
+  accentPhrase,
+  loomUrl,
+  embedCaption,
+} = Astro.props;
+
+// Dek paragraph (the 24px intro copy under the headline) prefers the longer
+// `description`, falling back to the shorter home-page-list `tagline` when a
+// case study hasn't set one yet.
+const dek = description ?? tagline;
+
+// Same split-around-a-phrase technique as BlogLayout's accentWord, but
+// colored by the project's own iconColor rather than a shared category
+// config. Applied to `tagline` (the headline text), not `dek` — the
+// headline and the intro paragraph below it are two separate strings.
+const accentIndex = accentPhrase ? tagline.indexOf(accentPhrase) : -1;
+const taglineBefore = accentIndex >= 0 ? tagline.slice(0, accentIndex) : tagline;
+const taglineAfter = accentIndex >= 0 ? tagline.slice(accentIndex + (accentPhrase?.length ?? 0)) : '';
+
+// Loom share URLs (loom.com/share/<id>) don't render embedded — the player
+// requires the /embed/<id> path.
+const embedSrc = loomUrl?.replace('/share/', '/embed/');
+---
+
+<BaseLayout title={name} description={tagline}>
+  <main class="mx-auto max-w-[1000px] px-6 py-18">
+    <article>
+      <header class="flex flex-col gap-8 mb-12">
+        {/* Icon badge + eyebrow label — same markup as the home page's Work list rows */}
+        <div class="flex items-center gap-2">
+          <span class="flex items-center justify-center size-7 rounded-md shrink-0" style={{ backgroundColor: badgeColor }}>
+            <HugeiconsIcon icon={icon} size={16} color={iconColor} />
+          </span>
+          <p class="font-mono text-lg tracking-[-0.18px] text-portfolio-ink">{name}</p>
+        </div>
+
+        {/* Headline — accentPhrase (if set) renders italicized in the project's own iconColor */}
+        <h1 class="font-redaction text-[80px] tracking-[-2.4px] leading-[0.94] text-portfolio-ink">
+          {taglineBefore}
+          {accentIndex >= 0 && (
+            <span class="italic" style={{ color: iconColor }}>{accentPhrase}</span>
+          )}
+          {taglineAfter}
+        </h1>
+      </header>
+
+      {/* Body — same max-width and typography as the article template's body column */}
+      <div class="max-w-[800px] flex flex-col gap-10">
+        <p class="font-plex-sans text-2xl leading-10 text-portfolio-ink">
+          {dek}
+        </p>
+
+        {embedSrc && (
+          <div class="flex flex-col gap-4">
+            <div
+              class="aspect-[1008/567] rounded-xl overflow-hidden relative"
+              style={{
+                backgroundColor: '#252525',
+                boxShadow:
+                  '0px 4px 7px 0px rgba(0,0,0,0.85), 0px 1px 2px 0px rgba(0,0,0,0.5), inset 0px 0.5px 0px 0px rgba(255,255,255,0.1), inset 0px 0px 0.5px 0px rgba(255,255,255,0.3)',
+              }}
+            >
+              <iframe
+                src={embedSrc}
+                title={`${name} video walkthrough`}
+                class="absolute inset-0 size-full"
+                allow="fullscreen; picture-in-picture"
+                allowfullscreen
+                loading="lazy"
+              />
+            </div>
+            {embedCaption && (
+              <p class="font-plex-sans text-base leading-6 text-portfolio-ink">
+                {embedCaption}
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Rest of the MDX body */}
+        <div class="article-body font-plex-sans text-base leading-8 text-portfolio-ink">
+          <slot />
+        </div>
+      </div>
+    </article>
+  </main>
+</BaseLayout>
+
+<style>
+  /* MDX content comes from a separately-compiled component tree (rendered via
+     <Content /> in [slug].astro), so Astro's default *scoped* styles never
+     attach to it — every rule here needs :global() or it silently does nothing.
+     Mirrors BlogLayout.astro's identical block. */
+  .article-body :global(h2) {
+    font-family: var(--font-plex-sans);
+    font-weight: 500;
+    font-size: 1.5rem; /* 24px */
+    line-height: 2.5rem; /* 40px */
+    color: var(--portfolio-ink);
+    margin-bottom: 1rem; /* 16px, space after a heading before its paragraph */
+  }
+
+  .article-body :global(p) {
+    font-family: var(--font-plex-sans);
+    font-size: 1.125rem; /* 18px */
+    line-height: 2rem; /* 32px */
+    margin-bottom: 2.5rem; /* 40px between sibling paragraphs */
+    font-weight: 300;
+  }
+
+  .article-body :global(a) {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-skip-ink: none;
+    text-underline-position: from-font;
+  }
+
+  .article-body :global(> p:last-of-type) {
+    margin-bottom: 0;
+  }
+</style>
