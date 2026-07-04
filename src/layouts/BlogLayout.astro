@@ -3,7 +3,7 @@
 // Receives the post's frontmatter and renders it above the content.
 import BaseLayout from './BaseLayout.astro';
 import { HugeiconsIcon } from '@hugeicons/react';
-import { Calendar04Icon } from '@hugeicons/core-free-icons';
+import { Calendar04Icon, Home03Icon } from '@hugeicons/core-free-icons';
 import { categoryConfig } from '@/lib/categoryConfig';
 
 interface Props {
@@ -42,29 +42,34 @@ const titleAfter = accentIndex >= 0 ? title.slice(accentIndex + (accentWord?.len
   <main class="mx-auto max-w-[1000px] px-6 py-18">
     <article>
       <header class="flex flex-col gap-8 mb-12">
-        {/* Meta row: date badge + one badge per tag */}
-        <div class="flex items-center gap-8 flex-wrap">
-          <div class="flex items-center gap-2">
-            <span class="flex items-center justify-center size-7 rounded-md bg-portfolio-muted/15">
-              <HugeiconsIcon icon={Calendar04Icon} size={16} color="currentColor" className="text-portfolio-ink" />
+        {/* Meta row: Home breadcrumb on the left, date badge + one badge per tag on the right */}
+        <div class="flex items-center justify-between gap-8 flex-wrap">
+          <a href="/" class="flex items-center gap-2">
+            <span class="flex items-center justify-center size-7 rounded-md bg-portfolio-nav-muted/15">
+              <HugeiconsIcon icon={Home03Icon} size={16} color="currentColor" className="text-portfolio-nav-muted" />
             </span>
-            <time datetime={publishDate.toISOString()} class="font-mono text-sm text-portfolio-ink">
-              {formattedDate}
-            </time>
-          </div>
-          <div class="flex items-center gap-3 flex-wrap">
-            {tags.map((tag) => {
-              const config = categoryConfig[tag];
-              if (!config) return null;
-              return (
-                <div class="flex items-center gap-2">
-                  <span class={`flex items-center justify-center size-7 rounded-md ${config.bg}`}>
+            <span class="font-mono text-base text-portfolio-nav-muted underline">Home</span>
+          </a>
+
+          <div class="flex items-center gap-8 flex-wrap">
+            <div class="flex items-center gap-2">
+              <HugeiconsIcon icon={Calendar04Icon} size={16} color="currentColor" className="text-portfolio-ink" />
+              <time datetime={publishDate.toISOString()} class="font-mono text-sm text-portfolio-ink">
+                {formattedDate}
+              </time>
+            </div>
+            <div class="flex items-center gap-3 flex-wrap">
+              {tags.map((tag) => {
+                const config = categoryConfig[tag];
+                if (!config) return null;
+                return (
+                  <div class="flex items-center gap-2">
                     <HugeiconsIcon icon={config.icon} size={16} color="currentColor" className={config.text} />
-                  </span>
-                  <span class="font-mono text-sm text-portfolio-ink">{tag}</span>
-                </div>
-              );
-            })}
+                    <span class="font-mono text-sm text-portfolio-ink">{tag}</span>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
 
