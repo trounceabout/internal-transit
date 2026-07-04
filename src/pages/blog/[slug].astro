@@ -22,6 +22,8 @@ const { Content } = await render(post);
   title={post.data.title}
   description={post.data.description}
   publishDate={post.data.publishDate}
+  tags={post.data.tags}
+  accentWord={post.data.accentWord}
 >
   <Content />
 </BlogLayout>

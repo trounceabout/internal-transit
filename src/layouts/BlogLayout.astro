@@ -2,37 +2,170 @@
 // BlogLayout.astro — wraps individual blog posts.
 // Receives the post's frontmatter and renders it above the content.
 import BaseLayout from './BaseLayout.astro';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { Calendar04Icon } from '@hugeicons/core-free-icons';
+import { categoryConfig } from '@/lib/categoryConfig';
 
 interface Props {
   title: string;
   description: string;
   publishDate: Date;
+  tags: string[];
+  // Word or short phrase from `title` to render italicized + accent-colored.
+  // Optional — posts without it render a plain, unaccented headline.
+  accentWord?: string;
 }
 
-const { title, description, publishDate } = Astro.props;
+const { title, description, publishDate, tags, accentWord } = Astro.props;
 
-// Format the date nicely, e.g. "March 24, 2026"
+// Format the date nicely, e.g. "Mar 26, 2026" — matches the blog index/home page format
 const formattedDate = publishDate.toLocaleDateString('en-US', {
   year: 'numeric',
-  month: 'long',
+  month: 'short',
   day: 'numeric',
 });
+
+// The headline's italic accent word takes the color of the post's primary
+// (first) category, so it stays visually tied to whatever the post is about.
+const primaryCategory = tags[0] ? categoryConfig[tags[0]] : undefined;
+
+// Split the title around accentWord so we can render the rest of the title
+// plain and just that word/phrase italicized + colored. If accentWord isn't
+// set, or doesn't actually appear in the title, titleBefore ends up holding
+// the whole string and the other two stay empty — falls back to a plain headline.
+const accentIndex = accentWord ? title.indexOf(accentWord) : -1;
+const titleBefore = accentIndex >= 0 ? title.slice(0, accentIndex) : title;
+const titleAfter = accentIndex >= 0 ? title.slice(accentIndex + (accentWord?.length ?? 0)) : '';
 ---
 
 <BaseLayout title={title} description={description} activeNav="blog">
-  <main class="mx-auto max-w-3xl px-6 py-16">
-    <article class="font-mono text-portfolio-ink">
-      <header class="flex flex-col gap-2 mb-12">
-        <h1 class="text-3xl font-semibold">{title}</h1>
-        <time datetime={publishDate.toISOString()} class="text-sm text-portfolio-muted-2">
-          {formattedDate}
-        </time>
-        <p class="text-base text-portfolio-muted-2">{description}</p>
+  <main class="mx-auto max-w-[1000px] px-6 py-18">
+    <article>
+      <header class="flex flex-col gap-8 mb-12">
+        {/* Meta row: date badge + one badge per tag */}
+        <div class="flex items-center gap-8 flex-wrap">
+          <div class="flex items-center gap-2">
+            <span class="flex items-center justify-center size-6 rounded-md bg-portfolio-muted/15">
+              <HugeiconsIcon icon={Calendar04Icon} size={14} color="currentColor" className="text-portfolio-ink" />
+            </span>
+            <time datetime={publishDate.toISOString()} class="font-mono text-sm text-portfolio-ink">
+              {formattedDate}
+            </time>
+          </div>
+          <div class="flex items-center gap-3 flex-wrap">
+            {tags.map((tag) => {
+              const config = categoryConfig[tag];
+              if (!config) return null;
+              return (
+                <div class="flex items-center gap-2">
+                  <span class={`flex items-center justify-center size-6 rounded-md ${config.bg}`}>
+                    <HugeiconsIcon icon={config.icon} size={14} color="currentColor" className={config.text} />
+                  </span>
+                  <span class="font-mono text-sm text-portfolio-ink">{tag}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Headline — accentWord (if set) renders italicized in the post's primary-category color */}
+        <h1 class="font-redaction text-[80px] tracking-[-2.4px] leading-[0.94] text-portfolio-ink">
+          {titleBefore}
+          {accentIndex >= 0 && (
+            <span class={`italic ${primaryCategory?.text ?? ''}`}>{accentWord}</span>
+          )}
+          {titleAfter}
+        </h1>
+
+        {/* Dek */}
+        <p class="font-plex-sans text-2xl leading-10 text-portfolio-ink">
+          {description}
+        </p>
       </header>
-      {/* slot is where the MDX post content gets injected */}
-      <div class="flex flex-col gap-4 text-base leading-6">
+
+      {/* Body — narrower reading column than the header above. Spacing between
+          elements is handled per-type via margin-bottom in the <style> block
+          below, not a uniform flex gap, since headings/paragraphs/footnotes
+          each need a different amount of space after them. */}
+      <div class="article-body max-w-[800px] font-plex-sans text-base leading-8 text-portfolio-ink">
         <slot />
       </div>
     </article>
   </main>
 </BaseLayout>
+
+<style>
+  /* MDX content comes from a separately-compiled component tree (rendered via
+     <Content /> in [slug].astro), so Astro's default *scoped* styles never
+     attach to it — every rule here needs :global() or it silently does nothing. */
+  .article-body :global(h2) {
+    font-family: var(--font-plex-sans);
+    font-weight: 600;
+    font-size: 1.25rem; /* 20px */
+    line-height: 2.5rem; /* 40px */
+    color: var(--portfolio-ink);
+    margin-bottom: 1rem; /* 16px, space after a heading before its paragraph */
+  }
+
+  .article-body :global(p) {
+    font-family: var(--font-plex-sans);
+    font-size: 1rem; /* 16px */
+    line-height: 2rem; /* 32px */
+    margin-bottom: 2rem; /* 32px between sibling paragraphs */
+  }
+
+  .article-body :global(a) {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-skip-ink: none;
+    text-underline-position: from-font;
+  }
+
+  /* Last paragraph before the auto-generated footnotes section shouldn't also
+     carry the regular 32px paragraph gap — the footnotes rule below sets the
+     80px gap on its own top margin instead, so this prevents double-spacing. */
+  .article-body :global(> p:last-of-type) {
+    margin-bottom: 0;
+  }
+
+  /* Footnote definitions list (rendered at the bottom of a post from `[^1]`-style
+     markdown footnotes) — same body typography, dedicated dim color, and a
+     wider 80px gap separating it from the article body above it. */
+  .article-body :global(section[data-footnotes]) {
+    font-family: var(--font-plex-sans);
+    font-size: 1rem;
+    line-height: 2rem;
+    color: var(--portfolio-footnote);
+    margin-top: 5rem; /* 80px */
+  }
+
+  /* Tailwind's Preflight resets `ol { list-style: none }`, so the footnote
+     numbers need to be regenerated by hand via a CSS counter, then rendered
+     as a leading superscript instead of a default list marker. */
+  .article-body :global(section[data-footnotes] ol) {
+    counter-reset: footnote;
+  }
+
+  .article-body :global(section[data-footnotes] li) {
+    counter-increment: footnote;
+  }
+
+  /* Tighter than the general 32px paragraph spacing (~15% less) — footnote
+     entries read better closer together than regular body paragraphs. */
+  .article-body :global(section[data-footnotes] li p) {
+    margin-bottom: 1.25rem; /* 20px */
+  }
+
+  .article-body :global(section[data-footnotes] li:last-child p) {
+    margin-bottom: 0;
+  }
+
+  /* On the <p> (not the <li>) so the number sits inline with the footnote
+     text instead of stacking above it as its own block. */
+  .article-body :global(section[data-footnotes] li p::before) {
+    content: counter(footnote);
+    font-size: 0.75em;
+    vertical-align: super;
+    margin-right: 0.25em;
+  }
+</style>
