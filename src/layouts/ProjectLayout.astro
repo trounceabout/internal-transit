@@ -6,6 +6,7 @@
 import BaseLayout from './BaseLayout.astro';
 import { HugeiconsIcon } from '@hugeicons/react';
 import type { IconSvgElement } from '@hugeicons/react';
+import { Home03Icon } from '@hugeicons/core-free-icons';
 
 interface Props {
   name: string;
@@ -53,12 +54,22 @@ const embedSrc = loomUrl?.replace('/share/', '/embed/');
   <main class="mx-auto max-w-[1000px] px-6 py-18">
     <article>
       <header class="flex flex-col gap-8 mb-12">
-        {/* Icon badge + eyebrow label — same markup as the home page's Work list rows */}
-        <div class="flex items-center gap-2">
-          <span class="flex items-center justify-center size-7 rounded-md shrink-0" style={{ backgroundColor: badgeColor }}>
-            <HugeiconsIcon icon={icon} size={16} color={iconColor} />
-          </span>
-          <p class="font-mono text-lg tracking-[-0.18px] text-portfolio-ink">{name}</p>
+        {/* Breadcrumb: Home badge, then the project's own icon badge + eyebrow label
+            (that project badge/label markup matches the home page's Work list rows) */}
+        <div class="flex items-center gap-4">
+          <a href="/" class="flex items-center gap-2">
+            <span class="flex items-center justify-center size-7 rounded-md bg-portfolio-nav-muted/15">
+              <HugeiconsIcon icon={Home03Icon} size={16} color="currentColor" className="text-portfolio-nav-muted" />
+            </span>
+            <span class="font-mono text-base text-portfolio-nav-muted underline">Home</span>
+          </a>
+          <span class="text-portfolio-nav-muted">•</span>
+          <div class="flex items-center gap-2">
+            <span class="flex items-center justify-center size-7 rounded-md shrink-0" style={{ backgroundColor: badgeColor }}>
+              <HugeiconsIcon icon={icon} size={16} color={iconColor} />
+            </span>
+            <p class="font-mono text-base tracking-[-0.18px] text-portfolio-ink">{name}</p>
+          </div>
         </div>
 
         {/* Headline — accentPhrase (if set) renders italicized in the project's own iconColor */}
