@@ -63,6 +63,9 @@
     --color-portfolio-muted: var(--portfolio-muted);
     --color-portfolio-muted-2: var(--portfolio-muted-2);
     --color-portfolio-accent: var(--portfolio-accent);
+    /* Dedicated dim tone for the article footnotes list — not a light/dark pair,
+       same value in both themes (per design). */
+    --color-portfolio-footnote: var(--portfolio-footnote);
 
     --color-sidebar-ring: var(--sidebar-ring);
     --color-sidebar-border: var(--sidebar-border);
@@ -112,6 +115,8 @@
     --portfolio-muted: #A69A8C;
     --portfolio-muted-2: #817464;
     --portfolio-accent: #40C6B0;
+    /* Same value in both themes — dedicated dim tone for the article footnotes list */
+    --portfolio-footnote: #BBBBBB;
 
     --background: #F2EEEA;
     --foreground: #292929;
@@ -155,6 +160,7 @@
     --portfolio-muted: #B4B4B4;
     --portfolio-muted-2: #C5BDB4;
     --portfolio-accent: #40C6B0;
+    --portfolio-footnote: #BBBBBB;
 
     --background: oklch(0.145 0 0);
     --foreground: oklch(0.985 0 0);

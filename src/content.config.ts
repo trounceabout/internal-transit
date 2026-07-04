@@ -13,6 +13,10 @@ const blog = defineCollection({
     publishDate: z.coerce.date(),
     draft: z.boolean().default(false),
     tags: z.array(z.string()).default([]),
+    // Word or short phrase from `title` to render italicized, in the post's
+    // primary-category color, on the article page's headline. Optional —
+    // posts without it just render the plain title with no accent.
+    accentWord: z.string().optional(),
   }),
 });
 
