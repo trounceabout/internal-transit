@@ -23,6 +23,7 @@
     "clsx": "^2.1.1",
     "geist": "^1.7.0",
     "motion": "^12.42.2",
+    "pixelarticons": "^2.2.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "shadcn": "^4.1.0",
@@ -38,7 +39,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "check": "astro check"
+    "check": "astro check",
+    "postinstall": "pixelarticons upgrade --key=$PIXELARTICONS_LICENSE_KEY"
   },
   "type": "module",
   "devDependencies": {

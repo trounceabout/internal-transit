@@ -20,7 +20,7 @@ export default defineConfig({
     sentry({
       sourceMapsUploadOptions: {
         project: "internal-transit",
-        authToken: import.meta.env.SENTRY_AUTH_TOKEN,
+        authToken: process.env.SENTRY_AUTH_TOKEN,
       },
     }),
   ],

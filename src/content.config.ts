@@ -28,7 +28,7 @@ const projects = defineCollection({
   schema: z.object({
     name: z.string(),
     tagline: z.string(),
-    // Key name matching an export from @hugeicons/core-free-icons.
+    // Key into projectIconMap (src/lib/projectIconMap.ts), which resolves it to a pixelarticons/react component.
     icon: z.string(),
     // Icon color; omitted for the one plain-icon row.
     iconColor: z.string().optional(),
