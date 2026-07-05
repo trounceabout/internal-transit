@@ -112,8 +112,15 @@
 }
 
 :root {
+    /* Unconditional light/dark constants for --portfolio-bg — referenced by
+       both the theme-conditional --portfolio-bg below and the theme-sweep
+       probes in Footer.astro, so there's one source of truth for these two
+       hex values regardless of which theme is currently active. */
+    --portfolio-bg-light: #FFF9F2;
+    --portfolio-bg-dark: #18181B;
+
     /* Portfolio theme (light) — from the light-mode Figma frame */
-    --portfolio-bg: #FFF9F2;
+    --portfolio-bg: var(--portfolio-bg-light);
     --portfolio-bg-gradient: none;
     --portfolio-ink: #18181B;
     --portfolio-muted: #A69A8C;
@@ -160,7 +167,7 @@
 
 .dark {
     /* Portfolio theme (dark) — from the dark-mode Figma frame */
-    --portfolio-bg: #18181B;
+    --portfolio-bg: var(--portfolio-bg-dark);
     --portfolio-bg-gradient: linear-gradient(to bottom, #242429, #18181B);
     --portfolio-ink: #FFF9F2;
     --portfolio-muted: #B4B4B4;
@@ -219,4 +226,49 @@
     background-color: var(--portfolio-bg);
     background-image: var(--portfolio-bg-gradient);
   }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-animate] {
+    opacity: 0;
+  }
+}
+
+/* Theme-toggle sweep, driven by the View Transitions API (see the click
+   handler in Footer.astro). The browser snapshots the page before and after
+   the .dark class toggles into ::view-transition-old(root) and
+   ::view-transition-new(root); overriding the default cross-fade with a
+   clip-path keyframe reveals the new-theme screenshot as an expanding line
+   sweeping across, with the old screenshot sitting untouched underneath —
+   so each side of the line is already showing its correct final theme. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 2;
+}
+
+[data-theme-sweep-direction="light"]::view-transition-new(root) {
+  animation: theme-sweep-up 500ms ease-in-out forwards;
+}
+
+[data-theme-sweep-direction="dark"]::view-transition-new(root) {
+  animation: theme-sweep-down 500ms ease-in-out forwards;
+}
+
+@keyframes theme-sweep-up {
+  from { clip-path: inset(100% 0 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+
+@keyframes theme-sweep-down {
+  from { clip-path: inset(0 0 100% 0); }
+  to { clip-path: inset(0 0 0 0); }
 }

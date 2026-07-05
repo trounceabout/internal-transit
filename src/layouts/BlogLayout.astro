@@ -41,7 +41,7 @@ const titleAfter = accentIndex >= 0 ? title.slice(accentIndex + (accentWord?.len
 <BaseLayout title={title} description={description} activeNav="blog">
   <main class="mx-auto max-w-[1000px] px-6 py-18">
     <article>
-      <header class="flex flex-col gap-8 mb-12">
+      <header data-animate class="flex flex-col gap-8 mb-12">
         {/* Meta row: Home breadcrumb on the left, date badge + one badge per tag on the right */}
         <div class="flex items-center justify-between gap-8 flex-wrap">
           <a href="/" class="flex items-center gap-2">
@@ -92,7 +92,7 @@ const titleAfter = accentIndex >= 0 ? title.slice(accentIndex + (accentWord?.len
           elements is handled per-type via margin-bottom in the <style> block
           below, not a uniform flex gap, since headings/paragraphs/footnotes
           each need a different amount of space after them. */}
-      <div class="article-body max-w-[800px] font-plex-sans text-base leading-8 text-portfolio-ink">
+      <div data-animate class="article-body max-w-[800px] font-plex-sans text-base leading-8 text-portfolio-ink">
         <slot />
       </div>
     </article>

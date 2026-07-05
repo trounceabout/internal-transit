@@ -53,7 +53,7 @@ const embedSrc = loomUrl?.replace('/share/', '/embed/');
 <BaseLayout title={name} description={tagline}>
   <main class="mx-auto max-w-[1000px] px-6 py-18">
     <article>
-      <header class="flex flex-col gap-8 mb-12">
+      <header data-animate class="flex flex-col gap-8 mb-12">
         {/* Breadcrumb: Home badge, then the project's own icon badge + eyebrow label
             (that project badge/label markup matches the home page's Work list rows) */}
         <div class="flex items-center gap-4">
@@ -83,7 +83,7 @@ const embedSrc = loomUrl?.replace('/share/', '/embed/');
       </header>
 
       {/* Body — same max-width and typography as the article template's body column */}
-      <div class="max-w-[800px] flex flex-col gap-10">
+      <div data-animate class="max-w-[800px] flex flex-col gap-10">
         <p class="font-plex-sans text-2xl leading-10 text-portfolio-ink">
           {dek}
         </p>

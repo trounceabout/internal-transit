@@ -50,6 +50,10 @@ const { title, description = 'Cody Keisler — product designer writing about de
       <slot />
     </div>
     <Footer />
+    <script>
+      import { runFadeUpStagger } from '@/lib/animations';
+      runFadeUpStagger();
+    </script>
     <!-- Vercel Speed Insights — tracks real user performance data -->
     <SpeedInsights />
     <!-- Vercel Analytics — tracks page views and visitor data -->

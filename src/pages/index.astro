@@ -20,6 +20,7 @@ const latestPosts = (await getCollection("blog", ({ data }) => !data.draft))
     <main class="flex flex-col items-center mx-auto px-6 pt-8 pb-24 max-w-300 gap-16">
         <div class="flex flex-col items-center gap-8 w-full pt-12 pb-8">
             <p
+                data-animate
                 class="font-redaction text-[56px] sm:text-[80px] lg:text-[80px] leading-[0.94] tracking-[-1.68px] sm:tracking-[-2.4px] lg:tracking-[-3.36px] text-portfolio-ink text-left"
             >
                 Hi, I'm
@@ -35,21 +36,28 @@ const latestPosts = (await getCollection("blog", ({ data }) => !data.draft))
                 <span class="text-portfolio-accent italic">experiences better
                 for people</span>
             </p>
-            <p class="font-plex-sans font-medium text-md tracking-wider lg:text-lg leading-normal text-portfolio-ink whitespace-nowrap w-full">
-                Product designer from Rock Hill, SC
+            <p data-animate class="font-plex-sans font-medium text-md tracking-wider lg:text-lg leading-normal text-portfolio-ink whitespace-nowrap w-full">
+                Product designer based in Rock Hill, SC
             </p>
         </div>
 
         <div class="flex flex-col gap-6 items-start w-full">
-            <p class="font-plex-sans font-medium text-sm tracking-widest uppercase text-portfolio-muted">
+            <p data-animate class="font-plex-sans font-medium text-sm tracking-widest uppercase text-portfolio-muted">
                 Work
             </p>
-            <div class="flex flex-col gap-4 w-full">
+            <div class="flex flex-col items-center w-full">
                 {
-                    projects.map((project, index) => {
+                    projects.map((project) => {
                         const row = (
-                            <div class="flex items-center justify-between gap-4 w-full flex-wrap">
-                                <div class="flex items-center gap-3">
+                            <div
+                                data-animate
+                                class="project-row relative overflow-hidden flex items-center justify-between gap-4 w-full flex-wrap p-4 -mx-3 border-b border-b-portfolio-muted-2/20"
+                                style={{
+                                    ...(project.data.badgeColor ? { "--badge-color": project.data.badgeColor } : {}),
+                                    ...(project.data.iconColor ? { "--icon-color": project.data.iconColor } : {}),
+                                }}
+                            >
+                                <div class="relative z-10 flex items-center gap-3">
                                     <span
                                             class="flex items-center justify-center size-8 rounded-md shrink-0"
                                             style={{ backgroundColor: project.data.badgeColor }}
@@ -64,24 +72,17 @@ const latestPosts = (await getCollection("blog", ({ data }) => !data.draft))
                                         {project.data.name}
                                     </p>
                                 </div>
-                                <p class="font-mono text-base tracking-[-0.16px] text-portfolio-muted-2">
+                                <p class="relative z-10 font-mono text-base tracking-[-0.16px] text-portfolio-muted-2">
                                     {project.data.tagline}
                                 </p>
                             </div>
                         );
-                        return (
-                            <>
-                                {project.data.published ? (
-                                    <a href={`/projects/${project.id}`} class="w-full">
-                                        {row}
-                                    </a>
-                                ) : (
-                                    row
-                                )}
-                                {index < projects.length - 1 && (
-                                    <div class="h-px w-full bg-portfolio-muted-2/20" />
-                                )}
-                            </>
+                        return project.data.published ? (
+                            <a href={`/projects/${project.id}`} class="w-full">
+                                {row}
+                            </a>
+                        ) : (
+                            row
                         );
                     })
                 }
@@ -89,13 +90,13 @@ const latestPosts = (await getCollection("blog", ({ data }) => !data.draft))
         </div>
 
         <div class="flex flex-col gap-6 items-start w-full">
-            <p class="font-plex-sans font-medium text-sm tracking-[1.12px] uppercase text-portfolio-muted">
+            <p data-animate class="font-plex-sans font-medium text-sm tracking-[1.12px] uppercase text-portfolio-muted">
                 Writing
             </p>
             <div class="flex flex-col gap-8 w-full">
                 {
                     latestPosts.map((post) => (
-                        <div class="flex flex-col gap-3">
+                        <div data-animate class="flex flex-col gap-3">
                             <a
                                 href={`/blog/${post.id}`}
                                 class="font-mono text-base tracking-[-0.16px] text-portfolio-ink hover:text-portfolio-accent transition-colors"
@@ -148,3 +149,32 @@ const latestPosts = (await getCollection("blog", ({ data }) => !data.draft))
         </div>
     </main>
 </BaseLayout>
+
+<style>
+    .project-row::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: var(--badge-color, transparent);
+        transform: scaleY(0);
+        transform-origin: bottom;
+        z-index: 0;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .project-row::before {
+            transition: transform 0.2s ease-out;
+        }
+        .project-row {
+            transition: border-color 0.2s ease-out;
+        }
+    }
+
+    .project-row:hover::before {
+        transform: scaleY(1);
+    }
+
+    .project-row:hover {
+        border-color: var(--icon-color, var(--portfolio-muted-2));
+    }
+</style>
