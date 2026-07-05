@@ -3,7 +3,8 @@
 // Receives the post's frontmatter and renders it above the content.
 import BaseLayout from './BaseLayout.astro';
 import { HugeiconsIcon } from '@hugeicons/react';
-import { Calendar04Icon, Home03Icon } from '@hugeicons/core-free-icons';
+import { Calendar04Icon } from '@hugeicons/core-free-icons';
+import { Home } from 'pixelarticons/react/Home';
 import { categoryConfig } from '@/lib/categoryConfig';
 
 interface Props {
@@ -46,7 +47,7 @@ const titleAfter = accentIndex >= 0 ? title.slice(accentIndex + (accentWord?.len
         <div class="flex items-center justify-between gap-8 flex-wrap">
           <a href="/" class="flex items-center gap-2">
             <span class="flex items-center justify-center size-7 rounded-md bg-portfolio-nav-muted/15">
-              <HugeiconsIcon icon={Home03Icon} size={16} color="currentColor" className="text-portfolio-nav-muted" />
+              <Home width={16} height={16} className="text-portfolio-nav-muted" />
             </span>
             <span class="font-mono text-base text-portfolio-nav-muted underline">Home</span>
           </a>
@@ -62,9 +63,10 @@ const titleAfter = accentIndex >= 0 ? title.slice(accentIndex + (accentWord?.len
               {tags.map((tag) => {
                 const config = categoryConfig[tag];
                 if (!config) return null;
+                const CategoryIcon = config.icon;
                 return (
                   <div class="flex items-center gap-2">
-                    <HugeiconsIcon icon={config.icon} size={16} color="currentColor" className={config.text} />
+                    <CategoryIcon width={16} height={16} className={config.text} />
                     <span class="font-mono text-sm text-portfolio-ink">{tag}</span>
                   </div>
                 );

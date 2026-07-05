@@ -59,14 +59,11 @@ const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
                                 {post.data.tags.map((tag) => {
                                     const config = categoryConfig[tag];
                                     if (!config) return null;
+                                    const CategoryIcon = config.icon;
                                     return (
                                         <span class="flex items-center gap-1.5 text-sm font-medium cursor-default group">
                                             <span class={config.text}>
-                                                <HugeiconsIcon
-                                                    icon={config.icon}
-                                                    size={16}
-                                                    color="currentColor"
-                                                />
+                                                <CategoryIcon width={16} height={16} />
                                             </span>
                                             <span
                                                 class={`text-portfolio-muted-2 group-hover:underline ${config.hoverText}`}

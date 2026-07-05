@@ -1,12 +1,9 @@
 ---
 // Footer.astro — shared footer rendered on every page via BaseLayout.
 // Left: social links. Right: theme toggle.
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-    GithubIcon,
-    FigmaIcon,
-    LinkedinIcon,
-} from "@hugeicons/core-free-icons";
+import { Github } from "pixelarticons/react/Github";
+import { Figma } from "pixelarticons/react/Figma";
+import { Linkedin2 } from "pixelarticons/react/Linkedin2";
 ---
 
 <footer data-animate class="flex items-center justify-between gap-4 flex-wrap px-6 pt-8 pb-6 max-w-[1200px] mx-auto w-full">
@@ -19,7 +16,7 @@ import {
             class="inline-flex items-center gap-1 font-semibold hover:underline"
             style="color: #4183C4;"
         >
-            <HugeiconsIcon icon={GithubIcon} size={16} color="currentColor" />
+            <Github width={16} height={16} />
             GitHub
         </a>,
         <a
@@ -29,7 +26,7 @@ import {
             class="inline-flex items-center gap-1 font-semibold hover:underline"
             style="color: #FF3737;"
         >
-            <HugeiconsIcon icon={FigmaIcon} size={16} color="currentColor" />
+            <Figma width={16} height={16} />
             Figma
         </a>, and
         <a
@@ -39,7 +36,7 @@ import {
             class="inline-flex items-center gap-1 font-semibold hover:underline"
             style="color: #0077B5;"
         >
-            <HugeiconsIcon icon={LinkedinIcon} size={16} color="currentColor" />
+            <Linkedin2 width={16} height={16} />
             LinkedIn
         </a>.
     </p>
