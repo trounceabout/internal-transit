@@ -8,7 +8,12 @@ import { Joystick as Joystick03Icon } from "pixelarticons/react/Joystick";
 import { Brush as BrushIcon } from "pixelarticons/react/Brush";
 import { Campfire as CampfireIcon } from "pixelarticons/react/Campfire";
 
-// Maps each category tag to a pixelarticons icon and Tailwind color classes.
+// Maps each category tag to a pixelarticons icon and color classes.
+// text/hoverText use the portfolio-category-* tokens (global.css) — light/dark
+// pairs validated against WCAG AA, replacing the raw Tailwind palette classes
+// this used to hold (same shade in both themes, which failed contrast for
+// all 8 categories in at least one theme). bg stays a literal Tailwind tint
+// class since it's a decorative background, not text — no contrast concern.
 // hoverText and bg must be complete literal strings so Tailwind includes them in the build.
 // Shared by the blog index, the home page's Writing section, and the article template
 // (which also reuses `text` for its headline's category-colored accent word).
@@ -18,50 +23,50 @@ export const categoryConfig: Record<
 > = {
   design: {
     icon: PencilRulerIcon,
-    text: "text-indigo-500",
-    hoverText: "group-hover:text-indigo-700",
+    text: "text-portfolio-category-design",
+    hoverText: "group-hover:text-portfolio-category-design-hover",
     bg: "bg-indigo-500/15",
   },
   philosophy: {
     icon: Brain02Icon,
-    text: "text-purple-500",
-    hoverText: "group-hover:text-purple-700",
+    text: "text-portfolio-category-philosophy",
+    hoverText: "group-hover:text-portfolio-category-philosophy-hover",
     bg: "bg-purple-500/15",
   },
   craft: {
     icon: AnvilIcon,
-    text: "text-orange-500",
-    hoverText: "group-hover:text-orange-700",
+    text: "text-portfolio-category-craft",
+    hoverText: "group-hover:text-portfolio-category-craft-hover",
     bg: "bg-orange-500/15",
   },
   creativity: {
     icon: IdeaIcon,
-    text: "text-yellow-700",
-    hoverText: "group-hover:text-yellow-700",
+    text: "text-portfolio-category-creativity",
+    hoverText: "group-hover:text-portfolio-category-creativity-hover",
     bg: "bg-yellow-700/15",
   },
   culture: {
     icon: MaskTheater02Icon,
-    text: "text-teal-500",
-    hoverText: "group-hover:text-teal-700",
+    text: "text-portfolio-category-culture",
+    hoverText: "group-hover:text-portfolio-category-culture-hover",
     bg: "bg-teal-500/15",
   },
   games: {
     icon: Joystick03Icon,
-    text: "text-green-500",
-    hoverText: "group-hover:text-green-700",
+    text: "text-portfolio-category-games",
+    hoverText: "group-hover:text-portfolio-category-games-hover",
     bg: "bg-green-500/15",
   },
   art: {
     icon: BrushIcon,
-    text: "text-fuchsia-500",
-    hoverText: "group-hover:text-fuchsia-700",
+    text: "text-portfolio-category-art",
+    hoverText: "group-hover:text-portfolio-category-art-hover",
     bg: "bg-fuchsia-500/15",
   },
   outdoors: {
     icon: CampfireIcon,
-    text: "text-amber-500",
-    hoverText: "group-hover:text-amber-700",
+    text: "text-portfolio-category-outdoors",
+    hoverText: "group-hover:text-portfolio-category-outdoors-hover",
     bg: "bg-amber-500/15",
   },
 };

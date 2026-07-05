@@ -12,7 +12,9 @@ interface Props {
   tagline: string;
   icon: ComponentType<SVGProps<SVGSVGElement>>;
   iconColor?: string;
+  iconColorDark?: string;
   badgeColor?: string;
+  badgeColorDark?: string;
   description?: string;
   accentPhrase?: string;
   loomUrl?: string;
@@ -24,7 +26,9 @@ const {
   tagline,
   icon,
   iconColor,
+  iconColorDark,
   badgeColor,
+  badgeColorDark,
   description,
   accentPhrase,
   loomUrl,
@@ -62,15 +66,30 @@ const Icon = icon;
             (that project badge/label markup matches the home page's Work list rows) */}
         <div class="flex items-center gap-4">
           <a href="/" class="flex items-center gap-2">
-            <span class="flex items-center justify-center size-7 rounded-md bg-portfolio-nav-muted/15">
-              <Home width={16} height={16} className="text-portfolio-nav-muted" />
+            <span class="flex items-center justify-center size-7 rounded-md bg-portfolio-muted/15">
+              <Home width={16} height={16} className="text-portfolio-muted" />
             </span>
-            <span class="font-mono text-base text-portfolio-nav-muted underline">Home</span>
+            <span class="font-mono text-base text-portfolio-muted underline">Home</span>
           </a>
-          <span class="text-portfolio-nav-muted">•</span>
+          <span class="text-portfolio-muted">•</span>
           <div class="flex items-center gap-2">
-            <span class="flex items-center justify-center size-7 rounded-md shrink-0" style={{ backgroundColor: badgeColor }}>
-              <Icon width={16} height={16} style={{ color: iconColor }} />
+            <span
+              class="flex items-center justify-center size-7 rounded-md shrink-0"
+              style={{
+                backgroundColor: 'var(--badge-color)',
+                ...(badgeColor ? { '--badge-color-light': badgeColor } : {}),
+                ...(badgeColorDark ? { '--badge-color-dark': badgeColorDark } : {}),
+              }}
+            >
+              <Icon
+                width={16}
+                height={16}
+                style={{
+                  color: 'var(--icon-color)',
+                  ...(iconColor ? { '--icon-color-light': iconColor } : {}),
+                  ...(iconColorDark ? { '--icon-color-dark': iconColorDark } : {}),
+                }}
+              />
             </span>
             <p class="font-mono text-base tracking-[-0.18px] text-portfolio-ink">{name}</p>
           </div>
@@ -80,7 +99,14 @@ const Icon = icon;
         <h1 class="font-redaction text-[80px] tracking-[-2.4px] leading-[0.94] text-portfolio-ink">
           {taglineBefore}
           {accentIndex >= 0 && (
-            <span class="italic" style={{ color: iconColor }}>{accentPhrase}</span>
+            <span
+              class="italic"
+              style={{
+                color: 'var(--icon-color)',
+                ...(iconColor ? { '--icon-color-light': iconColor } : {}),
+                ...(iconColorDark ? { '--icon-color-dark': iconColorDark } : {}),
+              }}
+            >{accentPhrase}</span>
           )}
           {taglineAfter}
         </h1>

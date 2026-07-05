@@ -30,10 +30,16 @@ const projects = defineCollection({
     tagline: z.string(),
     // Key into projectIconMap (src/lib/projectIconMap.ts), which resolves it to a pixelarticons/react component.
     icon: z.string(),
-    // Icon color; omitted for the one plain-icon row.
+    // Icon color; omitted for the one plain-icon row. Used as-is in both
+    // themes unless iconColorDark is also set.
     iconColor: z.string().optional(),
+    // Dark-mode override for iconColor — only needed when the light-mode
+    // value doesn't have enough contrast against the dark background too.
+    iconColorDark: z.string().optional(),
     // Badge background color; omitted for the one plain-icon row.
     badgeColor: z.string().optional(),
+    // Dark-mode override for badgeColor, same reasoning as iconColorDark.
+    badgeColorDark: z.string().optional(),
     order: z.number().default(0),
 
     // --- Case-study page only — all optional so a project can appear in the

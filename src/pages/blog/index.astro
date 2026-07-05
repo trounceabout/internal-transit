@@ -37,11 +37,11 @@ const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
                                 <HugeiconsIcon
                                     icon={Calendar04Icon}
                                     size={16}
-                                    className="text-portfolio-muted-2"
+                                    className="text-portfolio-muted"
                                 />
                                 <time
                                     datetime={post.data.publishDate.toISOString()}
-                                    class="text-sm text-portfolio-muted-2"
+                                    class="text-sm text-portfolio-muted"
                                 >
                                     {post.data.publishDate.toLocaleDateString(
                                         "en-US",
@@ -66,7 +66,7 @@ const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
                                                 <CategoryIcon width={16} height={16} />
                                             </span>
                                             <span
-                                                class={`text-portfolio-muted-2 group-hover:underline ${config.hoverText}`}
+                                                class={`text-portfolio-muted group-hover:underline ${config.hoverText}`}
                                             >
                                                 {tag}
                                             </span>

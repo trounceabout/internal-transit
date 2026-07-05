@@ -46,10 +46,10 @@ const titleAfter = accentIndex >= 0 ? title.slice(accentIndex + (accentWord?.len
         {/* Meta row: Home breadcrumb on the left, date badge + one badge per tag on the right */}
         <div class="flex items-center justify-between gap-8 flex-wrap">
           <a href="/" class="flex items-center gap-2">
-            <span class="flex items-center justify-center size-7 rounded-md bg-portfolio-nav-muted/15">
-              <Home width={16} height={16} className="text-portfolio-nav-muted" />
+            <span class="flex items-center justify-center size-7 rounded-md bg-portfolio-muted/15">
+              <Home width={16} height={16} className="text-portfolio-muted" />
             </span>
-            <span class="font-mono text-base text-portfolio-nav-muted underline">Home</span>
+            <span class="font-mono text-base text-portfolio-muted underline">Home</span>
           </a>
 
           <div class="flex items-center gap-8 flex-wrap">
@@ -143,7 +143,7 @@ const titleAfter = accentIndex >= 0 ? title.slice(accentIndex + (accentWord?.len
     font-family: var(--font-plex-sans);
     font-size: 1rem;
     line-height: 2rem;
-    color: var(--portfolio-footnote);
+    color: var(--portfolio-muted);
     margin-top: 5rem; /* 80px */
   }
 
