@@ -1,11 +1,13 @@
-// Client-side Sentry initialization — runs in the browser.
-// In Astro, environment variables must be prefixed with PUBLIC_ to be
-// exposed to the browser. This file is picked up automatically by the
-// @sentry/astro integration at build time.
 import * as Sentry from "@sentry/astro";
 
 Sentry.init({
-  // PUBLIC_SENTRY_DSN is the browser-safe copy of your DSN.
-  // Set it in .env (and in your Vercel project environment variables).
-  dsn: import.meta.env.PUBLIC_SENTRY_DSN,
+  dsn: "https://b10d02c4a5697c3624e3f7775ba1735f@o4510903685677056.ingest.us.sentry.io/4510903688036352",
+  dataCollection: {
+    // To disable sending user data and HTTP bodies, uncomment the lines below. For more info visit:
+    // https://docs.sentry.io/platforms/javascript/guides/astro/configuration/options/#dataCollection
+    // userInfo: false,
+    // httpBodies: [],
+  },
+  // Enable logs to be sent to Sentry
+  enableLogs: true,
 });

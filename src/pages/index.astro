@@ -52,28 +52,30 @@ const latestPosts = (await getCollection("blog", ({ data }) => !data.draft))
                         const row = (
                             <div
                                 data-animate
-                                class="project-row relative overflow-hidden flex items-center justify-between gap-4 w-full flex-wrap p-4 -mx-3 border-b border-b-portfolio-muted-2/20"
+                                class="project-row relative overflow-hidden flex items-center justify-between gap-4 w-full flex-wrap p-4 -mx-3 border-b border-b-portfolio-muted/20"
                                 style={{
-                                    ...(project.data.badgeColor ? { "--badge-color": project.data.badgeColor } : {}),
-                                    ...(project.data.iconColor ? { "--icon-color": project.data.iconColor } : {}),
+                                    ...(project.data.badgeColor ? { "--badge-color-light": project.data.badgeColor } : {}),
+                                    ...(project.data.badgeColorDark ? { "--badge-color-dark": project.data.badgeColorDark } : {}),
+                                    ...(project.data.iconColor ? { "--icon-color-light": project.data.iconColor } : {}),
+                                    ...(project.data.iconColorDark ? { "--icon-color-dark": project.data.iconColorDark } : {}),
                                 }}
                             >
                                 <div class="relative z-10 flex items-center gap-3">
                                     <span
                                             class="flex items-center justify-center size-8 rounded-md shrink-0"
-                                            style={{ backgroundColor: project.data.badgeColor }}
+                                            style={{ backgroundColor: 'var(--badge-color)' }}
                                         >
                                             <ProjectIcon
                                                 width={18}
                                                 height={18}
-                                                style={{ color: project.data.iconColor }}
+                                                style={{ color: 'var(--icon-color)' }}
                                             />
                                         </span>
                                     <p class="font-mono text-base tracking-[-0.16px] text-portfolio-ink whitespace-nowrap">
                                         {project.data.name}
                                     </p>
                                 </div>
-                                <p class="relative z-10 font-mono text-base tracking-[-0.16px] text-portfolio-muted-2">
+                                <p class="relative z-10 font-mono text-base tracking-[-0.16px] text-portfolio-muted">
                                     {project.data.tagline}
                                 </p>
                             </div>
@@ -104,7 +106,7 @@ const latestPosts = (await getCollection("blog", ({ data }) => !data.draft))
                             >
                                 {post.data.title}
                             </a>
-                            <p class="font-mono text-base tracking-[-0.16px] text-portfolio-muted-2">
+                            <p class="font-mono text-base tracking-[-0.16px] text-portfolio-muted">
                                 {post.data.description}
                             </p>
                             <div class="flex items-center gap-6 flex-wrap">
@@ -112,11 +114,11 @@ const latestPosts = (await getCollection("blog", ({ data }) => !data.draft))
                                     <HugeiconsIcon
                                         icon={Calendar04Icon}
                                         size={16}
-                                        className="text-portfolio-muted-2"
+                                        className="text-portfolio-muted"
                                     />
                                     <time
                                         datetime={post.data.publishDate.toISOString()}
-                                        class="font-mono text-sm tracking-[-0.14px] text-portfolio-muted-2"
+                                        class="font-mono text-sm tracking-[-0.14px] text-portfolio-muted"
                                     >
                                         {post.data.publishDate.toLocaleDateString(
                                             "en-US",
@@ -133,7 +135,7 @@ const latestPosts = (await getCollection("blog", ({ data }) => !data.draft))
                                             <span class={config.text}>
                                                 <CategoryIcon width={16} height={16} />
                                             </span>
-                                            <span class="font-mono text-sm tracking-[-0.14px] text-portfolio-muted-2">
+                                            <span class="font-mono text-sm tracking-[-0.14px] text-portfolio-muted">
                                                 {tag}
                                             </span>
                                         </div>
@@ -173,6 +175,6 @@ const latestPosts = (await getCollection("blog", ({ data }) => !data.draft))
     }
 
     .project-row:hover {
-        border-color: var(--icon-color, var(--portfolio-muted-2));
+        border-color: var(--icon-color, var(--portfolio-muted));
     }
 </style>

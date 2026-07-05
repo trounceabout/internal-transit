@@ -60,48 +60,33 @@
        swap — see the `dark` custom-variant above. */
     --color-portfolio-bg: var(--portfolio-bg);
     --color-portfolio-ink: var(--portfolio-ink);
+    /* Single dim/secondary tone, used everywhere something needs to read as
+       less prominent than portfolio-ink: section eyebrow labels, dates,
+       taglines, footer copy, the nav breadcrumb badge, and footnotes. */
     --color-portfolio-muted: var(--portfolio-muted);
-    --color-portfolio-muted-2: var(--portfolio-muted-2);
     --color-portfolio-accent: var(--portfolio-accent);
-    /* Dedicated dim tone for the article footnotes list — not a light/dark pair,
-       same value in both themes (per design). */
-    --color-portfolio-footnote: var(--portfolio-footnote);
-    /* Dedicated muted tone for the header "Home" breadcrumb badge — same
-       value in both themes (per design), distinct from portfolio-muted/-2
-       which do change between light and dark. */
-    --color-portfolio-nav-muted: var(--portfolio-nav-muted);
 
-    --color-sidebar-ring: var(--sidebar-ring);
-    --color-sidebar-border: var(--sidebar-border);
-    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-    --color-sidebar-accent: var(--sidebar-accent);
-    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-    --color-sidebar-primary: var(--sidebar-primary);
-    --color-sidebar-foreground: var(--sidebar-foreground);
-    --color-sidebar: var(--sidebar);
-    --color-chart-5: var(--chart-5);
-    --color-chart-4: var(--chart-4);
-    --color-chart-3: var(--chart-3);
-    --color-chart-2: var(--chart-2);
-    --color-chart-1: var(--chart-1);
-    --color-ring: var(--ring);
-    --color-input: var(--input);
-    --color-border: var(--border);
-    --color-destructive: var(--destructive);
-    --color-accent-foreground: var(--accent-foreground);
-    --color-accent: var(--accent);
-    --color-muted-foreground: var(--muted-foreground);
-    --color-muted: var(--muted);
-    --color-secondary-foreground: var(--secondary-foreground);
-    --color-secondary: var(--secondary);
-    --color-primary-foreground: var(--primary-foreground);
-    --color-primary: var(--primary);
-    --color-popover-foreground: var(--popover-foreground);
-    --color-popover: var(--popover);
-    --color-card-foreground: var(--card-foreground);
-    --color-card: var(--card);
-    --color-foreground: var(--foreground);
-    --color-background: var(--background);
+    /* Blog category tag colors — each a light/dark pair (see :root/.dark)
+       plus a hover variant, replacing categoryConfig.ts's old raw Tailwind
+       palette classes (which used the same shade in both themes and, per a
+       contrast audit, failed WCAG AA in at least one theme for all 8). */
+    --color-portfolio-category-design: var(--portfolio-category-design);
+    --color-portfolio-category-design-hover: var(--portfolio-category-design-hover);
+    --color-portfolio-category-philosophy: var(--portfolio-category-philosophy);
+    --color-portfolio-category-philosophy-hover: var(--portfolio-category-philosophy-hover);
+    --color-portfolio-category-craft: var(--portfolio-category-craft);
+    --color-portfolio-category-craft-hover: var(--portfolio-category-craft-hover);
+    --color-portfolio-category-creativity: var(--portfolio-category-creativity);
+    --color-portfolio-category-creativity-hover: var(--portfolio-category-creativity-hover);
+    --color-portfolio-category-culture: var(--portfolio-category-culture);
+    --color-portfolio-category-culture-hover: var(--portfolio-category-culture-hover);
+    --color-portfolio-category-games: var(--portfolio-category-games);
+    --color-portfolio-category-games-hover: var(--portfolio-category-games-hover);
+    --color-portfolio-category-art: var(--portfolio-category-art);
+    --color-portfolio-category-art-hover: var(--portfolio-category-art-hover);
+    --color-portfolio-category-outdoors: var(--portfolio-category-outdoors);
+    --color-portfolio-category-outdoors-hover: var(--portfolio-category-outdoors-hover);
+
     --radius-sm: calc(var(--radius) * 0.6);
     --radius-md: calc(var(--radius) * 0.8);
     --radius-lg: var(--radius);
@@ -123,46 +108,36 @@
     --portfolio-bg: var(--portfolio-bg-light);
     --portfolio-bg-gradient: none;
     --portfolio-ink: #18181B;
-    --portfolio-muted: #A69A8C;
-    --portfolio-muted-2: #817464;
-    --portfolio-accent: #40C6B0;
-    /* Same value in both themes — dedicated dim tone for the article footnotes list */
-    --portfolio-footnote: #BBBBBB;
-    /* Same value in both themes — dedicated muted tone for the header "Home" badge */
-    --portfolio-nav-muted: #9CA3AF;
+    /* Single dim/secondary tone (consolidated from the old muted/muted-2/
+       footnote/nav-muted split — all four did the same job at slightly
+       different, sometimes-contrast-failing shades). #6b6b6b on the light
+       bg computes to 5.1:1, passing WCAG AA-normal (4.5:1) with margin. */
+    --portfolio-muted: #6b6b6b;
+    /* Deeper teal than the dark-mode accent — #40C6B0 only hits 2.02:1 on
+       this light bg (fails badly); #0F7A6B computes to 5.0:1. */
+    --portfolio-accent: #0F7A6B;
 
-    --background: #F2EEEA;
-    --foreground: #292929;
-    --card: oklch(1 0 0);
-    --card-foreground: oklch(0.145 0 0);
-    --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.145 0 0);
-    --primary: oklch(0.205 0 0);
-    --primary-foreground: oklch(0.985 0 0);
-    --secondary: oklch(0.97 0 0);
-    --secondary-foreground: oklch(0.205 0 0);
-    --muted: oklch(0.97 0 0);
-    --muted-foreground: oklch(0.556 0 0);
-    --accent: oklch(0.97 0 0);
-    --accent-foreground: oklch(0.205 0 0);
-    --destructive: oklch(0.577 0.245 27.325);
-    --border: oklch(0.922 0 0);
-    --input: oklch(0.922 0 0);
-    --ring: oklch(0.708 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
+    /* Blog category tag colors — each shifted to a shade weight from the
+       same hue family that clears 4.5:1 on this bg (the original single
+       Tailwind palette shade, shared with dark mode, failed here). */
+    --portfolio-category-design: #4338ca;
+    --portfolio-category-design-hover: #3730a3;
+    --portfolio-category-philosophy: #7e22ce;
+    --portfolio-category-philosophy-hover: #6b21a8;
+    --portfolio-category-craft: #c2410c;
+    --portfolio-category-craft-hover: #9a3412;
+    --portfolio-category-creativity: #854d0e;
+    --portfolio-category-creativity-hover: #713f12;
+    --portfolio-category-culture: #0f766e;
+    --portfolio-category-culture-hover: #115e59;
+    --portfolio-category-games: #15803d;
+    --portfolio-category-games-hover: #166534;
+    --portfolio-category-art: #a21caf;
+    --portfolio-category-art-hover: #86198f;
+    --portfolio-category-outdoors: #b45309;
+    --portfolio-category-outdoors-hover: #92400e;
+
     --radius: 0.625rem;
-    --sidebar: oklch(0.985 0 0);
-    --sidebar-foreground: oklch(0.145 0 0);
-    --sidebar-primary: oklch(0.205 0 0);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.97 0 0);
-    --sidebar-accent-foreground: oklch(0.205 0 0);
-    --sidebar-border: oklch(0.922 0 0);
-    --sidebar-ring: oklch(0.708 0 0);
 }
 
 .dark {
@@ -170,52 +145,30 @@
     --portfolio-bg: var(--portfolio-bg-dark);
     --portfolio-bg-gradient: linear-gradient(to bottom, #242429, #18181B);
     --portfolio-ink: #FFF9F2;
-    --portfolio-muted: #B4B4B4;
-    --portfolio-muted-2: #C5BDB4;
+    /* #BBBBBB on this bg computes to 9.23:1 — the same value the old
+       footnote-only token already used, since it worked well here. */
+    --portfolio-muted: #BBBBBB;
     --portfolio-accent: #40C6B0;
-    --portfolio-footnote: #BBBBBB;
-    --portfolio-nav-muted: #9CA3AF;
 
-    --background: oklch(0.145 0 0);
-    --foreground: oklch(0.985 0 0);
-    --card: oklch(0.205 0 0);
-    --card-foreground: oklch(0.985 0 0);
-    --popover: oklch(0.205 0 0);
-    --popover-foreground: oklch(0.985 0 0);
-    --primary: oklch(0.922 0 0);
-    --primary-foreground: oklch(0.205 0 0);
-    --secondary: oklch(0.269 0 0);
-    --secondary-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.269 0 0);
-    --muted-foreground: oklch(0.708 0 0);
-    --accent: oklch(0.269 0 0);
-    --accent-foreground: oklch(0.985 0 0);
-    --destructive: oklch(0.704 0.191 22.216);
-    --border: oklch(1 0 0 / 10%);
-    --input: oklch(1 0 0 / 15%);
-    --ring: oklch(0.556 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
-    --sidebar: oklch(0.205 0 0);
-    --sidebar-foreground: oklch(0.985 0 0);
-    --sidebar-primary: oklch(0.488 0.243 264.376);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.269 0 0);
-    --sidebar-accent-foreground: oklch(0.985 0 0);
-    --sidebar-border: oklch(1 0 0 / 10%);
-    --sidebar-ring: oklch(0.556 0 0);
+    --portfolio-category-design: #818cf8;
+    --portfolio-category-design-hover: #a5b4fc;
+    --portfolio-category-philosophy: #c084fc;
+    --portfolio-category-philosophy-hover: #d8b4fe;
+    --portfolio-category-craft: #fb923c;
+    --portfolio-category-craft-hover: #fdba74;
+    --portfolio-category-creativity: #eab308;
+    --portfolio-category-creativity-hover: #facc15;
+    --portfolio-category-culture: #2dd4bf;
+    --portfolio-category-culture-hover: #5eead4;
+    --portfolio-category-games: #4ade80;
+    --portfolio-category-games-hover: #86efac;
+    --portfolio-category-art: #e879f9;
+    --portfolio-category-art-hover: #f0abfc;
+    --portfolio-category-outdoors: #fbbf24;
+    --portfolio-category-outdoors-hover: #fcd34d;
 }
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
-    }
-  body {
-    @apply bg-background text-foreground;
-    }
   html {
     @apply font-sans;
     }
@@ -226,6 +179,24 @@
     background-color: var(--portfolio-bg);
     background-image: var(--portfolio-bg-gradient);
   }
+}
+
+/* Per-project icon/badge colors (index.astro, ProjectLayout.astro) come from
+   MDX frontmatter and can optionally differ by theme — same --x-light/--x-dark
+   -> --x resolution pattern as --portfolio-bg above, except these are set
+   inline per-element (from content data) rather than globally in :root/.dark,
+   so the resolution rule has to live here instead of alongside --portfolio-bg. */
+[style*="--icon-color-light"] {
+  --icon-color: var(--icon-color-light);
+}
+[style*="--badge-color-light"] {
+  --badge-color: var(--badge-color-light);
+}
+.dark [style*="--icon-color-dark"] {
+  --icon-color: var(--icon-color-dark);
+}
+.dark [style*="--badge-color-dark"] {
+  --badge-color: var(--badge-color-dark);
 }
 
 @media (prefers-reduced-motion: no-preference) {
