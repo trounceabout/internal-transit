@@ -39,7 +39,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "check": "astro check"
+    "check": "astro check",
+    "postinstall": "pixelarticons upgrade --key=$PIXELARTICONS_LICENSE_KEY"
   },
   "type": "module",
   "devDependencies": {
