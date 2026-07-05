@@ -4,14 +4,13 @@
 // icon+eyebrow badge, and adds a Loom embed + caption section that articles
 // don't have.
 import BaseLayout from './BaseLayout.astro';
-import { HugeiconsIcon } from '@hugeicons/react';
-import type { IconSvgElement } from '@hugeicons/react';
-import { Home03Icon } from '@hugeicons/core-free-icons';
+import { Home } from 'pixelarticons/react/Home';
+import type { ComponentType, SVGProps } from 'react';
 
 interface Props {
   name: string;
   tagline: string;
-  icon: IconSvgElement;
+  icon: ComponentType<SVGProps<SVGSVGElement>>;
   iconColor?: string;
   badgeColor?: string;
   description?: string;
@@ -48,25 +47,30 @@ const taglineAfter = accentIndex >= 0 ? tagline.slice(accentIndex + (accentPhras
 // Loom share URLs (loom.com/share/<id>) don't render embedded — the player
 // requires the /embed/<id> path.
 const embedSrc = loomUrl?.replace('/share/', '/embed/');
+
+// JSX/Astro only renders a variable as a component if it starts with a
+// capital letter — `icon` comes in lowercase as a prop, so it needs a
+// capitalized alias before it can be used as `<Icon />` below.
+const Icon = icon;
 ---
 
 <BaseLayout title={name} description={tagline}>
   <main class="mx-auto max-w-[1000px] px-6 py-18">
     <article>
-      <header class="flex flex-col gap-8 mb-12">
+      <header data-animate class="flex flex-col gap-8 mb-12">
         {/* Breadcrumb: Home badge, then the project's own icon badge + eyebrow label
             (that project badge/label markup matches the home page's Work list rows) */}
         <div class="flex items-center gap-4">
           <a href="/" class="flex items-center gap-2">
             <span class="flex items-center justify-center size-7 rounded-md bg-portfolio-nav-muted/15">
-              <HugeiconsIcon icon={Home03Icon} size={16} color="currentColor" className="text-portfolio-nav-muted" />
+              <Home width={16} height={16} className="text-portfolio-nav-muted" />
             </span>
             <span class="font-mono text-base text-portfolio-nav-muted underline">Home</span>
           </a>
           <span class="text-portfolio-nav-muted">•</span>
           <div class="flex items-center gap-2">
             <span class="flex items-center justify-center size-7 rounded-md shrink-0" style={{ backgroundColor: badgeColor }}>
-              <HugeiconsIcon icon={icon} size={16} color={iconColor} />
+              <Icon width={16} height={16} style={{ color: iconColor }} />
             </span>
             <p class="font-mono text-base tracking-[-0.18px] text-portfolio-ink">{name}</p>
           </div>
@@ -83,7 +87,7 @@ const embedSrc = loomUrl?.replace('/share/', '/embed/');
       </header>
 
       {/* Body — same max-width and typography as the article template's body column */}
-      <div class="max-w-[800px] flex flex-col gap-10">
+      <div data-animate class="max-w-[800px] flex flex-col gap-10">
         <p class="font-plex-sans text-2xl leading-10 text-portfolio-ink">
           {dek}
         </p>

@@ -1,15 +1,12 @@
 ---
 // Footer.astro — shared footer rendered on every page via BaseLayout.
 // Left: social links. Right: theme toggle.
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-    GithubIcon,
-    FigmaIcon,
-    LinkedinIcon,
-} from "@hugeicons/core-free-icons";
+import { Github } from "pixelarticons/react/Github";
+import { Figma } from "pixelarticons/react/Figma";
+import { Linkedin2 } from "pixelarticons/react/Linkedin2";
 ---
 
-<footer class="flex items-center justify-between gap-4 flex-wrap px-6 pt-8 pb-6 max-w-[1200px] mx-auto w-full">
+<footer data-animate class="flex items-center justify-between gap-4 flex-wrap px-6 pt-8 pb-6 max-w-[1200px] mx-auto w-full">
     <p class="font-plex-sans text-sm text-portfolio-muted-2 flex flex-wrap items-center gap-x-1">
         Looking for me around the web? Find me on
         <a
@@ -19,7 +16,7 @@ import {
             class="inline-flex items-center gap-1 font-semibold hover:underline"
             style="color: #4183C4;"
         >
-            <HugeiconsIcon icon={GithubIcon} size={16} color="currentColor" />
+            <Github width={16} height={16} />
             GitHub
         </a>,
         <a
@@ -29,7 +26,7 @@ import {
             class="inline-flex items-center gap-1 font-semibold hover:underline"
             style="color: #FF3737;"
         >
-            <HugeiconsIcon icon={FigmaIcon} size={16} color="currentColor" />
+            <Figma width={16} height={16} />
             Figma
         </a>, and
         <a
@@ -39,7 +36,7 @@ import {
             class="inline-flex items-center gap-1 font-semibold hover:underline"
             style="color: #0077B5;"
         >
-            <HugeiconsIcon icon={LinkedinIcon} size={16} color="currentColor" />
+            <Linkedin2 width={16} height={16} />
             LinkedIn
         </a>.
     </p>
@@ -56,8 +53,29 @@ import {
 </footer>
 
 <script>
-    document.getElementById("theme-toggle")?.addEventListener("click", () => {
-        const isDark = document.documentElement.classList.toggle("dark");
-        localStorage.setItem("theme", isDark ? "dark" : "light");
+    import { prefersReducedMotion } from '@/lib/animations';
+
+    const button = document.getElementById('theme-toggle');
+
+    function toggleTheme() {
+        const isDark = document.documentElement.classList.toggle('dark');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    }
+
+    // The View Transitions API snapshots the page before and after the
+    // callback runs, so the .dark toggle inside it happens instantly and the
+    // browser handles showing the correct theme on each side of the sweep —
+    // no manual curtain/probe elements needed. The data attribute tells the
+    // global CSS (in global.css) which of the two sweep-direction keyframes
+    // to play against the new-theme screenshot.
+    button?.addEventListener('click', () => {
+        const goingDark = !document.documentElement.classList.contains('dark');
+        document.documentElement.dataset.themeSweepDirection = goingDark ? 'dark' : 'light';
+
+        if (!document.startViewTransition || prefersReducedMotion()) {
+            toggleTheme();
+            return;
+        }
+        document.startViewTransition(() => toggleTheme());
     });
 </script>

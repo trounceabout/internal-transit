@@ -1,22 +1,20 @@
-import type { IconSvgElement } from "@hugeicons/react";
-import {
-  AnvilIcon,
-  Brain02Icon,
-  PencilRulerIcon,
-  IdeaIcon,
-  MaskTheater02Icon,
-  Joystick03Icon,
-  BrushIcon,
-  CampfireIcon,
-} from "@hugeicons/core-free-icons";
+import type { ComponentType, SVGProps } from "react";
+import { Anvil as AnvilIcon } from "pixelarticons/react/Anvil";
+import { Meditation as Brain02Icon } from "pixelarticons/react/Meditation";
+import { RulerDimension as PencilRulerIcon } from "pixelarticons/react/RulerDimension";
+import { Lightbulb as IdeaIcon } from "pixelarticons/react/Lightbulb";
+import { MasksTheater as MaskTheater02Icon } from "pixelarticons/react/MasksTheater";
+import { Joystick as Joystick03Icon } from "pixelarticons/react/Joystick";
+import { Brush as BrushIcon } from "pixelarticons/react/Brush";
+import { Campfire as CampfireIcon } from "pixelarticons/react/Campfire";
 
-// Maps each category tag to a HugeIcon and Tailwind color classes.
+// Maps each category tag to a pixelarticons icon and Tailwind color classes.
 // hoverText and bg must be complete literal strings so Tailwind includes them in the build.
 // Shared by the blog index, the home page's Writing section, and the article template
 // (which also reuses `text` for its headline's category-colored accent word).
 export const categoryConfig: Record<
   string,
-  { icon: IconSvgElement; text: string; hoverText: string; bg: string }
+  { icon: ComponentType<SVGProps<SVGSVGElement>>; text: string; hoverText: string; bg: string }
 > = {
   design: {
     icon: PencilRulerIcon,
