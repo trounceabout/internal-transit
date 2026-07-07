@@ -81,7 +81,7 @@ const latestPosts = (await getCollection("blog", ({ data }) => !data.draft))
                             </div>
                         );
                         return project.data.published ? (
-                            <a href={`/projects/${project.id}`} class="w-full">
+                            <a href={`/projects/${project.id}`} class="contents">
                                 {row}
                             </a>
                         ) : (
