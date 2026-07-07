@@ -7,13 +7,27 @@ badgeColor: "#E34F4F20"
 order: 1
 description: Our app had a persistent problem of user awareness that originated with how we told them what was happening with their services. So we remade it from the ground up.
 accentPhrase: "what's going on"
-# TODO: replace with the real Loom share URL for this project before setting
-# published to true — the embed won't render without it.
-loomUrl: "https://www.loom.com/share/TODO-replace-with-real-loom-id"
+loomUrl: "https://www.loom.com/share/a5474e5d712d4a19b49afef9cf5c2d6a"
 embedCaption: Our app had a persistent problem of user awareness that originated from the core of how we told them what was happening with their services. So we remade it from the ground up.
 published: false
 ---
 
-{/* TODO: replace with the real case-study write-up. */}
+## An legacy of inconsistency 
 
-Case study coming soon.
+The first problem we faced was that the underlying system we were working with was first built more than a decade ago. That meant an outdated structure (account activity as “notifications”), limited details in the data, and vague, highly technical language used in messages.
+
+We needed to work closely with our backend team to clean up years of cruft that had accumulated so that users didn’t have to reach out to support to decrypt the notifications they received. Instead, they could feel empowered to handle their own problems and be confident that they knew what was happening with their servers.
+
+## Second time’s the charm
+
+This wasn’t our first attempt as redesigning the presentation of notifications in our app. About year prior, I had tried to adapt what we had to a more modern presentation, in the form of an alert list popover similar to what I’d seen in many apps I use every day. It didn’t work.
+
+So this time around, the team and I decided to lean into the strengths of the system we had. That meant embracing the events-based nature of account activity while still trying to surface events that user hadn’t seen yet in an obvious way. The solution was to combine our alert list with the existing account activity history from our Settings page into a unified experience that gets its own place in the left-hand nav.
+
+I reworked the existing popover list into an inbox that included unread functionality for the first time, showing users what they had and hadn’t seen yet. This also ended up giving us more space to expand on the updates that happen within events, allowing users to see what was happening in greater detail.
+
+The account history got an upgrade too, with a full width design that let it breathe a bit more and the added functionality of filtering, letting users find specific events much faster than was previously possible.
+
+## An unsatisfying interruption 
+
+We ended up implementing most of the frontend experience for this project, but got stalled on the backend and our initial release as our team was pivoted to new top priority work and this effort was put on hold. Our plan is still to ship the new experience once we can pivot back over the coming month.
