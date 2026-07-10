@@ -52,9 +52,15 @@ const projects = defineCollection({
     // italicized in the project's own `iconColor` — same technique as the
     // blog's `accentWord`, just colored per-project instead of by category.
     accentPhrase: z.string().optional(),
-    // Loom share URL, e.g. https://www.loom.com/share/<id>.
+    // Loom share URL, e.g. https://www.loom.com/share/<id>. Hidden by
+    // default on the case-study page until the reader clicks "Watch the
+    // overview" — see ProjectLayout.astro.
     loomUrl: z.string().url().optional(),
     embedCaption: z.string().optional(),
+    // Case-study "properties" row shown next to the overview toggle —
+    // matches the fixed Role/Scope fields every finished case study carries.
+    role: z.string().optional(),
+    scope: z.string().optional(),
     // Whether the case-study page is finished and should be linked to from
     // the home page list. Stub projects stay `false` until written.
     published: z.boolean().default(false),
