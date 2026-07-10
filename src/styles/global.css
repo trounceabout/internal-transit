@@ -205,6 +205,24 @@
     background-color: var(--portfolio-bg);
     background-image: var(--portfolio-bg-gradient);
   }
+
+  /* Shared headline treatment for every big Redaction-35 title on the site
+     (home page's "Hi, I'm Cody", blog post titles, case-study titles).
+     font-size is plain CSS, not a Tailwind arbitrary value — Tailwind v4's
+     arbitrary-value parser can't handle the commas inside clamp(), even
+     backslash-escaped, and silently drops the whole class instead of
+     erroring. clamp() scales the size smoothly from 64px on small screens
+     up to 80px, rather than snapping at a single breakpoint the way the
+     home page's old text-[56px] sm:text-[80px] did — the 3vw term hits the
+     64px floor around a 533px-wide viewport and the 80px ceiling around
+     1067px, transitioning linearly in between. */
+  .portfolio-headline {
+    font-family: var(--font-redaction);
+    font-size: clamp(4rem, 3rem + 3vw, 5rem);
+    line-height: 0.94;
+    letter-spacing: -2.4px;
+    color: var(--portfolio-ink);
+  }
 }
 
 /* Per-project icon/badge colors (index.astro, ProjectLayout.astro) come from

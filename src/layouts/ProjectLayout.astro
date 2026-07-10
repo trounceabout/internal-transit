@@ -78,7 +78,7 @@ const Icon = icon;
     </Fragment>
   )}
   <main class="mx-auto max-w-[1120px] py-18">
-    <article class="px-[60px]">
+    <article class="px-6 sm:px-10 lg:px-[60px]">
       <header data-animate class="flex flex-col gap-8 mb-12">
         {/* Breadcrumb: Home badge, then the project's own icon badge + eyebrow label
             (that project badge/label markup matches the home page's Work list rows) */}
@@ -113,8 +113,11 @@ const Icon = icon;
           </div>
         </div>
 
-        {/* Headline — accentPhrase (if set) renders italicized in the project's own iconColor */}
-        <h1 class="font-redaction text-[80px] tracking-[-2.4px] leading-[0.94] text-portfolio-ink">
+        {/* Headline — accentPhrase (if set) renders italicized in the project's own iconColor.
+            .portfolio-headline (global.css) is the shared big-title treatment
+            every headline on the site uses (home page, blog posts, case
+            studies), including its fluid clamp() font-size. */}
+        <h1 class="portfolio-headline">
           {taglineBefore}
           {accentIndex >= 0 && (
             <span
@@ -191,35 +194,86 @@ const Icon = icon;
      <Content /> in [slug].astro), so Astro's default *scoped* styles never
      attach to it — every rule here needs :global() or it silently does nothing.
      Mirrors BlogLayout.astro's identical block. */
+  /* Two separate spacing tokens, easy to conflate but serving different
+     jobs:
+       --ping-section-gap   — vertical rhythm BETWEEN sections. Stays a
+                               fixed 60px at every viewport width — this is
+                               breathing room in the reading flow, not
+                               something that should compress on mobile.
+       --ping-card-padding   — the INSET inside a bordered/gradient card
+                               (Problem/Approach/Solution) and the
+                               <article> wrapper's own horizontal margin.
+                               This one DOES scale down on narrow screens
+                               (24px mobile / 40px tablet / 60px desktop,
+                               matching <article>'s own
+                               px-6 sm:px-10 lg:px-[60px]) — a flat 60px
+                               inset squished the readable column badly on
+                               phones. Collapsing both into one variable
+                               previously made the inter-section gap shrink
+                               along with the card padding, which read as
+                               sections crowding each other on mobile. */
+  .article-body {
+    --ping-section-gap: 3.75rem; /* 60px, fixed at every width */
+    --ping-card-padding: 1.5rem; /* 24px */
+  }
+
+  @media (min-width: 40rem) {
+    .article-body {
+      --ping-card-padding: 2.5rem; /* 40px */
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .article-body {
+      --ping-card-padding: 3.75rem; /* 60px */
+    }
+  }
+
   /* Each top-level block in the MDX body is wrapped in its own
-     `.ping-section`, so 60px of breathing room can sit on both sides of a
-     section (padding needs a real box on each edge — unlike the previous
-     margin-collapse-via-adjacency-selector approach, which only worked for
-     a flat list of siblings). The first section only gets bottom padding,
-     matching Figma's Intro frame using pb-[60px] instead of py-[60px]
-     since there's nothing above it to pad against. */
+     `.ping-section`, so this gap can sit on both sides of a section as
+     real padding (padding needs a real box on each edge — a
+     margin-collapse-via-adjacency-selector approach only works for a flat
+     list of siblings, and margin between siblings COLLAPSES rather than
+     stacking, which reads as inconsistent spacing once some sections also
+     have their own border/background — a card's edge should have a
+     definite, non-collapsing gap around it). The first section only gets
+     bottom padding, matching Figma's Intro frame using pb-[60px] instead
+     of py-[60px] since there's nothing above it to pad against.
+     Problem/Approach/Solution below add their own padding-LEFT/RIGHT only
+     (not the `padding` shorthand) — the shorthand would overwrite this
+     rule's padding-top/-bottom outright, since both rules have equal
+     specificity and the later one wins on every side it touches. Setting
+     only the two horizontal longhands here means their own left/right
+     inset composes with (rather than replaces) this rule's vertical gap. */
   .article-body :global(.ping-section) {
-    padding-top: 3.75rem; /* 60px */
-    padding-bottom: 3.75rem; /* 60px */
+    padding-top: var(--ping-section-gap);
+    padding-bottom: var(--ping-section-gap);
   }
 
   .article-body :global(.ping-section:first-child) {
     padding-top: 0;
   }
 
-  /* "The problem" gets a plain 1px stroke outline and padding on all four
-     sides (not just top/bottom) — the one section styled as a bordered
-     card rather than a plain full-bleed block. */
+  /* "The problem" gets a plain 1px stroke outline and its own left/right
+     inset (on top of the padding-top/-bottom every section already has
+     from the rule above) — the one section styled as a bordered card
+     rather than a plain full-bleed block. */
   .article-body :global(.ping-section--problem) {
     border: 1px solid var(--section-border-color);
     border-radius: 0.75rem; /* 12px */
-    padding: 3.75rem; /* 60px, all sides */
+    padding-top: var(--ping-card-padding);
+    padding-bottom: var(--ping-card-padding);
+    padding-left: var(--ping-card-padding);
+    padding-right: var(--ping-card-padding);
   }
 
-  /* "The approach" gets padding on all four sides, matching "The problem"
+  /* "The approach" gets the same left/right inset, matching "The problem"
      above. */
   .article-body :global(.ping-section--approach) {
-    padding: 3.75rem; /* 60px, all sides */
+    padding-top: var(--ping-card-padding);
+    padding-bottom: var(--ping-card-padding);
+    padding-left: var(--ping-card-padding);
+    padding-right: var(--ping-card-padding);
   }
 
   /* "The solution" gets a gradient background + a genuine gradient border,
@@ -237,7 +291,10 @@ const Icon = icon;
      which reveals it only along the border's own width. */
   .article-body :global(.ping-section--solution) {
     border-radius: 0.75rem; /* 12px */
-    padding: 3.75rem; /* 60px, all sides */
+    padding-top: var(--ping-card-padding);
+    padding-bottom: var(--ping-card-padding);
+    padding-left: var(--ping-card-padding);
+    padding-right: var(--ping-card-padding);
     border: 1px solid oklch(57.7% 0.215 27.3deg / 50%);
     background: linear-gradient(0deg, rgba(220, 38, 38, 0.00) 0%, rgba(220, 38, 38, 0.13) 100%);
     background-origin: border-box;
