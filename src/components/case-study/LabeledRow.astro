@@ -11,8 +11,8 @@ interface Props {
 const { label } = Astro.props;
 ---
 
-<div class="flex gap-4 items-start w-full">
-    <span class="font-plex-sans font-semibold text-lg leading-8 text-portfolio-ink shrink-0 w-[248px]">
+<div class="flex flex-col sm:flex-row gap-4 items-start w-full">
+    <span class="font-plex-sans font-semibold text-lg leading-8 text-portfolio-ink shrink-0 w-full sm:w-[248px]">
     {label}
     </span>
   <div class="flex-1 min-w-0 font-plex-sans text-lg leading-8 font-light text-portfolio-ink [&_p]:mb-4 [&_p:last-child]:mb-0">

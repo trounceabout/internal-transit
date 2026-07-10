@@ -1,0 +1,106 @@
+---
+// LightboxImage.astro — a static case-study screenshot that opens in the
+// shared Lightbox (src/components/Lightbox.astro) on click. Hovering shows
+// a darkening scrim + expand icon as a "click to enlarge" affordance.
+// Shares the same "media frame" shadow as LoopVideo's video box, so
+// clickable and non-clickable inline media still read as one visual family.
+import { ArrowsScale } from 'pixelarticons/react/ArrowsScale';
+import { MEDIA_FRAME_SHADOW } from '@/lib/media';
+
+interface Props {
+  src: string;
+  alt: string;
+  class?: string;
+}
+
+const { src, alt, class: className } = Astro.props;
+---
+
+<span
+  class:list={['lightbox-hover-wrap cursor-pointer', className]}
+  data-lightbox-trigger
+  data-lightbox-type="image"
+  role="button"
+  tabindex="0"
+>
+  {/* MEDIA_FRAME_SHADOW's inset layers are meant to sit on this outer,
+      clipping box as a bevel along the rounded edge — putting them on the
+      <img> itself (no separate overflow:hidden container) let the inset
+      highlight render as a visible sliver inside the image's own content
+      instead of flush against the corner. Same shape as LoopVideo.astro's
+      wrapping div. */}
+  <div class="rounded-lg overflow-hidden relative" style={{ boxShadow: MEDIA_FRAME_SHADOW }}>
+    <img src={src} alt={alt} class="block w-full" />
+  </div>
+  <ArrowsScale width={32} height={32} className="lightbox-expand-icon" />
+</span>
+
+<style>
+  .lightbox-hover-wrap {
+    display: block;
+    position: relative;
+  }
+
+  /* Same :focus/:focus-visible split as PillButton.astro — suppresses the
+     browser's default outline on mouse click, keeps a deliberate ring for
+     keyboard users. This element already has its own :focus-visible scrim +
+     expand-icon affordance below, so the ring is a secondary, complementary
+     cue rather than the only one. */
+  .lightbox-hover-wrap:focus {
+    outline: none;
+  }
+
+  .lightbox-hover-wrap:focus-visible {
+    outline: 2px solid #fff9f2;
+    outline-offset: 2px;
+  }
+
+  /* Darkening scrim on hover/focus — same rgba(24,24,27,0.7) as the
+     Lightbox backdrop itself (see Lightbox.astro for why this stays a
+     hardcoded literal rather than the theme-conditional --portfolio-ink
+     token: it's a scrim over content, not page chrome, so it shouldn't
+     flip to a cream color in light mode). */
+  .lightbox-hover-wrap::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 0.5rem; /* matches the img's own rounded-lg */
+    background-color: rgba(24, 24, 27, 0.7);
+    opacity: 0;
+    transition: opacity 150ms ease;
+    pointer-events: none;
+  }
+
+  .lightbox-hover-wrap:hover::after,
+  .lightbox-hover-wrap:focus-visible::after {
+    opacity: 1;
+  }
+
+  .lightbox-hover-wrap :global(.lightbox-expand-icon) {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 2rem;
+    height: 2rem;
+    color: #fff9f2;
+    opacity: 0;
+    transition: opacity 150ms ease;
+    pointer-events: none;
+    /* ::after (the scrim, below) is generated content, which paints after
+       all of a parent's real children by default — without this, the scrim
+       covers the icon even though the icon comes later in source order. */
+    z-index: 1;
+  }
+
+  .lightbox-hover-wrap:hover :global(.lightbox-expand-icon),
+  .lightbox-hover-wrap:focus-visible :global(.lightbox-expand-icon) {
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lightbox-hover-wrap::after,
+    .lightbox-hover-wrap :global(.lightbox-expand-icon) {
+      transition-duration: 0.01ms;
+    }
+  }
+</style>

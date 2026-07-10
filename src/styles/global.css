@@ -138,11 +138,37 @@
     --portfolio-category-outdoors-hover: #92400e;
 
     --radius: 0.625rem;
+
+    /* "Media frame" elevation — the shadow recipe every piece of inline
+       case-study media shares (LoopVideo, LightboxImage, the Lightbox
+       overlay, ProjectLayout's old embed box). Figma names this token
+       "Light theme/Elevation" here and "Dark theme/Elevation" in .dark
+       below — a flatter, single-tone drop shadow in light mode (no inset
+       bevel; that only reads against a dark surface) vs. the dark theme's
+       deeper shadow-plus-inner-highlight combination. */
+    --media-frame-shadow: 0px 3px 6px 0px rgba(0,0,0,0.2), 0px 0px 0.5px 0px rgba(0,0,0,0.15);
+
+    /* Lightbox overlay backdrop — a warm near-white scrim in light mode so
+       it reads against the light page behind it, vs. the dark theme's
+       near-black scrim below. Unlike --media-frame-shadow above, this one
+       genuinely needs to flip per theme (the old dark-only rgba(24,24,27,.7)
+       looked wrong once the rest of the page went light). */
+    --lightbox-backdrop: oklch(98.8% 0.00852 67.7deg / 70%);
+
+    /* Case-study section stroke — a plain 1px outline (e.g. "The problem"
+       in Ping). Figma's dark-mode value (#3c3c44) is a light-on-dark gray
+       border; in light mode there's no equivalent Figma frame, so this is a
+       low-opacity tint of --portfolio-ink instead, kept subtle enough to
+       read as a hairline rather than a heavy outline. */
+    --section-border-color: rgba(24, 24, 27, 0.15);
 }
 
 .dark {
     /* Portfolio theme (dark) — from the dark-mode Figma frame */
     --portfolio-bg: var(--portfolio-bg-dark);
+    --media-frame-shadow: 0px 4px 7px 0px rgba(0,0,0,0.85), 0px 1px 2px 0px rgba(0,0,0,0.5), inset 0px 0.5px 0px 0px rgba(255,255,255,0.1), inset 0px 0px 0.5px 0px rgba(255,255,255,0.3);
+    --lightbox-backdrop: rgba(24, 24, 27, 0.7);
+    --section-border-color: #3c3c44;
     --portfolio-bg-gradient: linear-gradient(to bottom, #242429, #18181B);
     --portfolio-ink: #FFF9F2;
     /* #BBBBBB on this bg computes to 9.23:1 — the same value the old
@@ -178,6 +204,24 @@
   .bg-portfolio-page {
     background-color: var(--portfolio-bg);
     background-image: var(--portfolio-bg-gradient);
+  }
+
+  /* Shared headline treatment for every big Redaction-35 title on the site
+     (home page's "Hi, I'm Cody", blog post titles, case-study titles).
+     font-size is plain CSS, not a Tailwind arbitrary value — Tailwind v4's
+     arbitrary-value parser can't handle the commas inside clamp(), even
+     backslash-escaped, and silently drops the whole class instead of
+     erroring. clamp() scales the size smoothly from 64px on small screens
+     up to 80px, rather than snapping at a single breakpoint the way the
+     home page's old text-[56px] sm:text-[80px] did — the 3vw term hits the
+     64px floor around a 533px-wide viewport and the 80px ceiling around
+     1067px, transitioning linearly in between. */
+  .portfolio-headline {
+    font-family: var(--font-redaction);
+    font-size: clamp(4rem, 3rem + 3vw, 5rem);
+    line-height: 0.94;
+    letter-spacing: -2.4px;
+    color: var(--portfolio-ink);
   }
 }
 
