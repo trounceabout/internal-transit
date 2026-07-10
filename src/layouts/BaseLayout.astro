@@ -44,6 +44,11 @@ const { title, description = 'Cody Keisler — product designer writing about de
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <!-- RSS autodiscovery — browsers and feed readers will find this automatically -->
     <link rel="alternate" type="application/rss+xml" title="Blog RSS Feed" href="/rss.xml" />
+    {/* Optional extra <head> content (e.g. ProjectLayout's Loom preconnect
+        hints) — a plain <link>/<meta> rendered in a page's default slot
+        stays in <body> where it's written, so pages that need something in
+        <head> pass it through this named slot instead. */}
+    <slot name="head" />
   </head>
   <body class="bg-portfolio-page font-mono pt-16 min-h-screen flex flex-col">
     <div class="flex-1">

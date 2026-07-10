@@ -3,6 +3,8 @@
 // illustrate a case-study beat. Shares the same rounded/shadow "media frame"
 // treatment as ProjectLayout's Loom embed box and the static screenshots
 // elsewhere in a case study, so all inline media reads as one visual family.
+import { MEDIA_FRAME_SHADOW } from '@/lib/media';
+
 interface Props {
   webm: string;
   mp4: string;
@@ -15,10 +17,7 @@ const { webm, mp4, caption } = Astro.props;
 <figure class="flex flex-col gap-4 m-0">
   <div
     class="rounded-lg overflow-hidden relative"
-    style={{
-      boxShadow:
-        '0px 4px 7px 0px rgba(0,0,0,0.85), 0px 1px 2px 0px rgba(0,0,0,0.5), inset 0px 0.5px 0px 0px rgba(255,255,255,0.1), inset 0px 0px 0.5px 0px rgba(255,255,255,0.3)',
-    }}
+    style={{ boxShadow: MEDIA_FRAME_SHADOW }}
   >
     <video class="block w-full h-auto" autoplay loop muted playsinline>
       <source src={webm} type="video/webm" />

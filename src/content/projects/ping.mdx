@@ -8,21 +8,27 @@ order: 1
 description: Turning a legacy notification system into a clearer activity experience
 accentPhrase: "what's going on"
 loomUrl: "https://www.loom.com/share/4f4eb6dbc1c7408387a363c6a1c60185"
-embedCaption: A quick tour of the redesigned inbox and activity history, and the thinking behind them.
 role: Product design lead
 scope: Product framing, UX strategy, interface design, systems thinking, engineering collaboration
 published: true
 ---
 
 import LabeledRow from '@/components/case-study/LabeledRow.astro';
+import LightboxImage from '@/components/case-study/LightboxImage.astro';
 import LoopVideo from '@/components/case-study/LoopVideo.astro';
 import Postscript from '@/components/case-study/Postscript.astro';
+
+<section class="ping-section">
 
 Our hosting management app had a persistent awareness problem: users could tell that something had happened, but not always what it meant, whether it mattered, or what to do next.
 
 I led a redesign of the notification experience to make account activity clearer, more actionable, and easier to trust. Rather than treating notifications as isolated alerts, I reframed them as part of a broader activity system and designed a dedicated inbox experience around that model.
 
-<img src="/projects/ping/solution-intro.png" alt="The redesigned notifications inbox next to a full activity detail view" class="rounded-lg" style="box-shadow: 0px 4px 7px 0px rgba(0,0,0,0.85), 0px 1px 2px 0px rgba(0,0,0,0.5), inset 0px 0.5px 0px 0px rgba(255,255,255,0.1), inset 0px 0px 0.5px 0px rgba(255,255,255,0.3))" />
+<LightboxImage src="/projects/ping/solution-intro.png" alt="The redesigned notifications inbox next to a full activity detail view" />
+
+</section>
+
+<section class="ping-section ping-section--problem">
 
 ## The problem
 
@@ -32,20 +38,32 @@ Our "notifications" were actually built on top of a decade-old account activity 
 
 That left users asking themselves questions like what had happened? Is this still in progress? What is it related to? Do I need to do anything? And most importantly: **Where do I go next?**
 
+</section>
+
+<section class="ping-section ping-section--approach">
+
 ## The approach
 
 A year earlier, I had tried to modernize the experience by adapting it to that more standard notification pattern. That approach didn't hold up, because the real problem wasn't visual polish, it was the underlying product model.
 
 The system wasn't built around lightweight alerts. It was built around events and account activity. Once I stopped trying to force it into a conventional notification UI, the right direction became much clearer. Instead of designing a better popover, I designed around the structure the product already had.
 
-<div class="flex gap-10 items-start">
-  <img src="/projects/ping/solution-old.png" alt="The old account settings page, listing notifications in a plain table" class="flex-1 rounded-lg" style="box-shadow: 0px 4px 7px 0px rgba(0,0,0,0.85), 0px 1px 2px 0px rgba(0,0,0,0.5), inset 0px 0.5px 0px 0px rgba(255,255,255,0.1), inset 0px 0px 0.5px 0px rgba(255,255,255,0.3))" />
-  <img src="/projects/ping/solution-new.png" alt="The redesigned notifications inbox next to a full event detail view" class="flex-1 rounded-lg" style="box-shadow: 0px 4px 7px 0px rgba(0,0,0,0.85), 0px 1px 2px 0px rgba(0,0,0,0.5), inset 0px 0.5px 0px 0px rgba(255,255,255,0.1), inset 0px 0px 0.5px 0px rgba(255,255,255,0.3))" />
+<div class="flex flex-col sm:flex-row gap-10 items-stretch">
+  <LightboxImage src="/projects/ping/solution-old.png" alt="The old account settings page, listing notifications in a plain table" class="flex-1 min-w-0" />
+  <LightboxImage src="/projects/ping/solution-new.png" alt="The redesigned notifications inbox next to a full event detail view" class="flex-1 min-w-0" />
 </div>
+
+</section>
+
+<section class="ping-section ping-section--solution" style="--icon-color-light: #E34F4F">
 
 ## The solution
 
 I redesigned the experience as a full-page destination with two connected views, an inbox for unread and relevant events and a full account history. This gave users a clearer place to check what was new, while also giving the system enough room to show meaningful detail and history.
+
+</section>
+
+<section class="ping-section">
 
 <LabeledRow label="From popover to inbox">
 The original popover constrained both the content and the mental model. Moving the experience into a dedicated inbox created more room, clearer hierarchy, and a stronger sense of place in the product.
@@ -53,17 +71,27 @@ The original popover constrained both the content and the mental model. Moving t
 
 <LoopVideo webm="/projects/ping/Ping1.webm" mp4="/projects/ping/Ping1.mp4" />
 
+</section>
+
+<section class="ping-section">
+
 <LabeledRow label="From static details to event timeline">
 The system was built around notifications containing multiple updates over time, but the old interface flattened that structure. Reframing each notification as a timeline of events made the interface more understandable because it reflected the actual logic of the system.
 </LabeledRow>
 
 <LoopVideo webm="/projects/ping/Ping2.webm" mp4="/projects/ping/Ping2.mp4" />
 
+</section>
+
+<section class="ping-section">
+
 <LabeledRow label="From passive information to guided action">
 The old experience surfaced information, but didn't do much to help users respond. Introducing dynamic actions based on the latest event state reduced the work users had to do after interpreting a message and made the system more useful in the moment.
 </LabeledRow>
 
 <LoopVideo webm="/projects/ping/Ping3.webm" mp4="/projects/ping/Ping3.mp4" />
+
+</section>
 
 <Postscript iconColor="#E34F4F">
   <Fragment slot="why-it-worked">

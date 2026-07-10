@@ -1,0 +1,71 @@
+---
+// PillButton.astro — the icon+label pill shape shared by "Watch the
+// overview" (ProjectLayout.astro) and the lightbox close button
+// (Lightbox.astro). Figma uses this same shape at two sizes: a larger one
+// for "Watch the overview" and a visibly smaller one for the close button
+// (6px/8px/6px padding, 24px icon, 14px text vs. the default's
+// 12px/16px/12px padding, 24px icon, 18px text).
+import type { ComponentType, SVGProps } from 'react';
+
+interface Props {
+  icon: ComponentType<SVGProps<SVGSVGElement>>;
+  label: string;
+  size?: 'default' | 'sm';
+  background: string;
+  // Icon-only accent color — the label always stays on the theme ink color
+  // for contrast/legibility; only the icon is tinted to match `background`'s
+  // hue (a lower-opacity version of the same color).
+  iconColor?: string;
+  class?: string;
+  id?: string;
+  [key: `data-${string}`]: string | boolean | undefined;
+}
+
+const { icon, label, size = 'default', background, iconColor, class: className, id, ...rest } = Astro.props;
+const Icon = icon;
+
+const sizeClasses =
+  size === 'sm'
+    ? 'gap-1.5 pl-1.5 pr-2 py-1.5 text-sm tracking-[-0.14px]'
+    : 'gap-2 pl-3 pr-4 py-3 text-lg tracking-[-0.18px]';
+---
+
+<button
+  type="button"
+  id={id}
+  class:list={[
+    'pill-button inline-flex items-center shrink-0 rounded-full font-mono text-portfolio-ink transition-colors cursor-pointer',
+    sizeClasses,
+    className,
+  ]}
+  style={{
+    backgroundColor: background,
+    ...(iconColor ? { '--pill-icon-color': iconColor } : {}),
+  }}
+  {...rest}
+>
+  <Icon width={24} height={24} style={iconColor ? { color: 'var(--pill-icon-color)' } : undefined} />
+  <span>{label}</span>
+</button>
+
+<style>
+  /* Suppress the browser's default focus outline, which some browsers (e.g.
+     Safari) show on a plain mouse click, not just keyboard navigation — the
+     large default blue ring reads as a rendering bug rather than a focus
+     indicator. :focus-visible fires only for keyboard/programmatic focus,
+     so keyboard users still get a clear, deliberate ring; mouse clicks get
+     none, matching LightboxImage.astro's existing :focus-visible pattern. */
+  .pill-button:focus {
+    outline: none;
+  }
+
+  /* Matches the icon's own color (--pill-icon-color), not currentColor —
+     the button's `color` is the ink label color, not the icon's accent, so
+     currentColor would ring in the wrong hue. Falls back to currentColor
+     when no iconColor was passed (unset var() falls through to the
+     fallback value). */
+  .pill-button:focus-visible {
+    outline: 2px solid var(--pill-icon-color, currentColor);
+    outline-offset: 2px;
+  }
+</style>

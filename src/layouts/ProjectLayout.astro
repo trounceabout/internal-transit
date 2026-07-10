@@ -5,9 +5,10 @@
 // (hidden until the reader opts in via "Watch the overview") that articles
 // don't have.
 import BaseLayout from './BaseLayout.astro';
+import Lightbox from '@/components/Lightbox.astro';
+import PillButton from '@/components/case-study/PillButton.astro';
 import { Home } from 'pixelarticons/react/Home';
 import { Play } from 'pixelarticons/react/Play';
-import { Close } from 'pixelarticons/react/Close';
 import type { ComponentType, SVGProps } from 'react';
 
 interface Props {
@@ -21,7 +22,6 @@ interface Props {
   description?: string;
   accentPhrase?: string;
   loomUrl?: string;
-  embedCaption?: string;
   role?: string;
   scope?: string;
 }
@@ -37,7 +37,6 @@ const {
   description,
   accentPhrase,
   loomUrl,
-  embedCaption,
   role,
   scope,
 } = Astro.props;
@@ -66,8 +65,20 @@ const Icon = icon;
 ---
 
 <BaseLayout title={name} description={tagline}>
-  <main class="mx-auto max-w-[1000px] px-6 py-18">
-    <article>
+  {/* Warms up the connection to Loom's domains as soon as the page loads,
+      instead of paying full DNS+TLS+redirect latency at the moment the
+      reader clicks "Watch the overview". Rendered into BaseLayout's named
+      "head" slot — a <link> in the default slot stays in <body> where
+      it's written, it isn't auto-hoisted to <head> the way <style>/<script>
+      tags are. */}
+  {embedSrc && (
+    <Fragment slot="head">
+      <link rel="preconnect" href="https://www.loom.com" />
+      <link rel="preconnect" href="https://cdn.loom.com" crossorigin />
+    </Fragment>
+  )}
+  <main class="mx-auto max-w-[1120px] py-18">
+    <article class="px-[60px]">
       <header data-animate class="flex flex-col gap-8 mb-12">
         {/* Breadcrumb: Home badge, then the project's own icon badge + eyebrow label
             (that project badge/label markup matches the home page's Work list rows) */}
@@ -128,27 +139,23 @@ const Icon = icon;
         {(embedSrc || role || scope) && (
           <div class="flex flex-col gap-10">
             {/* Properties row: overview toggle + Role/Scope, all optional so
-                a case study can omit any of them. */}
+                a case study can omit any of them. The toggle now opens the
+                shared Lightbox (rendered once below) instead of an inline
+                accordion — clicking it is just another lightbox trigger,
+                identified to Lightbox.astro's delegated listener the same
+                way a case-study image is (see LightboxImage.astro). */}
             <div class="flex flex-wrap gap-10 items-start">
               {embedSrc && (
-                <button
-                  type="button"
+                <PillButton
                   id="overview-toggle"
-                  aria-expanded="false"
-                  class="inline-flex items-center gap-2 shrink-0 rounded-full pl-3 pr-4 py-3 font-mono text-lg tracking-[-0.18px] text-portfolio-ink bg-[rgba(33,92,215,0.25)] transition-colors"
-                >
-                  <Play
-                    width={24}
-                    height={24}
-                    className="overview-toggle-icon-play"
-                  />
-                  <Close
-                    width={24}
-                    height={24}
-                    className="overview-toggle-icon-close hidden"
-                  />
-                  <span class="overview-toggle-label">Watch the overview</span>
-                </button>
+                  icon={Play}
+                  label="Watch the overview"
+                  iconColor="oklch(54.6% 0.245 262.881)"
+                  background="color-mix(in oklch, oklch(54.6% 0.245 262.881) 15%, transparent)"
+                  data-lightbox-trigger
+                  data-lightbox-type="iframe"
+                  data-lightbox-src={embedSrc}
+                />
               )}
 
               {role && (
@@ -165,43 +172,6 @@ const Icon = icon;
                 </div>
               )}
             </div>
-
-            {/* Video: collapsed by default, revealed top-to-bottom by the
-                overview toggle above. The grid-rows trick animates to the
-                content's natural height without any JS measuring the DOM. */}
-            {embedSrc && (
-              <div
-                id="overview-video"
-                class="grid overview-video-collapsed"
-              >
-                <div class="overflow-hidden min-h-0">
-                  <div class="flex flex-col gap-4 pt-2">
-                    <div
-                      class="aspect-[1008/567] rounded-xl overflow-hidden relative"
-                      style={{
-                        backgroundColor: '#252525',
-                        boxShadow:
-                          '0px 4px 7px 0px rgba(0,0,0,0.85), 0px 1px 2px 0px rgba(0,0,0,0.5), inset 0px 0.5px 0px 0px rgba(255,255,255,0.1), inset 0px 0px 0.5px 0px rgba(255,255,255,0.3)',
-                      }}
-                    >
-                      <iframe
-                        src={embedSrc}
-                        title={`${name} video walkthrough`}
-                        class="absolute inset-0 size-full"
-                        allow="fullscreen; picture-in-picture"
-                        allowfullscreen
-                        loading="lazy"
-                      />
-                    </div>
-                    {embedCaption && (
-                      <p class="font-plex-sans text-base leading-6 text-portfolio-ink">
-                        {embedCaption}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
         )}
 
@@ -212,6 +182,8 @@ const Icon = icon;
       </div>
     </article>
   </main>
+
+  <Lightbox />
 </BaseLayout>
 
 <style>
@@ -219,16 +191,62 @@ const Icon = icon;
      <Content /> in [slug].astro), so Astro's default *scoped* styles never
      attach to it — every rule here needs :global() or it silently does nothing.
      Mirrors BlogLayout.astro's identical block. */
-  /* Every direct child of the body (paragraphs, headings, images, and
-     case-study components like LabeledRow/LoopVideo/Postscript alike) sits
-     40px apart, matching the flat 40px gap Figma uses between every
-     top-level block in the case-study body. A heading is the one exception
-     — it sits close to the content directly under it (16px), same as
-     Figma's "The problem"/"The approach" heading+paragraph groups. */
-  .article-body :global(> * + *) {
-    margin-top: 2.5rem; /* 40px */
+  /* Each top-level block in the MDX body is wrapped in its own
+     `.ping-section`, so 60px of breathing room can sit on both sides of a
+     section (padding needs a real box on each edge — unlike the previous
+     margin-collapse-via-adjacency-selector approach, which only worked for
+     a flat list of siblings). The first section only gets bottom padding,
+     matching Figma's Intro frame using pb-[60px] instead of py-[60px]
+     since there's nothing above it to pad against. */
+  .article-body :global(.ping-section) {
+    padding-top: 3.75rem; /* 60px */
+    padding-bottom: 3.75rem; /* 60px */
   }
 
+  .article-body :global(.ping-section:first-child) {
+    padding-top: 0;
+  }
+
+  /* "The problem" gets a plain 1px stroke outline and padding on all four
+     sides (not just top/bottom) — the one section styled as a bordered
+     card rather than a plain full-bleed block. */
+  .article-body :global(.ping-section--problem) {
+    border: 1px solid var(--section-border-color);
+    border-radius: 0.75rem; /* 12px */
+    padding: 3.75rem; /* 60px, all sides */
+  }
+
+  /* "The approach" gets padding on all four sides, matching "The problem"
+     above. */
+  .article-body :global(.ping-section--approach) {
+    padding: 3.75rem; /* 60px, all sides */
+  }
+
+  /* "The solution" gets a gradient background + a genuine gradient border,
+     both tinted by the project's own --icon-color (set inline in the MDX,
+     resolved the same way the headline accent and Postscript's divider
+     already do) — so a future case study with a different accent color
+     gets a matching treatment instead of Ping's specific red. A plain
+     `border-color` can't be a gradient, so this uses the standard
+     double-background technique: three stacked background-images, the
+     first painted into the padding-box as an opaque page-background
+     stand-in (so the middle/inner area isn't see-through where the two
+     accent gradients don't fully cover it), the second (the fill
+     gradient) also clipped to the padding-box, and the third (the border
+     gradient) clipped to the border-box beneath a transparent border,
+     which reveals it only along the border's own width. */
+  .article-body :global(.ping-section--solution) {
+    border-radius: 0.75rem; /* 12px */
+    padding: 3.75rem; /* 60px, all sides */
+    border: 1px solid oklch(57.7% 0.215 27.3deg / 50%);
+    background: linear-gradient(0deg, rgba(220, 38, 38, 0.00) 0%, rgba(220, 38, 38, 0.13) 100%);
+    background-origin: border-box;
+    background-clip: padding-box, padding-box, border-box;
+  }
+
+  /* A heading still sits close to the content directly under it (16px),
+     same as Figma's "The problem"/"The approach" heading+paragraph groups —
+     this is intra-section spacing, unaffected by the section padding above. */
   .article-body :global(h2 + *) {
     margin-top: 1rem; /* 16px */
   }
@@ -255,52 +273,22 @@ const Icon = icon;
     margin-top: 1rem; /* 16px */
   }
 
+  /* Every `.ping-section` in Figma is a `flex flex-col gap-[40px]` —
+     Intro's paragraphs vs. its image, Approach's copy vs. its two-image row,
+     a Point's LabeledRow vs. its LoopVideo, all 40px apart regardless of
+     element type. This is intra-section spacing between a section's direct
+     children, distinct from `.ping-section`'s own 60px outer padding above.
+     `:not(p)` keeps this from overriding the tighter 16px `p + p` run
+     spacing below — a `p` following a `p` should stay at 16px, not jump to
+     40px just because both happen to sit inside a `.ping-section`. */
+  .article-body :global(.ping-section > * + *:not(p)) {
+    margin-top: 2.5rem; /* 40px */
+  }
+
   .article-body :global(a) {
     color: inherit;
     text-decoration: underline;
     text-decoration-skip-ink: none;
     text-underline-position: from-font;
   }
-
-  /* Collapsed = 0fr row (renders at zero height but stays in the layout),
-     expanded = 1fr (grows to the content's natural height). Transitioning
-     grid-template-rows animates height without ever measuring scrollHeight
-     in JS. */
-  #overview-video {
-    grid-template-rows: 1fr;
-    transition: grid-template-rows 400ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  #overview-video.overview-video-collapsed {
-    grid-template-rows: 0fr;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    #overview-video {
-      transition-duration: 0.01ms;
-    }
-  }
 </style>
-
-<script>
-  // Same vanilla-JS toggle shape as Footer.astro's theme switcher: a plain
-  // button + classList.toggle, no framework/hydration involved. The video
-  // itself never unmounts — collapsing to zero height via CSS is enough,
-  // and keeps the iframe's Loom player from having to reload on re-open.
-  const button = document.getElementById('overview-toggle');
-  const video = document.getElementById('overview-video');
-  const playIcon = button?.querySelector('.overview-toggle-icon-play');
-  const closeIcon = button?.querySelector('.overview-toggle-icon-close');
-  const label = button?.querySelector('.overview-toggle-label');
-
-  button?.addEventListener('click', () => {
-    const isOpen = !video?.classList.contains('overview-video-collapsed');
-    video?.classList.toggle('overview-video-collapsed');
-    button.setAttribute('aria-expanded', String(!isOpen));
-    playIcon?.classList.toggle('hidden', !isOpen);
-    closeIcon?.classList.toggle('hidden', isOpen);
-    if (label) {
-      label.textContent = isOpen ? 'Watch the overview' : 'Close the overview';
-    }
-  });
-</script>

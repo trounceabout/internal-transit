@@ -17,7 +17,7 @@ interface Props {
 const { iconColor, iconColorDark } = Astro.props;
 ---
 
-<section class="flex flex-col gap-6 pt-10">
+<section class="flex flex-col gap-6 py-15">
   <div class="flex gap-6 items-center w-full">
       <span class="font-mono italic font-normal postscript-heading text-[32px] leading-[0.94] tracking-[-0.96px] text-portfolio-ink m-0">
       The postscript
@@ -33,20 +33,20 @@ const { iconColor, iconColorDark } = Astro.props;
   </div>
 
   <div class="flex flex-col gap-8 w-full text-lg">
-    <div class="flex gap-6 items-baseline w-full">
-      <p class="font-mono leading-[1.4] tracking-[-0.18px] text-portfolio-muted shrink-0 w-[200px]">Why it worked</p>
+    <div class="flex flex-col sm:flex-row gap-2 sm:gap-6 sm:items-baseline w-full">
+      <p class="font-mono leading-[1.4] tracking-[-0.18px] text-portfolio-muted shrink-0 w-full sm:w-[200px]">Why it worked</p>
       <div class="flex-1 min-w-0 font-plex-sans font-light leading-8 text-portfolio-ink [&_p]:mb-4 [&_p:last-child]:mb-0">
         <slot name="why-it-worked" />
       </div>
     </div>
-    <div class="flex gap-6 items-start w-full">
-      <p class="font-mono leading-[1.4] tracking-[-0.18px] text-portfolio-muted shrink-0 w-[200px]">Key takeaway</p>
+    <div class="flex flex-col sm:flex-row gap-2 sm:gap-6 items-start w-full">
+      <p class="font-mono leading-[1.4] tracking-[-0.18px] text-portfolio-muted shrink-0 w-full sm:w-[200px]">Key takeaway</p>
       <div class="flex-1 min-w-0 font-plex-sans font-light leading-8 text-portfolio-ink [&_p]:mb-4 [&_p:last-child]:mb-0">
         <slot name="key-takeaway" />
       </div>
     </div>
-    <div class="flex gap-6 items-start w-full">
-      <p class="font-mono leading-[1.4] tracking-[-0.18px] text-portfolio-muted shrink-0 w-[200px]">Project status</p>
+    <div class="flex flex-col sm:flex-row gap-2 sm:gap-6 items-start w-full">
+      <p class="font-mono leading-[1.4] tracking-[-0.18px] text-portfolio-muted shrink-0 w-full sm:w-[200px]">Project status</p>
       <div class="flex-1 min-w-0 font-plex-sans font-light leading-8 text-portfolio-ink">
         <slot name="project-status" />
       </div>

@@ -1,0 +1,245 @@
+---
+// Lightbox.astro — one shared overlay per page, opened by clicking any
+// element carrying data-lightbox-trigger (case-study images via
+// LightboxImage.astro, and the "Watch the overview" Loom button in
+// ProjectLayout.astro). Deliberately vanilla JS, not a React island — this
+// codebase has zero hydrated React components today, and everything
+// interactive (Footer.astro's theme toggle, the old Loom accordion this
+// replaces) is a plain <button> + <script> with getElementById/classList.
+// A lightbox's focus-trap/Escape/click-outside needs are small and stable
+// enough not to justify introducing React hydration just for this.
+import { Close } from 'pixelarticons/react/Close';
+import PillButton from '@/components/case-study/PillButton.astro';
+---
+
+<div
+  id="lightbox"
+  class="lightbox-backdrop fixed inset-0 z-50 hidden items-center justify-center p-6 sm:p-20"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Enlarged media"
+>
+  <div id="lightbox-content" class="lightbox-content relative">
+    <PillButton
+      id="lightbox-close"
+      icon={Close}
+      label="Close"
+      size="sm"
+      iconColor="oklch(58.6% 0.253 17.585)"
+      background="color-mix(in oklch, oklch(58.6% 0.253 17.585) 15%, transparent)"
+      class="absolute right-0 bottom-full mb-4"
+    />
+    <div id="lightbox-media" class="rounded-lg overflow-hidden"></div>
+  </div>
+</div>
+
+<style>
+  /* --lightbox-backdrop (global.css) is its own theme-aware token, not
+     --portfolio-ink — a near-black scrim reads fine over a dark page, but
+     the same near-black tint over the light theme's page just looked like
+     a broken dark overlay, not an intentional scrim. */
+  .lightbox-backdrop {
+    background-color: var(--lightbox-backdrop);
+    opacity: 0;
+    transition: opacity 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .lightbox-backdrop.is-open {
+    display: flex;
+    opacity: 1;
+  }
+
+  .lightbox-content {
+    opacity: 0;
+    transform: scale(0.96);
+    transition:
+      opacity 200ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .lightbox-backdrop.is-open .lightbox-content {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  #lightbox-media :global(img),
+  #lightbox-media :global(iframe) {
+    display: block;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lightbox-backdrop,
+    .lightbox-content {
+      transition-duration: 0.01ms;
+    }
+  }
+</style>
+
+<script>
+  import { MEDIA_FRAME_SHADOW } from '@/lib/media';
+
+  // Delegated listener so any current or future [data-lightbox-trigger]
+  // element (an <img>-wrapping LightboxImage, or the Loom overview button)
+  // opens this one shared instance — the script never needs to know how
+  // many triggers exist or where they live in the DOM.
+  const backdrop = document.getElementById('lightbox');
+  const content = document.getElementById('lightbox-content');
+  const media = document.getElementById('lightbox-media');
+  const closeButton = document.getElementById('lightbox-close');
+
+  let lastFocusedTrigger: HTMLElement | null = null;
+
+  function prefersReducedMotion() {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  // Shared sizing rule for both images and the Loom iframe: scale the
+  // source's natural size by 1.3x, but on narrow viewports skip the
+  // multiplier entirely and just fit the media to the screen instead of
+  // scaling-then-clipping. Above that breakpoint, the 1.3x result is still
+  // re-clamped against 90% of the viewport as a ceiling for unusually
+  // large source images.
+  function computeEnlargedSize(naturalWidth: number, naturalHeight: number) {
+    const ratio = naturalWidth / naturalHeight;
+    const isNarrowViewport = window.innerWidth < 640;
+
+    let width: number;
+    if (isNarrowViewport) {
+      width = window.innerWidth * 0.92;
+    } else {
+      width = Math.min(naturalWidth * 1.3, window.innerWidth * 0.9);
+    }
+
+    let height = width / ratio;
+    const maxHeight = window.innerHeight * (isNarrowViewport ? 0.85 : 0.9);
+    if (height > maxHeight) {
+      height = maxHeight;
+      width = height * ratio;
+    }
+
+    return { width, height };
+  }
+
+  // MEDIA_FRAME_SHADOW's inset layers are a bevel meant to sit on the
+  // clipping container's own edge, not on the media inside it — putting the
+  // shadow directly on the <img>/<iframe> let the inset highlight render as
+  // a visible sliver inside the media's own content instead of flush
+  // against the rounded corner (same bug, same fix, as LightboxImage.astro).
+  // So #lightbox-media itself is sized and shadowed here; the leaf element
+  // just fills it edge to edge.
+  function buildImageMedia(trigger: HTMLElement) {
+    const sourceImg = trigger.querySelector('img');
+    if (!sourceImg) return null;
+
+    const { width, height } = computeEnlargedSize(
+      sourceImg.naturalWidth || sourceImg.width,
+      sourceImg.naturalHeight || sourceImg.height,
+    );
+
+    const img = document.createElement('img');
+    img.src = sourceImg.src;
+    img.alt = sourceImg.alt;
+    img.className = 'block size-full object-cover';
+    return { el: img, width, height };
+  }
+
+  function buildIframeMedia(trigger: HTMLElement) {
+    const src = trigger.getAttribute('data-lightbox-src');
+    if (!src) return null;
+
+    // No natural size to read for an iframe — use its fixed aspect ratio
+    // (matches the inline embed box this replaces) as the basis instead.
+    const { width, height } = computeEnlargedSize(1008, 567);
+
+    const iframe = document.createElement('iframe');
+    iframe.src = src;
+    iframe.title = 'Video walkthrough';
+    iframe.allow = 'fullscreen; picture-in-picture';
+    iframe.allowFullscreen = true;
+    iframe.className = 'block size-full';
+    iframe.style.border = '0';
+    return { el: iframe, width, height };
+  }
+
+  function openLightbox(trigger: HTMLElement) {
+    if (!backdrop || !media) return;
+
+    const type = trigger.getAttribute('data-lightbox-type');
+    const built = type === 'iframe' ? buildIframeMedia(trigger) : buildImageMedia(trigger);
+    if (!built) return;
+
+    media.replaceChildren(built.el);
+    media.style.width = `${built.width}px`;
+    media.style.height = `${built.height}px`;
+    media.style.boxShadow = MEDIA_FRAME_SHADOW;
+    lastFocusedTrigger = trigger;
+
+    backdrop.classList.remove('hidden');
+    // Force layout before adding .is-open so the opacity/transform
+    // transition actually runs instead of snapping straight to the open
+    // state (removing `hidden` and adding the transition class in the same
+    // tick would otherwise skip the transition on the first paint).
+    requestAnimationFrame(() => backdrop.classList.add('is-open'));
+
+    document.body.style.overflow = 'hidden';
+    closeButton?.focus();
+  }
+
+  function closeLightbox() {
+    if (!backdrop || !media) return;
+
+    backdrop.classList.remove('is-open');
+    const finish = () => {
+      backdrop.classList.add('hidden');
+      media.replaceChildren();
+      document.body.style.overflow = '';
+      lastFocusedTrigger?.focus();
+      lastFocusedTrigger = null;
+    };
+
+    if (prefersReducedMotion()) {
+      finish();
+    } else {
+      backdrop.addEventListener('transitionend', finish, { once: true });
+    }
+  }
+
+  document.addEventListener('click', (e) => {
+    const trigger = (e.target as HTMLElement)?.closest<HTMLElement>('[data-lightbox-trigger]');
+    if (trigger) {
+      e.preventDefault();
+      openLightbox(trigger);
+    }
+  });
+
+  // LightboxImage's trigger is a <span role="button">, which — unlike a
+  // native <button> — doesn't activate on Enter/Space by itself.
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    const trigger = (e.target as HTMLElement)?.closest<HTMLElement>('[data-lightbox-trigger]');
+    if (trigger) {
+      e.preventDefault();
+      openLightbox(trigger);
+    }
+  });
+
+  closeButton?.addEventListener('click', closeLightbox);
+
+  backdrop?.addEventListener('click', (e) => {
+    if (e.target === backdrop) closeLightbox();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    if (!backdrop?.classList.contains('is-open')) return;
+    closeLightbox();
+  });
+
+  // Minimal focus trap: if focus ever lands outside the lightbox while
+  // it's open, pull it back to the close button.
+  document.addEventListener('focusin', (e) => {
+    if (!backdrop?.classList.contains('is-open')) return;
+    if (content?.contains(e.target as Node)) return;
+    closeButton?.focus();
+  });
+</script>
