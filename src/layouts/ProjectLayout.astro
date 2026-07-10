@@ -257,21 +257,27 @@ const Icon = icon;
   /* "The problem" gets a plain 1px stroke outline and its own left/right
      inset (on top of the padding-top/-bottom every section already has
      from the rule above) — the one section styled as a bordered card
-     rather than a plain full-bleed block. */
+     rather than a plain full-bleed block. padding-top/-bottom here
+     re-declare --ping-section-gap (the FIXED token), not
+     --ping-card-padding (the responsive one) — using the responsive
+     variable for the vertical sides was the exact bug this replaced:
+     it made this section's vertical gap shrink along with its horizontal
+     inset on mobile, instead of staying fixed like every other section's. */
   .article-body :global(.ping-section--problem) {
     border: 1px solid var(--section-border-color);
     border-radius: 0.75rem; /* 12px */
-    padding-top: var(--ping-card-padding);
-    padding-bottom: var(--ping-card-padding);
+    padding-top: var(--ping-section-gap);
+    padding-bottom: var(--ping-section-gap);
     padding-left: var(--ping-card-padding);
     padding-right: var(--ping-card-padding);
   }
 
   /* "The approach" gets the same left/right inset, matching "The problem"
-     above. */
+     above — vertical padding stays on the fixed --ping-section-gap for
+     the same reason. */
   .article-body :global(.ping-section--approach) {
-    padding-top: var(--ping-card-padding);
-    padding-bottom: var(--ping-card-padding);
+    padding-top: var(--ping-section-gap);
+    padding-bottom: var(--ping-section-gap);
     padding-left: var(--ping-card-padding);
     padding-right: var(--ping-card-padding);
   }
@@ -291,8 +297,8 @@ const Icon = icon;
      which reveals it only along the border's own width. */
   .article-body :global(.ping-section--solution) {
     border-radius: 0.75rem; /* 12px */
-    padding-top: var(--ping-card-padding);
-    padding-bottom: var(--ping-card-padding);
+    padding-top: var(--ping-section-gap);
+    padding-bottom: var(--ping-section-gap);
     padding-left: var(--ping-card-padding);
     padding-right: var(--ping-card-padding);
     border: 1px solid oklch(57.7% 0.215 27.3deg / 50%);
