@@ -75,8 +75,11 @@ const titleAfter = accentIndex >= 0 ? title.slice(accentIndex + (accentWord?.len
           </div>
         </div>
 
-        {/* Headline — accentWord (if set) renders italicized in the post's primary-category color */}
-        <h1 class="font-redaction text-[80px] tracking-[-2.4px] leading-[0.94] text-portfolio-ink">
+        {/* Headline — accentWord (if set) renders italicized in the post's primary-category color.
+            .portfolio-headline (global.css) is the shared big-title treatment
+            every headline on the site uses, including its fluid clamp()
+            font-size. */}
+        <h1 class="portfolio-headline">
           {titleBefore}
           {accentIndex >= 0 && (
             <span class={`italic ${primaryCategory?.text ?? ''}`}>{accentWord}</span>

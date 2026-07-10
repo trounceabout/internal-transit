@@ -1,10 +1,14 @@
 ---
 // ProjectLayout.astro — wraps an individual project's case-study page.
 // Adapted from BlogLayout.astro: swaps the date+tags meta row for a single
-// icon+eyebrow badge, and adds a Loom embed + caption section that articles
+// icon+eyebrow badge, and adds a Role/Scope properties row plus a Loom embed
+// (hidden until the reader opts in via "Watch the overview") that articles
 // don't have.
 import BaseLayout from './BaseLayout.astro';
+import Lightbox from '@/components/Lightbox.astro';
+import PillButton from '@/components/case-study/PillButton.astro';
 import { Home } from 'pixelarticons/react/Home';
+import { Play } from 'pixelarticons/react/Play';
 import type { ComponentType, SVGProps } from 'react';
 
 interface Props {
@@ -18,7 +22,8 @@ interface Props {
   description?: string;
   accentPhrase?: string;
   loomUrl?: string;
-  embedCaption?: string;
+  role?: string;
+  scope?: string;
 }
 
 const {
@@ -32,7 +37,8 @@ const {
   description,
   accentPhrase,
   loomUrl,
-  embedCaption,
+  role,
+  scope,
 } = Astro.props;
 
 // Dek paragraph (the 24px intro copy under the headline) prefers the longer
@@ -59,8 +65,20 @@ const Icon = icon;
 ---
 
 <BaseLayout title={name} description={tagline}>
-  <main class="mx-auto max-w-[1000px] px-6 py-18">
-    <article>
+  {/* Warms up the connection to Loom's domains as soon as the page loads,
+      instead of paying full DNS+TLS+redirect latency at the moment the
+      reader clicks "Watch the overview". Rendered into BaseLayout's named
+      "head" slot — a <link> in the default slot stays in <body> where
+      it's written, it isn't auto-hoisted to <head> the way <style>/<script>
+      tags are. */}
+  {embedSrc && (
+    <Fragment slot="head">
+      <link rel="preconnect" href="https://www.loom.com" />
+      <link rel="preconnect" href="https://cdn.loom.com" crossorigin />
+    </Fragment>
+  )}
+  <main class="mx-auto max-w-[1120px] py-18">
+    <article class="px-6 sm:px-10 lg:px-[60px]">
       <header data-animate class="flex flex-col gap-8 mb-12">
         {/* Breadcrumb: Home badge, then the project's own icon badge + eyebrow label
             (that project badge/label markup matches the home page's Work list rows) */}
@@ -95,8 +113,11 @@ const Icon = icon;
           </div>
         </div>
 
-        {/* Headline — accentPhrase (if set) renders italicized in the project's own iconColor */}
-        <h1 class="font-redaction text-[80px] tracking-[-2.4px] leading-[0.94] text-portfolio-ink">
+        {/* Headline — accentPhrase (if set) renders italicized in the project's own iconColor.
+            .portfolio-headline (global.css) is the shared big-title treatment
+            every headline on the site uses (home page, blog posts, case
+            studies), including its fluid clamp() font-size. */}
+        <h1 class="portfolio-headline">
           {taglineBefore}
           {accentIndex >= 0 && (
             <span
@@ -118,30 +139,42 @@ const Icon = icon;
           {dek}
         </p>
 
-        {embedSrc && (
-          <div class="flex flex-col gap-4">
-            <div
-              class="aspect-[1008/567] rounded-xl overflow-hidden relative"
-              style={{
-                backgroundColor: '#252525',
-                boxShadow:
-                  '0px 4px 7px 0px rgba(0,0,0,0.85), 0px 1px 2px 0px rgba(0,0,0,0.5), inset 0px 0.5px 0px 0px rgba(255,255,255,0.1), inset 0px 0px 0.5px 0px rgba(255,255,255,0.3)',
-              }}
-            >
-              <iframe
-                src={embedSrc}
-                title={`${name} video walkthrough`}
-                class="absolute inset-0 size-full"
-                allow="fullscreen; picture-in-picture"
-                allowfullscreen
-                loading="lazy"
-              />
+        {(embedSrc || role || scope) && (
+          <div class="flex flex-col gap-10">
+            {/* Properties row: overview toggle + Role/Scope, all optional so
+                a case study can omit any of them. The toggle now opens the
+                shared Lightbox (rendered once below) instead of an inline
+                accordion — clicking it is just another lightbox trigger,
+                identified to Lightbox.astro's delegated listener the same
+                way a case-study image is (see LightboxImage.astro). */}
+            <div class="flex flex-wrap gap-10 items-start">
+              {embedSrc && (
+                <PillButton
+                  id="overview-toggle"
+                  icon={Play}
+                  label="Watch the overview"
+                  iconColor="oklch(54.6% 0.245 262.881)"
+                  background="color-mix(in oklch, oklch(54.6% 0.245 262.881) 15%, transparent)"
+                  data-lightbox-trigger
+                  data-lightbox-type="iframe"
+                  data-lightbox-src={embedSrc}
+                />
+              )}
+
+              {role && (
+                <div class="flex flex-col gap-1 font-mono text-sm tracking-[-0.14px]">
+                  <p class="text-portfolio-muted">Role</p>
+                  <p class="text-portfolio-ink whitespace-nowrap">{role}</p>
+                </div>
+              )}
+
+              {scope && (
+                <div class="flex flex-col gap-1 flex-1 min-w-[240px] font-mono text-sm tracking-[-0.14px]">
+                  <p class="text-portfolio-muted">Scope</p>
+                  <p class="text-portfolio-ink">{scope}</p>
+                </div>
+              )}
             </div>
-            {embedCaption && (
-              <p class="font-plex-sans text-base leading-6 text-portfolio-ink">
-                {embedCaption}
-              </p>
-            )}
           </div>
         )}
 
@@ -152,6 +185,8 @@ const Icon = icon;
       </div>
     </article>
   </main>
+
+  <Lightbox />
 </BaseLayout>
 
 <style>
@@ -159,21 +194,158 @@ const Icon = icon;
      <Content /> in [slug].astro), so Astro's default *scoped* styles never
      attach to it — every rule here needs :global() or it silently does nothing.
      Mirrors BlogLayout.astro's identical block. */
+  /* Two separate spacing tokens, easy to conflate but serving different
+     jobs:
+       --ping-section-gap   — vertical rhythm BETWEEN sections. Stays a
+                               fixed 60px at every viewport width — this is
+                               breathing room in the reading flow, not
+                               something that should compress on mobile.
+       --ping-card-padding   — the INSET inside a bordered/gradient card
+                               (Problem/Approach/Solution) and the
+                               <article> wrapper's own horizontal margin.
+                               This one DOES scale down on narrow screens
+                               (24px mobile / 40px tablet / 60px desktop,
+                               matching <article>'s own
+                               px-6 sm:px-10 lg:px-[60px]) — a flat 60px
+                               inset squished the readable column badly on
+                               phones. Collapsing both into one variable
+                               previously made the inter-section gap shrink
+                               along with the card padding, which read as
+                               sections crowding each other on mobile. */
+  .article-body {
+    --ping-section-gap: 3.75rem; /* 60px, fixed at every width */
+    --ping-card-padding: 1.5rem; /* 24px */
+  }
+
+  @media (min-width: 40rem) {
+    .article-body {
+      --ping-card-padding: 2.5rem; /* 40px */
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .article-body {
+      --ping-card-padding: 3.75rem; /* 60px */
+    }
+  }
+
+  /* Each top-level block in the MDX body is wrapped in its own
+     `.ping-section`, so this gap can sit on both sides of a section as
+     real padding (padding needs a real box on each edge — a
+     margin-collapse-via-adjacency-selector approach only works for a flat
+     list of siblings, and margin between siblings COLLAPSES rather than
+     stacking, which reads as inconsistent spacing once some sections also
+     have their own border/background — a card's edge should have a
+     definite, non-collapsing gap around it). The first section only gets
+     bottom padding, matching Figma's Intro frame using pb-[60px] instead
+     of py-[60px] since there's nothing above it to pad against.
+     Problem/Approach/Solution below add their own padding-LEFT/RIGHT only
+     (not the `padding` shorthand) — the shorthand would overwrite this
+     rule's padding-top/-bottom outright, since both rules have equal
+     specificity and the later one wins on every side it touches. Setting
+     only the two horizontal longhands here means their own left/right
+     inset composes with (rather than replaces) this rule's vertical gap. */
+  .article-body :global(.ping-section) {
+    padding-top: var(--ping-section-gap);
+    padding-bottom: var(--ping-section-gap);
+  }
+
+  .article-body :global(.ping-section:first-child) {
+    padding-top: 0;
+  }
+
+  /* "The problem" gets a plain 1px stroke outline and its own left/right
+     inset (on top of the padding-top/-bottom every section already has
+     from the rule above) — the one section styled as a bordered card
+     rather than a plain full-bleed block. padding-top/-bottom here
+     re-declare --ping-section-gap (the FIXED token), not
+     --ping-card-padding (the responsive one) — using the responsive
+     variable for the vertical sides was the exact bug this replaced:
+     it made this section's vertical gap shrink along with its horizontal
+     inset on mobile, instead of staying fixed like every other section's. */
+  .article-body :global(.ping-section--problem) {
+    border: 1px solid var(--section-border-color);
+    border-radius: 0.75rem; /* 12px */
+    padding-top: var(--ping-section-gap);
+    padding-bottom: var(--ping-section-gap);
+    padding-left: var(--ping-card-padding);
+    padding-right: var(--ping-card-padding);
+  }
+
+  /* "The approach" gets the same left/right inset, matching "The problem"
+     above — vertical padding stays on the fixed --ping-section-gap for
+     the same reason. */
+  .article-body :global(.ping-section--approach) {
+    padding-top: var(--ping-section-gap);
+    padding-bottom: var(--ping-section-gap);
+    padding-left: var(--ping-card-padding);
+    padding-right: var(--ping-card-padding);
+  }
+
+  /* "The solution" gets a gradient background + a genuine gradient border,
+     both tinted by the project's own --icon-color (set inline in the MDX,
+     resolved the same way the headline accent and Postscript's divider
+     already do) — so a future case study with a different accent color
+     gets a matching treatment instead of Ping's specific red. A plain
+     `border-color` can't be a gradient, so this uses the standard
+     double-background technique: three stacked background-images, the
+     first painted into the padding-box as an opaque page-background
+     stand-in (so the middle/inner area isn't see-through where the two
+     accent gradients don't fully cover it), the second (the fill
+     gradient) also clipped to the padding-box, and the third (the border
+     gradient) clipped to the border-box beneath a transparent border,
+     which reveals it only along the border's own width. */
+  .article-body :global(.ping-section--solution) {
+    border-radius: 0.75rem; /* 12px */
+    padding-top: var(--ping-section-gap);
+    padding-bottom: var(--ping-section-gap);
+    padding-left: var(--ping-card-padding);
+    padding-right: var(--ping-card-padding);
+    border: 1px solid oklch(57.7% 0.215 27.3deg / 50%);
+    background: linear-gradient(0deg, rgba(220, 38, 38, 0.00) 0%, rgba(220, 38, 38, 0.13) 100%);
+    background-origin: border-box;
+    background-clip: padding-box, padding-box, border-box;
+  }
+
+  /* A heading still sits close to the content directly under it (16px),
+     same as Figma's "The problem"/"The approach" heading+paragraph groups —
+     this is intra-section spacing, unaffected by the section padding above. */
+  .article-body :global(h2 + *) {
+    margin-top: 1rem; /* 16px */
+  }
+
   .article-body :global(h2) {
     font-family: var(--font-plex-sans);
     font-weight: 500;
     font-size: 1.5rem; /* 24px */
     line-height: 2.5rem; /* 40px */
     color: var(--portfolio-ink);
-    margin-bottom: 1rem; /* 16px, space after a heading before its paragraph */
   }
 
   .article-body :global(p) {
     font-family: var(--font-plex-sans);
     font-size: 1.125rem; /* 18px */
     line-height: 2rem; /* 32px */
-    margin-bottom: 2.5rem; /* 40px between sibling paragraphs */
     font-weight: 300;
+  }
+
+  /* Paragraphs immediately following another paragraph (e.g. "The problem"'s
+     three-paragraph run) sit tighter than the 40px inter-block gap above —
+     Figma treats runs of body copy as one 16px-spaced group. */
+  .article-body :global(p + p) {
+    margin-top: 1rem; /* 16px */
+  }
+
+  /* Every `.ping-section` in Figma is a `flex flex-col gap-[40px]` —
+     Intro's paragraphs vs. its image, Approach's copy vs. its two-image row,
+     a Point's LabeledRow vs. its LoopVideo, all 40px apart regardless of
+     element type. This is intra-section spacing between a section's direct
+     children, distinct from `.ping-section`'s own 60px outer padding above.
+     `:not(p)` keeps this from overriding the tighter 16px `p + p` run
+     spacing below — a `p` following a `p` should stay at 16px, not jump to
+     40px just because both happen to sit inside a `.ping-section`. */
+  .article-body :global(.ping-section > * + *:not(p)) {
+    margin-top: 2.5rem; /* 40px */
   }
 
   .article-body :global(a) {
@@ -181,9 +353,5 @@ const Icon = icon;
     text-decoration: underline;
     text-decoration-skip-ink: none;
     text-underline-position: from-font;
-  }
-
-  .article-body :global(> p:last-of-type) {
-    margin-bottom: 0;
   }
 </style>

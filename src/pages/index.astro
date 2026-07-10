@@ -21,7 +21,7 @@ const latestPosts = (await getCollection("blog", ({ data }) => !data.draft))
         <div class="flex flex-col items-center gap-8 w-full pt-12 pb-8">
             <p
                 data-animate
-                class="font-redaction text-[56px] sm:text-[80px] lg:text-[80px] leading-[0.94] tracking-[-1.68px] sm:tracking-[-2.4px] lg:tracking-[-3.36px] text-portfolio-ink text-left"
+                class="portfolio-headline text-left"
             >
                 Hi, I'm
                 <span class="whitespace-nowrap">
@@ -81,7 +81,7 @@ const latestPosts = (await getCollection("blog", ({ data }) => !data.draft))
                             </div>
                         );
                         return project.data.published ? (
-                            <a href={`/projects/${project.id}`} class="w-full">
+                            <a href={`/projects/${project.id}`} class="contents">
                                 {row}
                             </a>
                         ) : (
