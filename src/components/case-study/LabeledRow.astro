@@ -1,0 +1,21 @@
+---
+// LabeledRow.astro — the "From X to Y" solution sub-section pattern: a bold
+// Plex Sans label in a fixed-width column next to the Plex Sans body copy.
+// Postscript.astro's rows look similar but use a different font/color/width
+// (mono, muted, narrower), so they're styled separately there rather than
+// forcing one component to cover both shapes.
+interface Props {
+  label: string;
+}
+
+const { label } = Astro.props;
+---
+
+<div class="flex gap-4 items-start w-full">
+    <span class="font-plex-sans font-semibold text-lg leading-8 text-portfolio-ink shrink-0 w-[248px]">
+    {label}
+    </span>
+  <div class="flex-1 min-w-0 font-plex-sans text-lg leading-8 font-light text-portfolio-ink [&_p]:mb-4 [&_p:last-child]:mb-0">
+    <slot />
+  </div>
+</div>

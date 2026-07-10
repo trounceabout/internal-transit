@@ -1,0 +1,66 @@
+---
+// Postscript.astro — closing section every case study ends with. The three
+// subheads (Why it worked / Key takeaway / Project status) are fixed across
+// every project; only the row content passed in via slots changes per case
+// study. Rows use their own mono/muted/narrower style here rather than
+// LabeledRow's bold-Plex-Sans solution-section look — same label+value
+// shape, different visual treatment per Figma.
+// The divider rule is colored per-project (like the headline's accent
+// phrase and icon badge) rather than a fixed site color, via the same
+// --icon-color-light/-dark custom-property pattern ProjectLayout.astro
+// already uses — see global.css's [style*="--icon-color-light"] rules.
+interface Props {
+  iconColor?: string;
+  iconColorDark?: string;
+}
+
+const { iconColor, iconColorDark } = Astro.props;
+---
+
+<section class="flex flex-col gap-6 pt-10">
+  <div class="flex gap-6 items-center w-full">
+      <span class="font-mono italic font-normal postscript-heading text-[32px] leading-[0.94] tracking-[-0.96px] text-portfolio-ink m-0">
+      The postscript
+    </span>
+    <div
+      class="flex-1 h-px"
+      style={{
+        backgroundColor: 'var(--icon-color)',
+        ...(iconColor ? { '--icon-color-light': iconColor } : {}),
+        ...(iconColorDark ? { '--icon-color-dark': iconColorDark } : {}),
+      }}
+    ></div>
+  </div>
+
+  <div class="flex flex-col gap-8 w-full text-lg">
+    <div class="flex gap-6 items-baseline w-full">
+      <p class="font-mono leading-[1.4] tracking-[-0.18px] text-portfolio-muted shrink-0 w-[200px]">Why it worked</p>
+      <div class="flex-1 min-w-0 font-plex-sans font-light leading-8 text-portfolio-ink [&_p]:mb-4 [&_p:last-child]:mb-0">
+        <slot name="why-it-worked" />
+      </div>
+    </div>
+    <div class="flex gap-6 items-start w-full">
+      <p class="font-mono leading-[1.4] tracking-[-0.18px] text-portfolio-muted shrink-0 w-[200px]">Key takeaway</p>
+      <div class="flex-1 min-w-0 font-plex-sans font-light leading-8 text-portfolio-ink [&_p]:mb-4 [&_p:last-child]:mb-0">
+        <slot name="key-takeaway" />
+      </div>
+    </div>
+    <div class="flex gap-6 items-start w-full">
+      <p class="font-mono leading-[1.4] tracking-[-0.18px] text-portfolio-muted shrink-0 w-[200px]">Project status</p>
+      <div class="flex-1 min-w-0 font-plex-sans font-light leading-8 text-portfolio-ink">
+        <slot name="project-status" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Figma calls out fontFeatureSettings "salt" 1 on this heading — IBM Plex
+     Mono's stylistic-alternates set, which swaps in the single-story italic
+     'a'/'g' etc. that make the italic read as a genuine alternate face
+     rather than just a slanted version of the upright glyphs. Plain
+     `italic` alone doesn't turn this feature on. */
+  .postscript-heading {
+    font-feature-settings: "salt" 1;
+  }
+</style>
