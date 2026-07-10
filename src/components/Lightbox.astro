@@ -213,11 +213,18 @@ import PillButton from '@/components/case-study/PillButton.astro';
   });
 
   // LightboxImage's trigger is a <span role="button">, which — unlike a
-  // native <button> — doesn't activate on Enter/Space by itself.
+  // native <button> — doesn't activate on Enter/Space by itself, so this
+  // listener does it manually. PillButton's trigger IS a real <button>,
+  // which the browser already activates on Enter/Space by dispatching its
+  // own synthesized click — e.preventDefault() here doesn't suppress that,
+  // so without the tagName check below, pressing Enter/Space on a button
+  // trigger called openLightbox() twice (once here, once from the
+  // resulting native click). Excluding <button> elements isn't dead code —
+  // it's what stops that double-fire.
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Enter' && e.key !== ' ') return;
     const trigger = (e.target as HTMLElement)?.closest<HTMLElement>('[data-lightbox-trigger]');
-    if (trigger) {
+    if (trigger && trigger.tagName !== 'BUTTON') {
       e.preventDefault();
       openLightbox(trigger);
     }
