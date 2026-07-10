@@ -1,10 +1,13 @@
 ---
 // ProjectLayout.astro — wraps an individual project's case-study page.
 // Adapted from BlogLayout.astro: swaps the date+tags meta row for a single
-// icon+eyebrow badge, and adds a Loom embed + caption section that articles
+// icon+eyebrow badge, and adds a Role/Scope properties row plus a Loom embed
+// (hidden until the reader opts in via "Watch the overview") that articles
 // don't have.
 import BaseLayout from './BaseLayout.astro';
 import { Home } from 'pixelarticons/react/Home';
+import { Play } from 'pixelarticons/react/Play';
+import { Close } from 'pixelarticons/react/Close';
 import type { ComponentType, SVGProps } from 'react';
 
 interface Props {
@@ -19,6 +22,8 @@ interface Props {
   accentPhrase?: string;
   loomUrl?: string;
   embedCaption?: string;
+  role?: string;
+  scope?: string;
 }
 
 const {
@@ -33,6 +38,8 @@ const {
   accentPhrase,
   loomUrl,
   embedCaption,
+  role,
+  scope,
 } = Astro.props;
 
 // Dek paragraph (the 24px intro copy under the headline) prefers the longer
@@ -118,29 +125,82 @@ const Icon = icon;
           {dek}
         </p>
 
-        {embedSrc && (
-          <div class="flex flex-col gap-4">
-            <div
-              class="aspect-[1008/567] rounded-xl overflow-hidden relative"
-              style={{
-                backgroundColor: '#252525',
-                boxShadow:
-                  '0px 4px 7px 0px rgba(0,0,0,0.85), 0px 1px 2px 0px rgba(0,0,0,0.5), inset 0px 0.5px 0px 0px rgba(255,255,255,0.1), inset 0px 0px 0.5px 0px rgba(255,255,255,0.3)',
-              }}
-            >
-              <iframe
-                src={embedSrc}
-                title={`${name} video walkthrough`}
-                class="absolute inset-0 size-full"
-                allow="fullscreen; picture-in-picture"
-                allowfullscreen
-                loading="lazy"
-              />
+        {(embedSrc || role || scope) && (
+          <div class="flex flex-col gap-10">
+            {/* Properties row: overview toggle + Role/Scope, all optional so
+                a case study can omit any of them. */}
+            <div class="flex flex-wrap gap-10 items-start">
+              {embedSrc && (
+                <button
+                  type="button"
+                  id="overview-toggle"
+                  aria-expanded="false"
+                  class="inline-flex items-center gap-2 shrink-0 rounded-full pl-3 pr-4 py-3 font-mono text-lg tracking-[-0.18px] text-portfolio-ink bg-[rgba(33,92,215,0.25)] transition-colors"
+                >
+                  <Play
+                    width={24}
+                    height={24}
+                    className="overview-toggle-icon-play"
+                  />
+                  <Close
+                    width={24}
+                    height={24}
+                    className="overview-toggle-icon-close hidden"
+                  />
+                  <span class="overview-toggle-label">Watch the overview</span>
+                </button>
+              )}
+
+              {role && (
+                <div class="flex flex-col gap-1 font-mono text-sm tracking-[-0.14px]">
+                  <p class="text-portfolio-muted">Role</p>
+                  <p class="text-portfolio-ink whitespace-nowrap">{role}</p>
+                </div>
+              )}
+
+              {scope && (
+                <div class="flex flex-col gap-1 flex-1 min-w-[240px] font-mono text-sm tracking-[-0.14px]">
+                  <p class="text-portfolio-muted">Scope</p>
+                  <p class="text-portfolio-ink">{scope}</p>
+                </div>
+              )}
             </div>
-            {embedCaption && (
-              <p class="font-plex-sans text-base leading-6 text-portfolio-ink">
-                {embedCaption}
-              </p>
+
+            {/* Video: collapsed by default, revealed top-to-bottom by the
+                overview toggle above. The grid-rows trick animates to the
+                content's natural height without any JS measuring the DOM. */}
+            {embedSrc && (
+              <div
+                id="overview-video"
+                class="grid overview-video-collapsed"
+              >
+                <div class="overflow-hidden min-h-0">
+                  <div class="flex flex-col gap-4 pt-2">
+                    <div
+                      class="aspect-[1008/567] rounded-xl overflow-hidden relative"
+                      style={{
+                        backgroundColor: '#252525',
+                        boxShadow:
+                          '0px 4px 7px 0px rgba(0,0,0,0.85), 0px 1px 2px 0px rgba(0,0,0,0.5), inset 0px 0.5px 0px 0px rgba(255,255,255,0.1), inset 0px 0px 0.5px 0px rgba(255,255,255,0.3)',
+                      }}
+                    >
+                      <iframe
+                        src={embedSrc}
+                        title={`${name} video walkthrough`}
+                        class="absolute inset-0 size-full"
+                        allow="fullscreen; picture-in-picture"
+                        allowfullscreen
+                        loading="lazy"
+                      />
+                    </div>
+                    {embedCaption && (
+                      <p class="font-plex-sans text-base leading-6 text-portfolio-ink">
+                        {embedCaption}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
             )}
           </div>
         )}
@@ -159,21 +219,40 @@ const Icon = icon;
      <Content /> in [slug].astro), so Astro's default *scoped* styles never
      attach to it — every rule here needs :global() or it silently does nothing.
      Mirrors BlogLayout.astro's identical block. */
+  /* Every direct child of the body (paragraphs, headings, images, and
+     case-study components like LabeledRow/LoopVideo/Postscript alike) sits
+     40px apart, matching the flat 40px gap Figma uses between every
+     top-level block in the case-study body. A heading is the one exception
+     — it sits close to the content directly under it (16px), same as
+     Figma's "The problem"/"The approach" heading+paragraph groups. */
+  .article-body :global(> * + *) {
+    margin-top: 2.5rem; /* 40px */
+  }
+
+  .article-body :global(h2 + *) {
+    margin-top: 1rem; /* 16px */
+  }
+
   .article-body :global(h2) {
     font-family: var(--font-plex-sans);
     font-weight: 500;
     font-size: 1.5rem; /* 24px */
     line-height: 2.5rem; /* 40px */
     color: var(--portfolio-ink);
-    margin-bottom: 1rem; /* 16px, space after a heading before its paragraph */
   }
 
   .article-body :global(p) {
     font-family: var(--font-plex-sans);
     font-size: 1.125rem; /* 18px */
     line-height: 2rem; /* 32px */
-    margin-bottom: 2.5rem; /* 40px between sibling paragraphs */
     font-weight: 300;
+  }
+
+  /* Paragraphs immediately following another paragraph (e.g. "The problem"'s
+     three-paragraph run) sit tighter than the 40px inter-block gap above —
+     Figma treats runs of body copy as one 16px-spaced group. */
+  .article-body :global(p + p) {
+    margin-top: 1rem; /* 16px */
   }
 
   .article-body :global(a) {
@@ -183,7 +262,45 @@ const Icon = icon;
     text-underline-position: from-font;
   }
 
-  .article-body :global(> p:last-of-type) {
-    margin-bottom: 0;
+  /* Collapsed = 0fr row (renders at zero height but stays in the layout),
+     expanded = 1fr (grows to the content's natural height). Transitioning
+     grid-template-rows animates height without ever measuring scrollHeight
+     in JS. */
+  #overview-video {
+    grid-template-rows: 1fr;
+    transition: grid-template-rows 400ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  #overview-video.overview-video-collapsed {
+    grid-template-rows: 0fr;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #overview-video {
+      transition-duration: 0.01ms;
+    }
   }
 </style>
+
+<script>
+  // Same vanilla-JS toggle shape as Footer.astro's theme switcher: a plain
+  // button + classList.toggle, no framework/hydration involved. The video
+  // itself never unmounts — collapsing to zero height via CSS is enough,
+  // and keeps the iframe's Loom player from having to reload on re-open.
+  const button = document.getElementById('overview-toggle');
+  const video = document.getElementById('overview-video');
+  const playIcon = button?.querySelector('.overview-toggle-icon-play');
+  const closeIcon = button?.querySelector('.overview-toggle-icon-close');
+  const label = button?.querySelector('.overview-toggle-label');
+
+  button?.addEventListener('click', () => {
+    const isOpen = !video?.classList.contains('overview-video-collapsed');
+    video?.classList.toggle('overview-video-collapsed');
+    button.setAttribute('aria-expanded', String(!isOpen));
+    playIcon?.classList.toggle('hidden', !isOpen);
+    closeIcon?.classList.toggle('hidden', isOpen);
+    if (label) {
+      label.textContent = isOpen ? 'Watch the overview' : 'Close the overview';
+    }
+  });
+</script>
