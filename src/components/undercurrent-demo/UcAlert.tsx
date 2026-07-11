@@ -42,7 +42,7 @@ export default function UcAlert({ title, body, dismissLabel }: UcAlertProps) {
         <div className="flex items-stretch gap-[var(--uc-demo-space-100)]">
           <button
             type="button"
-            className="inline-flex h-[var(--uc-demo-size-sm)] w-full items-center justify-center rounded-[var(--uc-demo-radius-full)] px-[var(--uc-demo-space-150)] text-sm font-medium sm:w-auto"
+            className="inline-flex h-[var(--uc-demo-size-lg)] w-full items-center justify-center rounded-[var(--uc-demo-radius-full)] px-[var(--uc-demo-space-150)] text-sm font-medium sm:w-auto"
             style={{
               backgroundColor: 'var(--uc-demo-neutral-bg-weak)',
               color: 'var(--uc-demo-neutral-text-main)',
