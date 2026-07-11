@@ -1,0 +1,240 @@
+/* Undercurrent case-study sandbox — scoped design tokens.
+   This is a visual clone of the real Undercurrent design system (a separate
+   React+MUI+Emotion repo), rebuilt from scratch for this one demo. These
+   tokens intentionally mirror Undercurrent's real semantic token *names*
+   (neutral bg/text/border/icon, plus highlight/success/warning/danger color
+   groups) so this file stays easy to audit against the real system, but the
+   values only cover what the 7 demo components actually use — this is not
+   a general-purpose token system.
+
+   Only imported by the sandbox's root component, so these rules never
+   affect any other page. */
+
+/* ─── Base typography ───────────────────────────────────────────────────
+   The case-study article body (.article-body in ProjectLayout.astro) sets
+   font-family: var(--font-plex-sans) on itself, which every element in the
+   MDX content inherits by default — including this island, since it renders
+   real DOM nodes inside that wrapper. Undercurrent's real components use
+   Geist Sans, so it's set explicitly here rather than relying on whatever
+   the surrounding page happens to inherit. Geist Mono (secondary/technical
+   text) is set per-element where needed, same as the real design system. */
+.uc-demo {
+  font-family: var(--font-sans);
+}
+
+/* Every demo component reads its colors from --uc-demo-active-*, which
+   changes instantly the moment data-uc-variant flips (CSS custom
+   properties aren't themselves animatable) — this is what makes the actual
+   painted color properties glide instead of snapping when the swatch
+   switches. Scoped to [data-uc-variant]'s own descendants specifically
+   (the inner bordered frame holding the 7 demo components), not the outer
+   .uc-demo wrapper — the swatch row also lives under .uc-demo but already
+   has its own motion/react-driven transition, and applying both here too
+   would fight over the same background-color/color properties. */
+[data-uc-variant] :where(*) {
+  transition:
+    background-color 200ms ease-out,
+    border-color 200ms ease-out,
+    color 200ms ease-out;
+}
+
+/* ─── Neutral tokens (dark is the default; .dark class matches this file's
+   own scope the same way global.css's :root/.dark pair does) ───────────── */
+.uc-demo {
+  --uc-demo-neutral-bg-main: #262523;
+  --uc-demo-neutral-bg-weak: #181716;
+  --uc-demo-neutral-bg-strong: #ffffff;
+  --uc-demo-neutral-text-main: #ffffff;
+  --uc-demo-neutral-text-medium: #e6e5e4;
+  --uc-demo-neutral-text-weak: #a7a49f;
+  --uc-demo-neutral-text-strong: #181716;
+  --uc-demo-neutral-border-weak: #43413d;
+  --uc-demo-neutral-icon-weak: #a7a49f;
+
+  /* ─── Color groups (raw values, before the active-variant redirection) ── */
+  --uc-demo-highlight-bg-main: #1c42a8;
+  --uc-demo-highlight-bg-strong: #bad2fd;
+  --uc-demo-highlight-border-weak: #2159d4;
+  --uc-demo-highlight-border-main: #bad2fd;
+  --uc-demo-highlight-border-medium: #6097f9;
+  --uc-demo-highlight-text-main: #bad2fd;
+  --uc-demo-highlight-text-weak: #1c42a8;
+  --uc-demo-highlight-icon-main: #bad2fd;
+
+  --uc-demo-success-bg-main: #14532d;
+  --uc-demo-success-bg-strong: #bbf7d0;
+  --uc-demo-success-border-weak: #166534;
+  --uc-demo-success-border-main: #86efac;
+  --uc-demo-success-text-main: #86efac;
+  --uc-demo-success-text-weak: #14532d;
+  --uc-demo-success-icon-main: #86efac;
+
+  --uc-demo-warning-bg-main: #713f12;
+  --uc-demo-warning-bg-strong: #fde047;
+  --uc-demo-warning-border-weak: #854d0e;
+  --uc-demo-warning-border-main: #fde047;
+  --uc-demo-warning-text-main: #fde047;
+  --uc-demo-warning-text-weak: #713f12;
+  --uc-demo-warning-icon-main: #fde047;
+
+  --uc-demo-danger-bg-main: #7f1d1d;
+  --uc-demo-danger-bg-strong: #fecaca;
+  --uc-demo-danger-border-weak: #991b1b;
+  --uc-demo-danger-border-main: #fca5a5;
+  --uc-demo-danger-text-main: #f87171;
+  --uc-demo-danger-text-weak: #7f1d1d;
+  --uc-demo-danger-icon-main: #f87171;
+
+  /* ─── Swatch chip colors (the 4 color-toggle buttons above the demo
+     frame) — a distinct, fixed color pairing per swatch, separate from the
+     -bg-main/-text-main tokens above since those are tuned for the demo
+     components' own surfaces, not this chip's specific look. */
+  --uc-demo-swatch-highlight-text: #eef4ff;
+  --uc-demo-swatch-highlight-bg: #1c42a8;
+  --uc-demo-swatch-success-text: #dcfce7;
+  --uc-demo-swatch-success-bg: #14532d;
+  --uc-demo-swatch-warning-text: #fef9c3;
+  --uc-demo-swatch-warning-bg: #713f12;
+  --uc-demo-swatch-danger-text: #fee2e2;
+  --uc-demo-swatch-danger-bg: #7f1d1d;
+}
+
+.dark .uc-demo,
+.uc-demo.dark {
+  /* Dark values are identical to the base block above — this site defaults
+     its color-scheme detection through a `.dark` class on <html>, and the
+     sandbox's dark tokens ARE the defaults. This rule exists so light mode
+     (below) has something concrete to override, and so the dark values are
+     explicit rather than "whatever happens if nothing overrides them." */
+  --uc-demo-neutral-bg-main: #262523;
+  --uc-demo-neutral-bg-weak: #181716;
+  --uc-demo-neutral-bg-strong: #ffffff;
+  --uc-demo-neutral-text-main: #ffffff;
+  --uc-demo-neutral-text-medium: #e6e5e4;
+  --uc-demo-neutral-text-weak: #a7a49f;
+  --uc-demo-neutral-text-strong: #181716;
+  --uc-demo-neutral-border-weak: #43413d;
+  --uc-demo-neutral-icon-weak: #a7a49f;
+}
+
+/* ─── Light mode overrides ──────────────────────────────────────────────── */
+:root:not(.dark) .uc-demo,
+.uc-demo.light {
+  --uc-demo-neutral-bg-main: #ffffff;
+  --uc-demo-neutral-bg-weak: #f6f5f4;
+  --uc-demo-neutral-bg-strong: #191715;
+  --uc-demo-neutral-text-main: #191715;
+  --uc-demo-neutral-text-medium: #46413a;
+  --uc-demo-neutral-text-weak: #5a534a;
+  --uc-demo-neutral-text-strong: #ffffff;
+  --uc-demo-neutral-border-weak: #e8e5e2;
+  --uc-demo-neutral-icon-weak: #5a534a;
+
+  --uc-demo-highlight-bg-main: #eef4ff;
+  --uc-demo-highlight-bg-strong: #3d7bf5;
+  --uc-demo-highlight-border-weak: #dce9fe;
+  --uc-demo-highlight-border-main: #3d7bf5;
+  --uc-demo-highlight-border-medium: #90b6fc;
+  --uc-demo-highlight-text-main: #3d7bf5;
+  --uc-demo-highlight-text-weak: #eef4ff;
+  --uc-demo-highlight-icon-main: #3d7bf5;
+
+  --uc-demo-success-bg-main: #f0fdf4;
+  --uc-demo-success-bg-strong: #15803d;
+  --uc-demo-success-border-weak: #dcfce7;
+  --uc-demo-success-border-main: #15803d;
+  --uc-demo-success-text-main: #15803d;
+  --uc-demo-success-text-weak: #f0fdf4;
+  --uc-demo-success-icon-main: #15803d;
+
+  --uc-demo-warning-bg-main: #fef9c3;
+  --uc-demo-warning-bg-strong: #facc15;
+  --uc-demo-warning-border-weak: #fef08a;
+  --uc-demo-warning-border-main: #a16207;
+  --uc-demo-warning-text-main: #a16207;
+  --uc-demo-warning-text-weak: #fef9c3;
+  --uc-demo-warning-icon-main: #a16207;
+
+  --uc-demo-danger-bg-main: #fef2f2;
+  --uc-demo-danger-bg-strong: #dc2626;
+  --uc-demo-danger-border-weak: #fee2e2;
+  --uc-demo-danger-border-main: #b91c1c;
+  --uc-demo-danger-text-main: #b91c1c;
+  --uc-demo-danger-text-weak: #fef2f2;
+  --uc-demo-danger-icon-main: #b91c1c;
+
+  --uc-demo-swatch-highlight-text: #2159d4;
+  --uc-demo-swatch-highlight-bg: #dce9fe;
+  --uc-demo-swatch-success-text: #166534;
+  --uc-demo-swatch-success-bg: #dcfce7;
+  --uc-demo-swatch-warning-text: #854d0e;
+  --uc-demo-swatch-warning-bg: #fef08a;
+  --uc-demo-swatch-danger-text: #b91c1c;
+  --uc-demo-swatch-danger-bg: #fee2e2;
+}
+
+/* ─── Active-variant redirection ────────────────────────────────────────
+   Components only ever read --uc-demo-active-*. Switching the color swatch
+   is just flipping this one data attribute on the sandbox root — the
+   cascade does the rest, no per-component JS lookup needed. */
+.uc-demo[data-uc-variant="highlight"] {
+  --uc-demo-active-bg-main: var(--uc-demo-highlight-bg-main);
+  --uc-demo-active-bg-strong: var(--uc-demo-highlight-bg-strong);
+  --uc-demo-active-border-weak: var(--uc-demo-highlight-border-weak);
+  --uc-demo-active-border-main: var(--uc-demo-highlight-border-main);
+  --uc-demo-active-border-medium: var(--uc-demo-highlight-border-medium);
+  --uc-demo-active-text-main: var(--uc-demo-highlight-text-main);
+  --uc-demo-active-text-weak: var(--uc-demo-highlight-text-weak);
+  --uc-demo-active-icon-main: var(--uc-demo-highlight-icon-main);
+}
+
+.uc-demo[data-uc-variant="success"] {
+  --uc-demo-active-bg-main: var(--uc-demo-success-bg-main);
+  --uc-demo-active-bg-strong: var(--uc-demo-success-bg-strong);
+  --uc-demo-active-border-weak: var(--uc-demo-success-border-weak);
+  --uc-demo-active-border-main: var(--uc-demo-success-border-main);
+  --uc-demo-active-border-medium: var(--uc-demo-success-border-main);
+  --uc-demo-active-text-main: var(--uc-demo-success-text-main);
+  --uc-demo-active-text-weak: var(--uc-demo-success-text-weak);
+  --uc-demo-active-icon-main: var(--uc-demo-success-icon-main);
+}
+
+.uc-demo[data-uc-variant="warning"] {
+  --uc-demo-active-bg-main: var(--uc-demo-warning-bg-main);
+  --uc-demo-active-bg-strong: var(--uc-demo-warning-bg-strong);
+  --uc-demo-active-border-weak: var(--uc-demo-warning-border-weak);
+  --uc-demo-active-border-main: var(--uc-demo-warning-border-main);
+  --uc-demo-active-border-medium: var(--uc-demo-warning-border-main);
+  --uc-demo-active-text-main: var(--uc-demo-warning-text-main);
+  --uc-demo-active-text-weak: var(--uc-demo-warning-text-weak);
+  --uc-demo-active-icon-main: var(--uc-demo-warning-icon-main);
+}
+
+.uc-demo[data-uc-variant="danger"] {
+  --uc-demo-active-bg-main: var(--uc-demo-danger-bg-main);
+  --uc-demo-active-bg-strong: var(--uc-demo-danger-bg-strong);
+  --uc-demo-active-border-weak: var(--uc-demo-danger-border-weak);
+  --uc-demo-active-border-main: var(--uc-demo-danger-border-main);
+  --uc-demo-active-border-medium: var(--uc-demo-danger-border-main);
+  --uc-demo-active-text-main: var(--uc-demo-danger-text-main);
+  --uc-demo-active-text-weak: var(--uc-demo-danger-text-weak);
+  --uc-demo-active-icon-main: var(--uc-demo-danger-icon-main);
+}
+
+/* ─── Shared sizing scale (matches Undercurrent's theme.spacing/size/radius) ─ */
+.uc-demo {
+  --uc-demo-space-50: 4px;
+  --uc-demo-space-100: 8px;
+  --uc-demo-space-150: 12px;
+  --uc-demo-space-200: 16px;
+
+  --uc-demo-radius-xs: 6px;
+  --uc-demo-radius-sm: 8px;
+  --uc-demo-radius-md: 12px;
+  --uc-demo-radius-full: 360px;
+
+  --uc-demo-size-xs: 16px;
+  --uc-demo-size-sm: 24px;
+  --uc-demo-size-md: 32px;
+  --uc-demo-size-lg: 40px;
+}

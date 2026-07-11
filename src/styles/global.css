@@ -23,6 +23,19 @@
   font-display: swap;
 }
 
+/* Geist Mono — variable font, used only by the Undercurrent case-study
+   sandbox (src/components/undercurrent-demo) for the secondary/technical
+   text style the real design system uses (e.g. a DynamicBadge's monospace
+   detail text). Declared globally alongside Geist Sans, same as every other
+   font-face in this file, even though only one feature currently uses it. */
+@font-face {
+  font-family: 'Geist Mono';
+  src: url('/node_modules/geist/dist/fonts/geist-mono/GeistMono-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* Redaction 35 — portfolio headline font, self-hosted in /public/fonts/.
    Regular and Italic are true cuts (not synthetic), so they share one family
    name and map onto CSS's own font-style axis — the `italic` utility class
