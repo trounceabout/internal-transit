@@ -223,6 +223,21 @@
     letter-spacing: -2.4px;
     color: var(--portfolio-ink);
   }
+
+  /* Inline `code` spans (MDX backtick syntax, e.g. blog posts and case
+     studies referencing component/prop names like `Card`) — site-wide,
+     not scoped to any one layout's prose wrapper, since both BlogLayout
+     and ProjectLayout render MDX content that can contain inline code. */
+  code {
+    font-family: var(--font-mono);
+    border-radius: 4px;
+    padding: 4px;
+    background-color: oklch(94.5% 0.044 73.9deg);
+  }
+
+  .dark code {
+    background-color: oklch(33.5% 0.0104 286deg);
+  }
 }
 
 /* Per-project icon/badge colors (index.astro, ProjectLayout.astro) come from
