@@ -1,13 +1,114 @@
 ---
 name: Project Undercurrent
-tagline: A unified experience underneath it all
+tagline: Building an experience that feels more connected
 icon: SurfboardIcon
 iconColor: "#0B7FA8"
 iconColorDark: "#2DC7FF"
 badgeColor: "#0B7FA820"
 badgeColorDark: "#2DC7FF20"
 order: 2
+description: How I helped grow a design system through components, theming, documentation, and engineering collaboration so our product could feel more unified and scale more cleanly across surfaces.
+accentPhrase: "feels more connected"
+loomUrl: "https://www.loom.com/share/4f4eb6dbc1c7408387a363c6a1c60185"
+role: Design lead, Design engineer
+scope: Design systems, component design, theming, documentation, design-to-dev workflow, engineering collaboration, system stewardship
 published: false
 ---
 
-Case study coming soon.
+import LabeledRow from '@/components/case-study/LabeledRow.astro';
+import LightboxImage from '@/components/case-study/LightboxImage.astro';
+import LoopVideo from '@/components/case-study/LoopVideo.astro';
+import Postscript from '@/components/case-study/Postscript.astro';
+
+<section class="ping-section">
+
+Our product had grown through years of one-off decisions, uneven patterns, and design system false starts. The experience was functional, but it didn’t consistently feel like one product. Similar interface problems were being solved in different ways, foundations were incomplete, and the cost of maintaining consistency kept increasing as new work shipped.
+
+I helped grow Undercurrent into a more dependable shared system — one that could support day-to-day product work, improve consistency across surfaces, and create stronger foundations for bigger efforts like theming and dark mode.
+
+<LightboxImage src="/projects/ping/solution-intro.png" alt="The redesigned notifications inbox next to a full activity detail view" />
+
+</section>
+<section class="ping-section ping-section--problem">
+
+## The problem
+
+Before Undercurrent matured, we had a consistency problem that was both visual and operational.
+
+Different apps and product areas were drifting in small but important ways. Components behaved inconsistently, patterns were not always reusable, and the path from design intent to implementation was often looser than it needed to be. That made product work slower, but it also made the experience feel less connected over time.
+
+We did not just need a component library. We needed a system that could hold up under real product use.
+
+</section>
+
+<section class="ping-section ping-section--approach">
+
+## The approach
+
+From the start, we wanted to treat Undercurrent as product infrastructure rather than a side library.
+
+Instead of separating “system work” from “product work,” I approached Undercurrent as something that needed to improve through active use. That meant designing and refining components, tightening implementation details, improving theming foundations, and making the system easier for others to adopt through documentation and workflow support.
+
+It also meant contributing across design and implementation. From the start, I designed components, submitted PRs, and wrote documentation to help build a system that was easier to extend, easier to trust, and easier for teams to adopt.
+
+<div class="flex flex-col sm:flex-row gap-10 items-stretch">
+  <LightboxImage src="/projects/ping/solution-old.png" alt="The old account settings page, listing notifications in a plain table" class="flex-1 min-w-0" />
+  <LightboxImage src="/projects/ping/solution-new.png" alt="The redesigned notifications inbox next to a full event detail view" class="flex-1 min-w-0" />
+</div>
+
+</section>
+
+<section class="ping-section ping-section--solution" style="--icon-color-light: #E34F4F">
+
+## The solution
+
+I helped shape Undercurrent as a shared system that could support immediate product needs while creating a stronger long-term foundation.
+
+That work happened in three overlapping layers.
+
+</section>
+
+<section class="ping-section">
+
+<LabeledRow label="Strengthen the building blocks">
+As the only designer to work on Undercurrent, I was responsible for shaping its shared UI from the ground up. That included core components like `Card`, `Slider`, and `TextField`, along with the patterns and visual decisions that made the system feel cohesive.
+That work did not stop at initial design. I continued refining the system over time, improving weak spots, resolving inconsistencies, and tightening the details that made the library more dependable.
+</LabeledRow>
+
+<LoopVideo webm="/projects/ping/Ping1.webm" mp4="/projects/ping/Ping1.mp4" />
+
+</section>
+
+<section class="ping-section">
+
+<LabeledRow label="Build stronger theming foundations">
+I also helped strengthen the system through theming work across typography, color behavior, brand themes, and dark-mode-related issues. That work made Undercurrent more adaptable over time and created stronger foundations for broader visual change across products.
+</LabeledRow>
+
+<LoopVideo webm="/projects/ping/Ping2.webm" mp4="/projects/ping/Ping2.mp4" />
+
+</section>
+
+<section class="ping-section">
+
+<LabeledRow label="Make the system easier to use and trust">
+A large part of my focus has been helping make Undercurrent more usable through documentation, implementation support, and stronger design-to-development alignment. That’s included work like Storybook documentation and a large amount of Code Connect-related effort across many components and patterns. That work helped make the system easier to understand, easier to adopt, and more dependable over time.
+</LabeledRow>
+
+<LoopVideo webm="/projects/ping/Ping3.webm" mp4="/projects/ping/Ping3.mp4" />
+
+</section>
+
+<Postscript iconColor="#E34F4F">
+  <Fragment slot="why-it-worked">
+    <p>As the system became more complete and more reliable, it created a shared foundation for teams working across different apps and product areas. It improved consistency across experiences, reduced implementation drift between design and code, and made it easier to scale product work across surfaces with more confidence.</p>
+    <p>One of the clearest lessons from the work was that the value of a design system is not just in the library itself. It is in how well that library holds up when teams actually depend on it.</p>
+  </Fragment>
+  <Fragment slot="key-takeaway">
+    <p>A design system becomes meaningful when it improves the product, not when it grows in size.</p>
+    <p>We created (and are still creating) a system that is more structured, more usable, and more trustworthy, while making the experience within our product feel more connected over time. That’s more valuable than any individual component.</p>
+  </Fragment>
+  <Fragment slot="project-status">
+    <p>It has expanded over time through component work, theme and typography improvements, documentation, Code Connect support, system polish, and ongoing stewardship across multiple product surfaces.</p>
+  </Fragment>
+</Postscript>
