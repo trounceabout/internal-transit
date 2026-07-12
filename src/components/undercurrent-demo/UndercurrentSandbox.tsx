@@ -26,7 +26,7 @@ export default function UndercurrentSandbox() {
     <div
       className="uc-demo bg-white dark:bg-neutral-900 mt-10 flex flex-col items-center gap-6 rounded-xl border p-6"
       data-uc-variant={variant}
-      style={{ borderColor: 'color-mix(in oklch, var(--uc-demo-active-border-main) 50%, transparent); ' }}
+      style={{ borderColor: 'color-mix(in oklch, var(--uc-demo-active-border-main) 50%, transparent)' }}
     >
       <div className="flex items-center gap-4">
         {VARIANTS.map((option) => {
