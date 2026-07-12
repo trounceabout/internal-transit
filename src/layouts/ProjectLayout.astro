@@ -284,19 +284,14 @@ const Icon = icon;
     padding-right: var(--ping-card-padding);
   }
 
-  /* "The solution" gets a gradient background + a genuine gradient border,
-     both tinted by the project's own --icon-color (set inline in the MDX,
-     resolved the same way the headline accent and Postscript's divider
-     already do) — so a future case study with a different accent color
-     gets a matching treatment instead of Ping's specific red. A plain
-     `border-color` can't be a gradient, so this uses the standard
-     double-background technique: three stacked background-images, the
-     first painted into the padding-box as an opaque page-background
-     stand-in (so the middle/inner area isn't see-through where the two
-     accent gradients don't fully cover it), the second (the fill
-     gradient) also clipped to the padding-box, and the third (the border
-     gradient) clipped to the border-box beneath a transparent border,
-     which reveals it only along the border's own width. */
+  /* "The solution" gets a translucent border and a subtle vertical-fade
+     background, both tinted by the project's own --icon-color (set inline
+     in the MDX, resolved the same way the headline accent and Postscript's
+     divider already do) — so each case study gets a matching treatment in
+     its own accent color instead of every project showing Ping's red.
+     color-mix() against transparent is what lets a var()-sourced color
+     carry a percentage opacity — CSS's plain `color / alpha%` syntax only
+     accepts a literal color, not a custom property. */
   .article-body :global(.ping-section--solution) {
     border-radius: 0.75rem; /* 12px */
     padding-top: var(--ping-section-gap);
@@ -305,8 +300,8 @@ const Icon = icon;
     padding-right: var(--ping-card-padding);
     margin-top: var(--ping-card-padding);
     margin-bottom: var(--ping-card-padding);
-    border: 1px solid oklch(57.7% 0.215 27.3deg / 50%);
-    background: linear-gradient(0deg, rgba(220, 38, 38, 0.00) 0%, rgba(220, 38, 38, 0.13) 100%);
+    border: 1px solid color-mix(in oklch, var(--icon-color) 50%, transparent);
+    background: linear-gradient(0deg, color-mix(in oklch, var(--icon-color) 0%, transparent) 0%, color-mix(in oklch, var(--icon-color) 13%, transparent) 100%);
     background-origin: border-box;
     background-clip: padding-box, padding-box, border-box;
   }
