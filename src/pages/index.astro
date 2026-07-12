@@ -6,7 +6,7 @@ import { Calendar04Icon } from "@hugeicons/core-free-icons";
 import { categoryConfig } from "@/lib/categoryConfig";
 import { projectIconMap } from "@/lib/projectIconMap";
 
-const projects = (await getCollection("projects")).sort(
+const projects = (await getCollection("projects", ({ data }) => data.published)).sort(
     (a, b) => a.data.order - b.data.order,
 );
 
@@ -49,43 +49,38 @@ const latestPosts = (await getCollection("blog", ({ data }) => !data.draft))
                 {
                     projects.map((project) => {
                         const ProjectIcon = projectIconMap[project.data.icon];
-                        const row = (
-                            <div
-                                data-animate
-                                class="project-row relative overflow-hidden flex items-center justify-between gap-4 w-full flex-wrap p-4 -mx-3 border-b border-b-portfolio-muted/20"
-                                style={{
-                                    ...(project.data.badgeColor ? { "--badge-color-light": project.data.badgeColor } : {}),
-                                    ...(project.data.badgeColorDark ? { "--badge-color-dark": project.data.badgeColorDark } : {}),
-                                    ...(project.data.iconColor ? { "--icon-color-light": project.data.iconColor } : {}),
-                                    ...(project.data.iconColorDark ? { "--icon-color-dark": project.data.iconColorDark } : {}),
-                                }}
-                            >
-                                <div class="relative z-10 flex items-center gap-3">
-                                    <span
-                                            class="flex items-center justify-center size-8 rounded-md shrink-0"
-                                            style={{ backgroundColor: 'var(--badge-color)' }}
-                                        >
-                                            <ProjectIcon
-                                                width={18}
-                                                height={18}
-                                                style={{ color: 'var(--icon-color)' }}
-                                            />
-                                        </span>
-                                    <p class="font-mono text-base tracking-[-0.16px] text-portfolio-ink whitespace-nowrap">
-                                        {project.data.name}
+                        return (
+                            <a href={`/projects/${project.id}`} class="contents">
+                                <div
+                                    data-animate
+                                    class="project-row relative overflow-hidden flex items-center justify-between gap-4 w-full flex-wrap p-4 -mx-3 border-b border-b-portfolio-muted/20"
+                                    style={{
+                                        ...(project.data.badgeColor ? { "--badge-color-light": project.data.badgeColor } : {}),
+                                        ...(project.data.badgeColorDark ? { "--badge-color-dark": project.data.badgeColorDark } : {}),
+                                        ...(project.data.iconColor ? { "--icon-color-light": project.data.iconColor } : {}),
+                                        ...(project.data.iconColorDark ? { "--icon-color-dark": project.data.iconColorDark } : {}),
+                                    }}
+                                >
+                                    <div class="relative z-10 flex items-center gap-3">
+                                        <span
+                                                class="flex items-center justify-center size-8 rounded-md shrink-0"
+                                                style={{ backgroundColor: 'var(--badge-color)' }}
+                                            >
+                                                <ProjectIcon
+                                                    width={18}
+                                                    height={18}
+                                                    style={{ color: 'var(--icon-color)' }}
+                                                />
+                                            </span>
+                                        <p class="font-mono text-base tracking-[-0.16px] text-portfolio-ink whitespace-nowrap">
+                                            {project.data.name}
+                                        </p>
+                                    </div>
+                                    <p class="relative z-10 font-mono text-base tracking-[-0.16px] text-portfolio-muted">
+                                        {project.data.tagline}
                                     </p>
                                 </div>
-                                <p class="relative z-10 font-mono text-base tracking-[-0.16px] text-portfolio-muted">
-                                    {project.data.tagline}
-                                </p>
-                            </div>
-                        );
-                        return project.data.published ? (
-                            <a href={`/projects/${project.id}`} class="contents">
-                                {row}
                             </a>
-                        ) : (
-                            row
                         );
                     })
                 }
