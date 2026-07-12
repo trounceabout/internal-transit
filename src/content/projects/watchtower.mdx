@@ -19,7 +19,7 @@ import LabeledRow from "@/components/case-study/LabeledRow.astro";
 import LightboxImage from "@/components/case-study/LightboxImage.astro";
 import LoopVideo from "@/components/case-study/LoopVideo.astro";
 import Postscript from "@/components/case-study/Postscript.astro";
-import UndercurrentSandbox from "@/components/undercurrent-demo/UndercurrentSandbox.tsx";
+import WatchtowerModulesSandbox from "@/components/watchtower-demo/WatchtowerModulesSandbox.tsx";
 import ThemeRevealSandbox from "@/components/undercurrent-demo/ThemeRevealSandbox.tsx";
 import DocsViewerSandbox from "@/components/undercurrent-demo/DocsViewerSandbox.tsx";
 
@@ -71,31 +71,31 @@ The work focused on making monitoring easier to understand at a glance, more act
 
 <section class="ping-section">
 
-<LabeledRow label="Strengthen the building blocks">
+<LabeledRow label="Turn raw data into clear signals">
     The bulk of the work was redesigning the monitoring modules themselves so they communicated more than just data points.
     
     I designed key modules for core server metrics, important networking signals, and disk health. The focus throughout was on making each module easier to scan, interpret, and understand in context.
 </LabeledRow>
 
-<UndercurrentSandbox client:visible />
+<WatchtowerModulesSandbox client:visible />
 
 </section>
 
 <section class="ping-section">
 
-<LabeledRow label="Build stronger theming foundations">
+<LabeledRow label="Add structure and actionability">
     A major part of the redesign was making the experience more actionable.
     
     I helped define threshold cues, severity behavior, and supporting guidance so customers could better understand when a metric was healthy, when it needed attention, and when it pointed to a larger problem. That made the dashboard feel less like a collection of charts and more like a product that could help customers make decisions.
 </LabeledRow>
 
-<ThemeRevealSandbox client:visible />
+<LoopVideo webm="/projects/watchtower/Watchtower2.webm" mp4="/projects/watchtower/Watchtower2.mp4" />
 
 </section>
 
 <section class="ping-section">
 
-<LabeledRow label="Make the system easier to use and trust">
+<LabeledRow label="Carry the work into implementation">
     My role extended beyond design files. I also implemented several of the shipped modules directly, including work across core metrics, disk health, and network-related monitoring.
     
     That helped keep the final experience closely aligned with the original design intent and let me refine details in the product itself rather than stopping at handoff.
