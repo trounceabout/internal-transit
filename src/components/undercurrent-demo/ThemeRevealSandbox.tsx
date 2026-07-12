@@ -5,7 +5,7 @@ import UcErrorCard from './UcErrorCard';
 import UcFieldRow from './UcFieldRow';
 import UcRetryBanner from './UcRetryBanner';
 import UcTimeline from './UcTimeline';
-import { History, XCircle, Ship, Tag } from 'lucide-react';
+import { CalendarClock, X, Layers2, Shapes, Timer } from 'lucide-react';
 
 /* Static mock content only, for now — no light/dark stacking or drag yet
    (that's added in later build stages). Hardcoded to the "danger" color
@@ -17,19 +17,26 @@ function MockErrorUI() {
     <UcErrorCard title="Server unable to reboot" dismissLabel="Dismiss">
       <UcFieldRow
         fields={[
-          { icon: History, label: 'Time', value: '10/31/25 11:30:00 PM' },
-          { icon: XCircle, label: 'Level', value: 'Error' },
-          { icon: Ship, label: 'Server', value: 'cold-parent-duo.metalseed.internal' },
-          { icon: Tag, label: 'Category', value: 'Server Ops' },
+          { icon: CalendarClock, label: 'Time', value: '10/31/25 11:30:00 PM' },
+          { icon: X, label: 'Level', value: 'Error' },
+          { icon: Layers2, label: 'Server', value: 'cold-parent-duo.metalseed.internal' },
+          { icon: Shapes, label: 'Category', value: 'Server Ops' },
         ]}
       />
       <div className="flex flex-col gap-1">
         <span className="text-xs" style={{ color: 'var(--uc-demo-neutral-text-weak)' }}>
           Elapsed time
         </span>
-        <span className="text-sm" style={{ color: 'var(--uc-demo-neutral-text-main)' }}>
-          00:16 secs
-        </span>
+        <div className="flex items-center gap-1.5">
+          <Timer
+            size={16}
+            className="shrink-0"
+            style={{ color: 'var(--uc-demo-neutral-text-weak)' }}
+          />
+          <span className="text-sm" style={{ color: 'var(--uc-demo-neutral-text-main)' }}>
+            00:16 secs
+          </span>
+        </div>
       </div>
       <div className="flex flex-col gap-[var(--uc-demo-space-200)]">
         <div className="relative">

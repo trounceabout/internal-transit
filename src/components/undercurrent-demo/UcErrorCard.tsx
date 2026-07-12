@@ -26,7 +26,7 @@ export default function UcErrorCard({ title, dismissLabel, children }: UcErrorCa
       style={{ backgroundColor: 'var(--uc-demo-neutral-bg-weak)' }}
     >
       <div
-        className="flex flex-col gap-[var(--uc-demo-space-200)] rounded-t-[var(--uc-demo-radius-md)] border p-[var(--uc-demo-space-200)]"
+        className="flex flex-col gap-[var(--uc-demo-space-200)] rounded-t-[var(--uc-demo-radius-md)] border p-[var(--uc-demo-space-300)]"
         style={{
           backgroundColor: 'var(--uc-demo-neutral-bg-main)',
           borderColor: 'var(--uc-demo-neutral-border-weak)',
