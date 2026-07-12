@@ -1,31 +1,33 @@
-import { useState } from 'react';
+import { useState } from "react";
 
 // This is a React component — it needs client:load or client:visible
 // in the .astro file that uses it, or it will render as static HTML with no interactivity.
 export default function SubscribeForm() {
-  const [email, setEmail] = useState('');
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-  const [message, setMessage] = useState('');
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<
+    "idle" | "loading" | "success" | "error"
+  >("idle");
+  const [message, setMessage] = useState("");
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setStatus('loading');
+    setStatus("loading");
 
-    const res = await fetch('/api/subscribe', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    const res = await fetch("/api/subscribe", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email }),
     });
 
     const data = await res.json();
 
     if (res.ok) {
-      setStatus('success');
+      setStatus("success");
       setMessage("You're subscribed! Check your inbox to confirm.");
-      setEmail('');
+      setEmail("");
     } else {
-      setStatus('error');
-      setMessage(data.error ?? 'Something went wrong. Try again.');
+      setStatus("error");
+      setMessage(data.error ?? "Something went wrong. Try again.");
     }
   }
 
@@ -37,10 +39,13 @@ export default function SubscribeForm() {
         onChange={(e) => setEmail(e.target.value)}
         placeholder="your@email.com"
         required
-        disabled={status === 'loading' || status === 'success'}
+        disabled={status === "loading" || status === "success"}
       />
-      <button type="submit" disabled={status === 'loading' || status === 'success'}>
-        {status === 'loading' ? 'Subscribing…' : 'Subscribe'}
+      <button
+        type="submit"
+        disabled={status === "loading" || status === "success"}
+      >
+        {status === "loading" ? "Subscribing…" : "Subscribe"}
       </button>
       {message && <p>{message}</p>}
     </form>

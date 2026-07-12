@@ -18,36 +18,59 @@ const { iconColor, iconColorDark } = Astro.props;
 ---
 
 <section class="flex flex-col gap-6 py-15">
-  <div class="flex gap-6 items-center w-full">
-      <span class="font-mono italic font-normal postscript-heading text-[32px] leading-[0.94] tracking-[-0.96px] text-portfolio-ink m-0">
+  <div class="flex w-full items-center gap-6">
+    <span
+      class="postscript-heading text-portfolio-ink m-0 font-mono text-[32px] leading-[0.94] font-normal tracking-[-0.96px] italic"
+    >
       The postscript
     </span>
     <div
-      class="flex-1 h-px"
+      class="h-px flex-1"
       style={{
-        backgroundColor: 'var(--icon-color)',
-        ...(iconColor ? { '--icon-color-light': iconColor } : {}),
-        ...(iconColorDark ? { '--icon-color-dark': iconColorDark } : {}),
+        backgroundColor: "var(--icon-color)",
+        ...(iconColor ? { "--icon-color-light": iconColor } : {}),
+        ...(iconColorDark ? { "--icon-color-dark": iconColorDark } : {}),
       }}
-    ></div>
+    >
+    </div>
   </div>
 
-  <div class="flex flex-col gap-8 w-full text-lg">
-    <div class="flex flex-col sm:flex-row gap-2 sm:gap-6 sm:items-baseline w-full">
-      <p class="font-mono leading-[1.4] tracking-[-0.18px] text-portfolio-muted shrink-0 w-full sm:w-[200px]">Why it worked</p>
-      <div class="flex-1 min-w-0 font-plex-sans font-light leading-8 text-portfolio-ink [&_p]:mb-4 [&_p:last-child]:mb-0">
+  <div class="flex w-full flex-col gap-8 text-lg">
+    <div
+      class="flex w-full flex-col gap-2 sm:flex-row sm:items-baseline sm:gap-6"
+    >
+      <p
+        class="text-portfolio-muted w-full shrink-0 font-mono leading-[1.4] tracking-[-0.18px] sm:w-[200px]"
+      >
+        Why it worked
+      </p>
+      <div
+        class="font-plex-sans text-portfolio-ink min-w-0 flex-1 leading-8 font-light [&_p]:mb-4 [&_p:last-child]:mb-0"
+      >
         <slot name="why-it-worked" />
       </div>
     </div>
-    <div class="flex flex-col sm:flex-row gap-2 sm:gap-6 items-start w-full">
-      <p class="font-mono leading-[1.4] tracking-[-0.18px] text-portfolio-muted shrink-0 w-full sm:w-[200px]">Key takeaway</p>
-      <div class="flex-1 min-w-0 font-plex-sans font-light leading-8 text-portfolio-ink [&_p]:mb-4 [&_p:last-child]:mb-0">
+    <div class="flex w-full flex-col items-start gap-2 sm:flex-row sm:gap-6">
+      <p
+        class="text-portfolio-muted w-full shrink-0 font-mono leading-[1.4] tracking-[-0.18px] sm:w-[200px]"
+      >
+        Key takeaway
+      </p>
+      <div
+        class="font-plex-sans text-portfolio-ink min-w-0 flex-1 leading-8 font-light [&_p]:mb-4 [&_p:last-child]:mb-0"
+      >
         <slot name="key-takeaway" />
       </div>
     </div>
-    <div class="flex flex-col sm:flex-row gap-2 sm:gap-6 items-start w-full">
-      <p class="font-mono leading-[1.4] tracking-[-0.18px] text-portfolio-muted shrink-0 w-full sm:w-[200px]">Project status</p>
-      <div class="flex-1 min-w-0 font-plex-sans font-light leading-8 text-portfolio-ink">
+    <div class="flex w-full flex-col items-start gap-2 sm:flex-row sm:gap-6">
+      <p
+        class="text-portfolio-muted w-full shrink-0 font-mono leading-[1.4] tracking-[-0.18px] sm:w-[200px]"
+      >
+        Project status
+      </p>
+      <div
+        class="font-plex-sans text-portfolio-ink min-w-0 flex-1 leading-8 font-light"
+      >
         <slot name="project-status" />
       </div>
     </div>

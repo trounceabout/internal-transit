@@ -68,11 +68,11 @@ The dev server runs at `http://localhost:4321`.
 
 Copy `.env.example` to `.env` and fill in the values. The file is git-ignored — never commit it.
 
-| Variable | Where to get it |
-| --- | --- |
-| `BUTTONDOWN_API_KEY` | Buttondown account settings → API |
-| `SENTRY_DSN` | Sentry project settings → Client Keys (DSN) |
-| `SENTRY_AUTH_TOKEN` | Sentry account settings → Auth Tokens (used for source map uploads at build time) |
+| Variable             | Where to get it                                                                   |
+| -------------------- | --------------------------------------------------------------------------------- |
+| `BUTTONDOWN_API_KEY` | Buttondown account settings → API                                                 |
+| `SENTRY_DSN`         | Sentry project settings → Client Keys (DSN)                                       |
+| `SENTRY_AUTH_TOKEN`  | Sentry account settings → Auth Tokens (used for source map uploads at build time) |
 
 None of these are required to run the site locally — omitting them just disables the newsletter integration and error reporting.
 
@@ -110,9 +110,9 @@ The Vercel project is connected to this repo. Environment variables are configur
 
 All commands run from the project root.
 
-| Command | What it does |
-| --- | --- |
-| `bun install` | Install dependencies |
-| `bun run dev` | Start local dev server at `localhost:4321` |
-| `bun run build` | Build the production site to `./dist/` |
-| `bun run preview` | Preview the production build locally |
+| Command           | What it does                               |
+| ----------------- | ------------------------------------------ |
+| `bun install`     | Install dependencies                       |
+| `bun run dev`     | Start local dev server at `localhost:4321` |
+| `bun run build`   | Build the production site to `./dist/`     |
+| `bun run preview` | Preview the production build locally       |
