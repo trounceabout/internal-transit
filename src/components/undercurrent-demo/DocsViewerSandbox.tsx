@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { Tabs } from '@base-ui/react/tabs';
+import { AnimatePresence, motion, useReducedMotion, type Transition } from 'motion/react';
 import '@/styles/undercurrent-demo.css';
 import { DOCS_CONTENT } from './docsContent';
 import type { DocsTabId } from './types';
@@ -37,15 +39,24 @@ const TABS: { value: DocsTabId; label: string }[] = [
    primitive. Unlike src/components/ui/button.tsx (which wraps Base UI's
    Button because Button IS reused site-wide), there's no second consumer
    for a docs-tabs component today. */
+/* Simple opacity crossfade on tab switch — kept subtle since this is a
+   documentation viewer, not a hero animation; it should register as a
+   polish detail, not call attention to itself. */
+const PANEL_TRANSITION: Transition = { duration: 0.3, ease: 'easeOut' };
+
 export default function DocsViewerSandbox() {
+  const [activeTab, setActiveTab] = useState<DocsTabId>('overview');
+  const shouldReduceMotion = useReducedMotion();
+
   return (
     <div
-      className="uc-demo relative mt-10 h-[580px] w-full overflow-hidden rounded-lg border"
+      className="uc-demo relative mt-10 h-145 w-full overflow-hidden rounded-lg border"
       style={{ borderColor: 'oklch(35.9% 0.0137 286deg)' }}
     >
       <div className="flex h-full flex-col pt-10 pr-10 pl-10">
         <Tabs.Root
-          defaultValue="overview"
+          value={activeTab}
+          onValueChange={(value) => setActiveTab(value as DocsTabId)}
           className="flex min-h-0 flex-1 flex-col rounded-t-lg border border-b-0"
           style={{
             backgroundColor: 'var(--uc-demo-neutral-bg-main)',
@@ -81,10 +92,39 @@ export default function DocsViewerSandbox() {
             />
           </Tabs.List>
 
+          {/* Each Tabs.Panel keeps real content in its own ARIA-correct
+              element (aria-controls/aria-labelledby stay properly linked
+              for all 5 tabs, even the inactive ones — no empty placeholder
+              panels). render={<div />} replaces Base UI's own
+              hidden-attribute visibility toggle (display: none, which can't
+              transition) with a plain wrapper set to `display: contents` —
+              the wrapper itself is layout-transparent, so its child lays
+              out directly in the scrolling parent as if the panel element
+              wasn't there.
+
+              Each panel has its OWN AnimatePresence rather than one shared
+              instance — this means the outgoing and incoming panel's
+              animations overlap as a crossfade rather than running strictly
+              sequentially (a single shared instance would let mode="wait"
+              force a clean gap between them, but only by giving up one
+              ARIA-correct panel per tab in favor of a single shared content
+              region — not worth it for a documentation viewer). */}
           <div className="min-h-0 flex-1 overflow-y-auto p-6 sm:p-8">
             {TABS.map((tab) => (
-              <Tabs.Panel key={tab.value} value={tab.value} keepMounted>
-                {DOCS_CONTENT[tab.value]}
+              <Tabs.Panel key={tab.value} value={tab.value} keepMounted className="contents" render={<div />}>
+                <AnimatePresence initial={false}>
+                  {activeTab === tab.value && (
+                    <motion.div
+                      key={tab.value}
+                      initial={shouldReduceMotion ? false : { opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={shouldReduceMotion ? undefined : { opacity: 0 }}
+                      transition={PANEL_TRANSITION}
+                    >
+                      {DOCS_CONTENT[tab.value]}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </Tabs.Panel>
             ))}
           </div>
