@@ -20,6 +20,7 @@ import LightboxImage from '@/components/case-study/LightboxImage.astro';
 import LoopVideo from '@/components/case-study/LoopVideo.astro';
 import Postscript from '@/components/case-study/Postscript.astro';
 import UndercurrentSandbox from '@/components/undercurrent-demo/UndercurrentSandbox.tsx';
+import ThemeRevealSandbox from '@/components/undercurrent-demo/ThemeRevealSandbox.tsx';
 
 <section class="ping-section">
 
@@ -82,11 +83,11 @@ That work did not stop at initial design. I continued refining the system over t
 
 <section class="ping-section">
 
-<LabeledRow label="Build stronger theming foundations">
+<LabeledRow class="pb-6" label="Build stronger theming foundations">
 I also helped strengthen the system through theming work across typography, color behavior, brand themes, and dark-mode-related issues. That work made Undercurrent more adaptable over time and created stronger foundations for broader visual change across products.
 </LabeledRow>
 
-<LoopVideo webm="/projects/ping/Ping2.webm" mp4="/projects/ping/Ping2.mp4" />
+<ThemeRevealSandbox client:visible />
 
 </section>
 

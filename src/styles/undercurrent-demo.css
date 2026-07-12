@@ -238,3 +238,31 @@
   --uc-demo-size-md: 32px;
   --uc-demo-size-lg: 40px;
 }
+
+/* ─── Theme reveal slider tokens (ThemeRevealSandbox + its bespoke
+   components — UcErrorCard, UcFieldRow, UcRetryBanner, UcTimeline). This
+   island has no working color-variant switcher, so its interactive chrome
+   (the drag handle) uses the case study's own brand color (the same
+   iconColor/iconColorDark pair from undercurrent.mdx's frontmatter, #0B7FA8
+   light / #2DC7FF dark) rather than --uc-demo-active-*, which only ever
+   resolves to a hardcoded "danger" redirection here. */
+.uc-demo {
+  /* Timeline's connecting vertical line and the "neutral" status variant
+     (an event that isn't a success, e.g. "Server has been stopped") both
+     read as a dimmer, unaccented gray — distinct from the danger-red used
+     by the retry banner above them. */
+  --uc-demo-timeline-connector: var(--uc-demo-neutral-border-weak);
+  --uc-demo-timeline-neutral-icon: var(--uc-demo-neutral-text-weak);
+  --uc-demo-timeline-success-icon: var(--uc-demo-success-icon-main);
+
+  /* Compact pill for "2 secs"-style duration tags — smaller than UcChip's
+     fixed --uc-demo-size-md height, so this island uses bespoke sizing
+     rather than stretching UcChip's own token past what it was tuned for. */
+  --uc-demo-duration-tag-height: 20px;
+  --uc-demo-duration-tag-padding-x: 6px;
+
+  /* Drag handle: a single fixed neutral-violet tone, the same in both
+     light and dark (not the brand color pair used elsewhere) — chosen
+     directly, not theme-conditional. */
+  --uc-demo-handle-color: oklch(62.2% 0.0224 286deg);
+}
