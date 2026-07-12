@@ -40,20 +40,20 @@ const TABS: { value: DocsTabId; label: string }[] = [
 export default function DocsViewerSandbox() {
   return (
     <div
-      className="uc-demo relative mt-10 w-full overflow-hidden rounded-lg border"
+      className="uc-demo relative mt-10 h-[580px] w-full overflow-hidden rounded-lg border"
       style={{ borderColor: 'oklch(35.9% 0.0137 286deg)' }}
     >
-      <div className="pt-10 pr-10 pl-10">
+      <div className="flex h-full flex-col pt-10 pr-10 pl-10">
         <Tabs.Root
           defaultValue="overview"
-          className="rounded-t-lg border border-b-0"
+          className="flex min-h-0 flex-1 flex-col rounded-t-lg border border-b-0"
           style={{
             backgroundColor: 'var(--uc-demo-neutral-bg-main)',
             borderColor: 'var(--uc-demo-neutral-border-weak)',
           }}
         >
           <Tabs.List
-            className="relative flex overflow-x-auto rounded-t-lg px-6"
+            className="relative flex shrink-0 overflow-x-auto rounded-t-lg px-6"
             style={{ borderBottom: '1px solid var(--uc-demo-neutral-border-weak)' }}
           >
             {TABS.map((tab) => (
@@ -81,7 +81,7 @@ export default function DocsViewerSandbox() {
             />
           </Tabs.List>
 
-          <div className="max-h-[32rem] overflow-y-auto p-6 sm:p-8">
+          <div className="min-h-0 flex-1 overflow-y-auto p-6 sm:p-8">
             {TABS.map((tab) => (
               <Tabs.Panel key={tab.value} value={tab.value} keepMounted>
                 {DOCS_CONTENT[tab.value]}
