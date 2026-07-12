@@ -118,7 +118,13 @@
 }
 
 /* ─── Light mode overrides ──────────────────────────────────────────────── */
-:root:not(.dark) .uc-demo,
+/* :not(.dark) on .uc-demo itself (not just on :root) matters here: without
+   it, this descendant selector's specificity (0,3,0) beats .uc-demo.dark's
+   (0,2,0) and silently overrides a ThemeRevealSandbox half that explicitly
+   opted into .dark, any time the PAGE itself happens to be in light mode —
+   :root:not(.dark) only rules out :root carrying .dark, it says nothing
+   about a nested element that carries its own .dark class. */
+:root:not(.dark) .uc-demo:not(.dark),
 .uc-demo.light {
   --uc-demo-neutral-bg-main: #ffffff;
   --uc-demo-neutral-bg-weak: #f6f5f4;
