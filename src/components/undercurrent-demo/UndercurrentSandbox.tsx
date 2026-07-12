@@ -23,7 +23,11 @@ export default function UndercurrentSandbox() {
   const shouldReduceMotion = useReducedMotion();
 
   return (
-    <div className="uc-demo flex flex-col items-center gap-4 pt-16">
+    <div
+      className="uc-demo bg-white dark:bg-neutral-900 mt-10 flex flex-col items-center gap-6 rounded-xl border p-6"
+      data-uc-variant={variant}
+      style={{ borderColor: 'var(--uc-demo-active-border-main)' }}
+    >
       <div className="flex items-center gap-4">
         {VARIANTS.map((option) => {
           const isActive = option.value === variant;
@@ -60,40 +64,38 @@ export default function UndercurrentSandbox() {
         })}
       </div>
 
-      <div className="uc-demo bg-white dark:bg-neutral-900 w-full rounded-xl border p-6" data-uc-variant={variant} style={{ borderColor: 'var(--uc-demo-active-border-main)' }}>
-        <div className="flex flex-col items-center gap-6">
-          <UcNote>This is a note, a string of text that may contain a link action</UcNote>
-          <div className="flex w-full flex-col items-stretch gap-6 sm:flex-row sm:items-start">
-            <div className="flex min-w-0 flex-1 flex-col gap-6 sm:w-1/2">
-              <div className="flex items-center gap-4">
-                <UcDynamicBadge className="min-w-0 flex-1" primaryInfo="Deploying" secondaryInfo="Installing OS ..." />
-                <UcChip>New</UcChip>
-                <UcChip>Watched</UcChip>
-              </div>
-              <UcProgressTracker value={25} />
-              <div className="flex flex-col items-stretch gap-4 sm:flex-row sm:items-center">
-                <UcButton variant="primary">Primary</UcButton>
-                <UcButton variant="secondary">Secondary</UcButton>
-              </div>
+      <div className="flex w-full flex-col items-center gap-6">
+        <UcNote>This is a note, a string of text that may contain a link action</UcNote>
+        <div className="flex w-full flex-col items-stretch gap-6 sm:flex-row sm:items-start">
+          <div className="flex min-w-0 flex-1 flex-col gap-6 sm:w-1/2">
+            <div className="flex items-center gap-4">
+              <UcDynamicBadge className="min-w-0 flex-1" primaryInfo="Deploying" secondaryInfo="Installing OS ..." />
+              <UcChip>New</UcChip>
+              <UcChip>Watched</UcChip>
             </div>
-            <UcCard
-              title="Important stat"
-              headlineValue="75%"
-              headlineDetail="4 vCPUs avg"
-              trend="↗ +20%"
-              stats={[
-                { label: 'User', value: '59%' },
-                { label: 'System', value: '18%' }
-              ]}
-              footerNote="This is not a note in the footer"
-            />
+            <UcProgressTracker value={25} />
+            <div className="flex flex-col items-stretch gap-4 sm:flex-row sm:items-center">
+              <UcButton variant="primary">Primary</UcButton>
+              <UcButton variant="secondary">Secondary</UcButton>
+            </div>
           </div>
-          <UcAlert
-            title="Checkout the new version of Projects"
-            body="This is a message to the user in an effort to inform them about something"
-            dismissLabel="Dismiss"
+          <UcCard
+            title="Important stat"
+            headlineValue="75%"
+            headlineDetail="4 vCPUs avg"
+            trend="↗ +20%"
+            stats={[
+              { label: 'User', value: '59%' },
+              { label: 'System', value: '18%' }
+            ]}
+            footerNote="This is not a note in the footer"
           />
         </div>
+        <UcAlert
+          title="Checkout the new version of Projects"
+          body="This is a message to the user in an effort to inform them about something"
+          dismissLabel="Dismiss"
+        />
       </div>
     </div>
   );
