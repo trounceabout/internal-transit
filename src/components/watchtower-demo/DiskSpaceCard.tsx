@@ -22,7 +22,7 @@ export default function DiskSpaceCard() {
       title="Disk space"
       footerBgColor={isCritical ? "var(--wt-demo-danger-bg-strong)" : undefined}
       footer={
-        <span className="text-sm leading-none">
+        <span className="text-sm">
           <span
             className="font-semibold"
             style={{
