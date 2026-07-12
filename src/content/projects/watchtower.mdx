@@ -12,7 +12,7 @@ accentPhrase: "something actually useful"
 loomUrl: "https://www.loom.com/share/b5f62ab0fd034a04a184dae2ab9839c7"
 role: Design lead, Design engineer
 scope: Product design, dashboard UX, information design, data visualization, implementation
-published: false
+published: true
 ---
 
 import LabeledRow from "@/components/case-study/LabeledRow.astro";
@@ -25,9 +25,9 @@ import DocsViewerSandbox from "@/components/undercurrent-demo/DocsViewerSandbox.
 
 <section class="ping-section">
 
-Our product had grown through years of one-off decisions, uneven patterns, and design system false starts. The experience was functional, but it didn’t consistently feel like one product. Similar interface problems were being solved in different ways, foundations were incomplete, and the cost of maintaining consistency kept increasing as new work shipped.
+Our existing server monitoring experience exposed very little of what customers actually needed to understand server health. The data we did show lacked context, important metrics were missing entirely, and there was no simple way to understand whether a server was healthy without already knowing how to interpret the numbers.
 
-I helped grow Undercurrent into a more dependable shared system — one that could support day-to-day product work, improve consistency across surfaces, and create stronger foundations for bigger efforts like theming and dark mode.
+I helped shape a new monitoring experience that made server health easier to understand at a glance, easier to investigate in detail, and easier to act on when something needed attention.
 
 <LightboxImage
   src="/projects/undercurrent/solution-intro.png"
@@ -39,11 +39,11 @@ I helped grow Undercurrent into a more dependable shared system — one that cou
 
 ## The problem
 
-Before Undercurrent, we had a consistency problem that was both visual and operational.
+The original monitoring experience was too limited to be meaningfully useful.
 
-Different apps and product areas were drifting in small but important ways. Components behaved inconsistently, patterns were not always reusable, and the path from design intent to implementation was often looser than it needed to be. That made product work slower, but it also made the experience feel less connected over time.
+Customers could only see a small set of metrics, and even those were presented without enough context to make them actionable. A server could be under real strain with little to no clues in the interface. There was no strong threshold guidance or clear path from a concerning metric to a next step.
 
-We did not just need a component library. We needed a system that could hold up under real product use.
+We didn’t just need to add more charts. We needed to make monitoring easier to understand and more useful in practice.
 
 </section>
 
@@ -51,34 +51,30 @@ We did not just need a component library. We needed a system that could hold up 
 
 ## The approach
 
-From the start, we wanted to treat Undercurrent as product infrastructure rather than a side library.
+This was a product-design problem, not a dashboard-skinning exercise.
 
-Instead of separating “system work” from “product work,” I approached Undercurrent as something that needed to improve through active use. That meant designing and refining components, tightening implementation details, improving theming foundations, and making the system easier for others to adopt through documentation and workflow support.
+The goal wasn’t to just surface more infrastructure data. It was to translate server health into an experience customers could scan, interpret, and act on with less effort. That meant thinking carefully about module structure, time ranges, and the relationship between high-level overview and per-server detail.
 
-It also meant contributing across design and implementation. From the start, I designed components, submitted PRs, and wrote documentation to help build a system that was easier to extend, easier to trust, and easier for teams to adopt.
+It also meant contributing across design and implementation.
 
 </section>
 
-<section class="ping-section ping-section--solution" style="--icon-color-light: #0B7FA8; --icon-color-dark: #2DC7FF">
+<section class="ping-section ping-section--solution" style="--icon-color-light: #E17100; --icon-color-dark: #FD9A00">
 
 ## The solution
 
-I helped shape Undercurrent as a shared system that could support immediate product needs while creating a stronger long-term foundation.
+I used what my colleague had gathered in the product brief to design key modules and flows, and implemented them directly so the final product stayed closely aligned with the original intent.
 
-That work happened in three overlapping layers.
+The work focused on making monitoring easier to understand at a glance, more actionable when something needed attention, and more cohesive across the different views customers would rely on to assess server health.
 
 </section>
 
 <section class="ping-section">
 
 <LabeledRow label="Strengthen the building blocks">
-  As the only designer to work on Undercurrent, I was responsible for shaping
-  its shared UI from the ground up. That included core components like `Card`,
-  `Slider`, and `TextField`, along with the patterns and visual decisions that
-  made the system feel cohesive. That work did not stop at initial design. I
-  continued refining the system over time, improving weak spots, resolving
-  inconsistencies, and tightening the details that made the library more
-  dependable.
+    The bulk of the work was redesigning the monitoring modules themselves so they communicated more than just data points.
+    
+    I designed key modules for core server metrics, important networking signals, and disk health. The focus throughout was on making each module easier to scan, interpret, and understand in context.
 </LabeledRow>
 
 <UndercurrentSandbox client:visible />
@@ -88,10 +84,9 @@ That work happened in three overlapping layers.
 <section class="ping-section">
 
 <LabeledRow label="Build stronger theming foundations">
-  I also helped strengthen the system through theming work across typography,
-  color behavior, brand themes, and dark-mode-related issues. That work made
-  Undercurrent more adaptable over time and created stronger foundations for
-  broader visual change across products.
+    A major part of the redesign was making the experience more actionable.
+    
+    I helped define threshold cues, severity behavior, and supporting guidance so customers could better understand when a metric was healthy, when it needed attention, and when it pointed to a larger problem. That made the dashboard feel less like a collection of charts and more like a product that could help customers make decisions.
 </LabeledRow>
 
 <ThemeRevealSandbox client:visible />
@@ -101,50 +96,35 @@ That work happened in three overlapping layers.
 <section class="ping-section">
 
 <LabeledRow label="Make the system easier to use and trust">
-  A large part of my focus has been helping make Undercurrent more usable
-  through documentation, implementation support, and stronger
-  design-to-development alignment. That’s included work like Storybook
-  documentation and a large amount of Code Connect-related effort across many
-  components and patterns. That work helped make the system easier to
-  understand, easier to adopt, and more dependable over time.
+    My role extended beyond design files. I also implemented several of the shipped modules directly, including work across core metrics, disk health, and network-related monitoring.
+    
+    That helped keep the final experience closely aligned with the original design intent and let me refine details in the product itself rather than stopping at handoff.
 </LabeledRow>
 
 <DocsViewerSandbox client:visible />
 
 </section>
 
-<Postscript iconColor="#0B7FA8" iconColorDark="#2DC7FF">
+<Postscript iconColor="#E17100" iconColorDark="#FD9A00">
   <Fragment slot="why-it-worked">
     <p>
-      As the system became more complete and more reliable, it created a shared
-      foundation for teams working across different apps and product areas. It
-      improved consistency across experiences, reduced implementation drift
-      between design and code, and made it easier to scale product work across
-      surfaces with more confidence.
+        This project was one of a few that were meant to lay the groundwork of a fully-fledged Dashboards feature within our product. The design decisions, both visual and under the hood, would have an outsized impact since they would inform many other views across multiple surfaces within the app.
     </p>
     <p>
-      One of the clearest lessons from the work was that the value of a design
-      system is not just in the library itself. It is in how well that library
-      holds up when teams actually depend on it.
+        Just as importantly, it reframed monitoring as a proper product experience instead of a technical afterthought. It shifted the value from simply showing data to helping customers understand what that data meant and what to do with it.
     </p>
   </Fragment>
   <Fragment slot="key-takeaway">
     <p>
-      A design system becomes meaningful when it improves the product, not when
-      it grows in size.
+        Good monitoring design is not just about exposing metrics. It’s about turning technical signals into something people can read, trust, and act on.
     </p>
     <p>
-      We created (and are still creating) a system that is more structured, more
-      usable, and more trustworthy, while making the experience within our
-      product feel more connected over time. That’s more valuable than any
-      individual component.
+        For me, the most meaningful part was the opportunity to shape that translation directly, from problem framing and module design to implementation of the experience itself.
     </p>
   </Fragment>
   <Fragment slot="project-status">
     <p>
-      It has expanded over time through component work, theme and typography
-      improvements, documentation, Code Connect support, system polish, and
-      ongoing stewardship across multiple product surfaces.
+        This effort is still in the works, with the initial frontend implementation of the dashboard through the first stage and the backend working on making the new data available. Frontend work on the fleet view is underway as well.
     </p>
   </Fragment>
 </Postscript>
