@@ -21,6 +21,7 @@ import LoopVideo from '@/components/case-study/LoopVideo.astro';
 import Postscript from '@/components/case-study/Postscript.astro';
 import UndercurrentSandbox from '@/components/undercurrent-demo/UndercurrentSandbox.tsx';
 import ThemeRevealSandbox from '@/components/undercurrent-demo/ThemeRevealSandbox.tsx';
+import DocsViewerSandbox from '@/components/undercurrent-demo/DocsViewerSandbox.tsx';
 
 <section class="ping-section">
 
@@ -52,11 +53,6 @@ From the start, we wanted to treat Undercurrent as product infrastructure rather
 Instead of separating “system work” from “product work,” I approached Undercurrent as something that needed to improve through active use. That meant designing and refining components, tightening implementation details, improving theming foundations, and making the system easier for others to adopt through documentation and workflow support.
 
 It also meant contributing across design and implementation. From the start, I designed components, submitted PRs, and wrote documentation to help build a system that was easier to extend, easier to trust, and easier for teams to adopt.
-
-<div class="flex flex-col sm:flex-row gap-10 items-stretch">
-  <LightboxImage src="/projects/ping/solution-old.png" alt="The old account settings page, listing notifications in a plain table" class="flex-1 min-w-0" />
-  <LightboxImage src="/projects/ping/solution-new.png" alt="The redesigned notifications inbox next to a full event detail view" class="flex-1 min-w-0" />
-</div>
 
 </section>
 
@@ -97,7 +93,7 @@ I also helped strengthen the system through theming work across typography, colo
 A large part of my focus has been helping make Undercurrent more usable through documentation, implementation support, and stronger design-to-development alignment. That’s included work like Storybook documentation and a large amount of Code Connect-related effort across many components and patterns. That work helped make the system easier to understand, easier to adopt, and more dependable over time.
 </LabeledRow>
 
-<LoopVideo webm="/projects/ping/Ping3.webm" mp4="/projects/ping/Ping3.mp4" />
+<DocsViewerSandbox client:visible />
 
 </section>
 
