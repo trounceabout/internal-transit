@@ -6,7 +6,6 @@ import UcFieldRow from './UcFieldRow';
 import UcRetryBanner from './UcRetryBanner';
 import UcTimeline from './UcTimeline';
 import { History, XCircle, Ship, Tag } from 'lucide-react';
-import { MEDIA_FRAME_SHADOW } from '@/lib/media';
 
 /* Static mock content only, for now — no light/dark stacking or drag yet
    (that's added in later build stages). Hardcoded to the "danger" color
@@ -140,11 +139,16 @@ export default function ThemeRevealSandbox() {
   return (
     <div
       ref={frameRef}
-      className="uc-demo relative w-full overflow-hidden rounded-lg select-none"
-      style={{ boxShadow: MEDIA_FRAME_SHADOW }}
+      className="uc-demo relative mt-10 w-full overflow-hidden rounded-lg border select-none"
+      style={{ borderColor: 'oklch(35.9% 0.0137 286deg)' }}
     >
-      {/* Light copy sits underneath, unclipped — always fully rendered. */}
-      <div className="uc-demo light w-full p-6" data-uc-variant="danger">
+      {/* Light copy sits underneath, unclipped — always fully rendered. The
+          card is padded away from the frame's top/left/right (pt-10/px-10)
+          but flush with the frame's bottom edge (no bottom padding) — this
+          is what makes the card read as "poking past" the frame's own
+          visual boundary, matching the Figma reference, rather than sitting
+          centered with even breathing room on all sides. */}
+      <div className="uc-demo light w-full pt-10 pr-10 pl-10" data-uc-variant="danger">
         <MockErrorUI />
       </div>
 
@@ -154,7 +158,7 @@ export default function ThemeRevealSandbox() {
           React's render cycle entirely (the standard reason motion values
           exist, per motion/react's own docs). */}
       <motion.div
-        className="uc-demo dark absolute inset-0 z-10 w-full p-6"
+        className="uc-demo dark absolute inset-0 z-10 w-full pt-10 pr-10 pl-10"
         data-uc-variant="danger"
         style={{ clipPath }}
       >

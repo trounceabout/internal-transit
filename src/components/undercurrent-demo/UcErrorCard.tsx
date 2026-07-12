@@ -9,6 +9,12 @@ interface UcErrorCardProps {
    headline + field-grid body). Same outer bg-weak / inner bg-main surface
    pattern as UcCard, though.
 
+   Only the top corners are rounded (not all four) — in ThemeRevealSandbox
+   this card sits flush against its containing frame's own bottom edge, so
+   rounded bottom corners would show as a visual gap/mismatch against that
+   flush edge, per the Figma reference this card is meant to look like it's
+   overhanging the frame from.
+
    The Dismiss button is hand-rolled rather than reusing UcButton: UcButton's
    colors come from --uc-demo-active-*, which would tint a plain dismiss
    action with whatever color variant happens to be active (danger, here) —
@@ -16,11 +22,11 @@ interface UcErrorCardProps {
 export default function UcErrorCard({ title, dismissLabel, children }: UcErrorCardProps) {
   return (
     <div
-      className="flex w-full flex-col rounded-[var(--uc-demo-radius-md)]"
+      className="flex w-full flex-col rounded-t-[var(--uc-demo-radius-md)]"
       style={{ backgroundColor: 'var(--uc-demo-neutral-bg-weak)' }}
     >
       <div
-        className="flex flex-col gap-[var(--uc-demo-space-200)] rounded-[var(--uc-demo-radius-md)] border p-[var(--uc-demo-space-200)]"
+        className="flex flex-col gap-[var(--uc-demo-space-200)] rounded-t-[var(--uc-demo-radius-md)] border p-[var(--uc-demo-space-200)]"
         style={{
           backgroundColor: 'var(--uc-demo-neutral-bg-main)',
           borderColor: 'var(--uc-demo-neutral-border-weak)',
