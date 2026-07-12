@@ -1,11 +1,16 @@
-import { useRef, useState } from 'react';
-import { motion, useMotionValue, useTransform, type PanInfo } from 'motion/react';
-import '@/styles/undercurrent-demo.css';
-import UcErrorCard from './UcErrorCard';
-import UcFieldRow from './UcFieldRow';
-import UcRetryBanner from './UcRetryBanner';
-import UcTimeline from './UcTimeline';
-import { CalendarClock, X, Layers2, Shapes, Timer } from 'lucide-react';
+import { useRef, useState } from "react";
+import {
+  motion,
+  useMotionValue,
+  useTransform,
+  type PanInfo,
+} from "motion/react";
+import "@/styles/undercurrent-demo.css";
+import UcErrorCard from "./UcErrorCard";
+import UcFieldRow from "./UcFieldRow";
+import UcRetryBanner from "./UcRetryBanner";
+import UcTimeline from "./UcTimeline";
+import { CalendarClock, X, Layers2, Shapes, Timer } from "lucide-react";
 
 /* Static mock content only, for now — no light/dark stacking or drag yet
    (that's added in later build stages). Hardcoded to the "danger" color
@@ -17,23 +22,33 @@ function MockErrorUI() {
     <UcErrorCard title="Server unable to reboot" dismissLabel="Dismiss">
       <UcFieldRow
         fields={[
-          { icon: CalendarClock, label: 'Time', value: '10/31/25 11:30:00 PM' },
-          { icon: X, label: 'Level', value: 'Error' },
-          { icon: Layers2, label: 'Server', value: 'cold-parent-duo.metalseed.internal' },
-          { icon: Shapes, label: 'Category', value: 'Server Ops' },
+          { icon: CalendarClock, label: "Time", value: "10/31/25 11:30:00 PM" },
+          { icon: X, label: "Level", value: "Error" },
+          {
+            icon: Layers2,
+            label: "Server",
+            value: "cold-parent-duo.metalseed.internal",
+          },
+          { icon: Shapes, label: "Category", value: "Server Ops" },
         ]}
       />
       <div className="flex flex-col gap-1">
-        <span className="text-xs" style={{ color: 'var(--uc-demo-neutral-text-weak)' }}>
+        <span
+          className="text-xs"
+          style={{ color: "var(--uc-demo-neutral-text-weak)" }}
+        >
           Elapsed time
         </span>
         <div className="flex items-center gap-1.5">
           <Timer
             size={16}
             className="shrink-0"
-            style={{ color: 'var(--uc-demo-neutral-text-weak)' }}
+            style={{ color: "var(--uc-demo-neutral-text-weak)" }}
           />
-          <span className="text-sm" style={{ color: 'var(--uc-demo-neutral-text-main)' }}>
+          <span
+            className="text-sm"
+            style={{ color: "var(--uc-demo-neutral-text-main)" }}
+          >
             00:16 secs
           </span>
         </div>
@@ -56,17 +71,38 @@ function MockErrorUI() {
           <div
             className="absolute top-full left-2 w-px -translate-x-1/2"
             style={{
-              height: 'calc(var(--uc-demo-space-200) + var(--uc-demo-space-100) + 8px)',
-              backgroundColor: 'var(--uc-demo-danger-border-main)',
+              height:
+                "calc(var(--uc-demo-space-200) + var(--uc-demo-space-100) + 8px)",
+              backgroundColor: "var(--uc-demo-danger-border-main)",
             }}
           />
         </div>
         <UcTimeline
           items={[
-            { status: 'success', label: 'Server has been started', duration: '2 secs', timestamp: '10/31/25 11:30:19 PM' },
-            { status: 'success', label: 'Starting server', duration: '6 secs', timestamp: '10/31/25 11:30:17 PM' },
-            { status: 'success', label: 'Starting server', duration: '0 secs', timestamp: '10/31/25 11:30:11 PM' },
-            { status: 'success', label: 'Server has been stopped', duration: '0 secs', timestamp: '10/31/25 11:30:11 PM' },
+            {
+              status: "success",
+              label: "Server has been started",
+              duration: "2 secs",
+              timestamp: "10/31/25 11:30:19 PM",
+            },
+            {
+              status: "success",
+              label: "Starting server",
+              duration: "6 secs",
+              timestamp: "10/31/25 11:30:17 PM",
+            },
+            {
+              status: "success",
+              label: "Starting server",
+              duration: "0 secs",
+              timestamp: "10/31/25 11:30:11 PM",
+            },
+            {
+              status: "success",
+              label: "Server has been stopped",
+              duration: "0 secs",
+              timestamp: "10/31/25 11:30:11 PM",
+            },
           ]}
         />
       </div>
@@ -88,7 +124,10 @@ export default function ThemeRevealSandbox() {
   /* The dark copy's clip-path, derived from percent. inset(top right
      bottom left) — clipping back from the right edge by (100 - percent)%
      reveals more of the light copy underneath as percent decreases. */
-  const clipPath = useTransform(percent, (value) => `inset(0 ${100 - value}% 0 0)`);
+  const clipPath = useTransform(
+    percent,
+    (value) => `inset(0 ${100 - value}% 0 0)`,
+  );
 
   /* The handle's own horizontal position as a percentage-based left offset,
      matching how the clip-path is expressed — keeps both derived from the
@@ -111,7 +150,10 @@ export default function ThemeRevealSandbox() {
     setAriaValue(Math.round(clamped));
   }
 
-  function handlePan(_event: PointerEvent | MouseEvent | TouchEvent, info: PanInfo) {
+  function handlePan(
+    _event: PointerEvent | MouseEvent | TouchEvent,
+    info: PanInfo,
+  ) {
     const frame = frameRef.current;
     if (!frame) return;
 
@@ -124,19 +166,19 @@ export default function ThemeRevealSandbox() {
     const step = 5;
 
     switch (event.key) {
-      case 'ArrowLeft':
+      case "ArrowLeft":
         event.preventDefault();
         setPercent(current - step);
         break;
-      case 'ArrowRight':
+      case "ArrowRight":
         event.preventDefault();
         setPercent(current + step);
         break;
-      case 'Home':
+      case "Home":
         event.preventDefault();
         setPercent(0);
         break;
-      case 'End':
+      case "End":
         event.preventDefault();
         setPercent(100);
         break;
@@ -147,7 +189,7 @@ export default function ThemeRevealSandbox() {
     <div
       ref={frameRef}
       className="uc-demo relative mt-10 w-full overflow-hidden rounded-lg border select-none"
-      style={{ borderColor: 'oklch(35.9% 0.0137 286deg)' }}
+      style={{ borderColor: "oklch(35.9% 0.0137 286deg)" }}
     >
       {/* Light copy sits underneath, unclipped — always fully rendered. The
           card is padded away from the frame's top/left/right (pt-10/px-10)
@@ -155,7 +197,10 @@ export default function ThemeRevealSandbox() {
           is what makes the card read as "poking past" the frame's own
           visual boundary, matching the Figma reference, rather than sitting
           centered with even breathing room on all sides. */}
-      <div className="uc-demo light w-full pt-10 pr-10 pl-10" data-uc-variant="danger">
+      <div
+        className="uc-demo light w-full pt-10 pr-10 pl-10"
+        data-uc-variant="danger"
+      >
         <MockErrorUI />
       </div>
 
@@ -194,11 +239,15 @@ export default function ThemeRevealSandbox() {
         aria-valuenow={ariaValue}
         tabIndex={0}
         className="uc-demo absolute inset-y-0 z-20 w-1 -translate-x-1/2 cursor-ew-resize touch-none select-none focus-visible:outline-2 focus-visible:outline-offset-4"
-        style={{ backgroundColor: 'var(--uc-demo-handle-color)', left: handleLeft, outlineColor: 'var(--uc-demo-handle-color)' }}
+        style={{
+          backgroundColor: "var(--uc-demo-handle-color)",
+          left: handleLeft,
+          outlineColor: "var(--uc-demo-handle-color)",
+        }}
       >
         <div
           className="absolute top-1/2 left-1/2 h-16 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full"
-          style={{ backgroundColor: 'var(--uc-demo-handle-color)' }}
+          style={{ backgroundColor: "var(--uc-demo-handle-color)" }}
         />
       </motion.div>
     </div>

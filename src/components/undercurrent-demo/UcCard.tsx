@@ -1,4 +1,4 @@
-import { Info } from 'lucide-react';
+import { Info } from "lucide-react";
 
 interface UcCardStat {
   label: string;
@@ -32,19 +32,19 @@ export default function UcCard({
   return (
     <div
       className="flex min-w-0 flex-1 flex-col rounded-[var(--uc-demo-radius-md)] sm:w-1/2"
-      style={{ backgroundColor: 'var(--uc-demo-neutral-bg-weak)' }}
+      style={{ backgroundColor: "var(--uc-demo-neutral-bg-weak)" }}
     >
       <div
         className="flex flex-1 flex-col rounded-[var(--uc-demo-radius-md)] border"
         style={{
-          backgroundColor: 'var(--uc-demo-neutral-bg-main)',
-          borderColor: 'var(--uc-demo-neutral-border-weak)',
+          backgroundColor: "var(--uc-demo-neutral-bg-main)",
+          borderColor: "var(--uc-demo-neutral-border-weak)",
         }}
       >
         <div className="px-[var(--uc-demo-space-200)] pt-[var(--uc-demo-space-200)] leading-none">
           <span
             className="text-sm font-medium"
-            style={{ color: 'var(--uc-demo-neutral-text-main)' }}
+            style={{ color: "var(--uc-demo-neutral-text-main)" }}
           >
             {title}
           </span>
@@ -55,18 +55,30 @@ export default function UcCard({
             <span
               className="tracking-tight"
               style={{
-                color: 'var(--uc-demo-active-text-main)',
-                fontSize: '40px',
-                lineHeight: '38px',
+                color: "var(--uc-demo-active-text-main)",
+                fontSize: "40px",
+                lineHeight: "38px",
               }}
             >
               {headlineValue}
             </span>
             <div className="flex flex-col gap-0">
-              <span className="text-sm" style={{ color: 'var(--uc-demo-neutral-text-weak)', fontFamily: "'Geist Mono', monospace" }}>
+              <span
+                className="text-sm"
+                style={{
+                  color: "var(--uc-demo-neutral-text-weak)",
+                  fontFamily: "'Geist Mono', monospace",
+                }}
+              >
                 {headlineDetail}
               </span>
-              <span className="text-sm" style={{ color: 'var(--uc-demo-neutral-text-weak)', fontFamily: "'Geist Mono', monospace" }}>
+              <span
+                className="text-sm"
+                style={{
+                  color: "var(--uc-demo-neutral-text-weak)",
+                  fontFamily: "'Geist Mono', monospace",
+                }}
+              >
                 {trend}
               </span>
             </div>
@@ -76,16 +88,22 @@ export default function UcCard({
             {stats.map((stat, index) => (
               <div key={stat.label} className="flex items-center gap-2">
                 {index > 0 && (
-                  <span className="text-xs" style={{ color: 'var(--uc-demo-neutral-text-weak)' }}>
+                  <span
+                    className="text-xs"
+                    style={{ color: "var(--uc-demo-neutral-text-weak)" }}
+                  >
                     •
                   </span>
                 )}
-                <span className="text-xs" style={{ color: 'var(--uc-demo-neutral-text-weak)' }}>
+                <span
+                  className="text-xs"
+                  style={{ color: "var(--uc-demo-neutral-text-weak)" }}
+                >
                   {stat.label}
                 </span>
                 <span
                   className="text-xs font-medium"
-                  style={{ color: 'var(--uc-demo-neutral-text-main)' }}
+                  style={{ color: "var(--uc-demo-neutral-text-main)" }}
                 >
                   {stat.value}
                 </span>
@@ -98,9 +116,12 @@ export default function UcCard({
           <Info
             size={16}
             className="shrink-0"
-            style={{ color: 'var(--uc-demo-active-text-main)' }}
+            style={{ color: "var(--uc-demo-active-text-main)" }}
           />
-          <span className="text-sm leading-6" style={{ color: 'var(--uc-demo-active-text-main)' }}>
+          <span
+            className="text-sm leading-6"
+            style={{ color: "var(--uc-demo-active-text-main)" }}
+          >
             {footerNote}
           </span>
         </div>

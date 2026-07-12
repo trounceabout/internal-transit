@@ -1,11 +1,11 @@
 ---
 // BlogLayout.astro — wraps individual blog posts.
 // Receives the post's frontmatter and renders it above the content.
-import BaseLayout from './BaseLayout.astro';
-import { HugeiconsIcon } from '@hugeicons/react';
-import { Calendar04Icon } from '@hugeicons/core-free-icons';
-import { Home } from 'pixelarticons/react/Home';
-import { categoryConfig } from '@/lib/categoryConfig';
+import BaseLayout from "./BaseLayout.astro";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Calendar04Icon } from "@hugeicons/core-free-icons";
+import { Home } from "pixelarticons/react/Home";
+import { categoryConfig } from "@/lib/categoryConfig";
 
 interface Props {
   title: string;
@@ -20,10 +20,10 @@ interface Props {
 const { title, description, publishDate, tags, accentWord } = Astro.props;
 
 // Format the date nicely, e.g. "Mar 26, 2026" — matches the blog index/home page format
-const formattedDate = publishDate.toLocaleDateString('en-US', {
-  year: 'numeric',
-  month: 'short',
-  day: 'numeric',
+const formattedDate = publishDate.toLocaleDateString("en-US", {
+  year: "numeric",
+  month: "short",
+  day: "numeric",
 });
 
 // The headline's italic accent word takes the color of the post's primary
@@ -36,68 +36,102 @@ const primaryCategory = tags[0] ? categoryConfig[tags[0]] : undefined;
 // the whole string and the other two stay empty — falls back to a plain headline.
 const accentIndex = accentWord ? title.indexOf(accentWord) : -1;
 const titleBefore = accentIndex >= 0 ? title.slice(0, accentIndex) : title;
-const titleAfter = accentIndex >= 0 ? title.slice(accentIndex + (accentWord?.length ?? 0)) : '';
+const titleAfter =
+  accentIndex >= 0 ? title.slice(accentIndex + (accentWord?.length ?? 0)) : "";
 ---
 
 <BaseLayout title={title} description={description} activeNav="blog">
   <main class="mx-auto max-w-[1000px] px-6 py-18">
     <article>
-      <header data-animate class="flex flex-col gap-8 mb-12">
-        {/* Meta row: Home breadcrumb on the left, date badge + one badge per tag on the right */}
-        <div class="flex items-center justify-between gap-8 flex-wrap">
+      <header data-animate class="mb-12 flex flex-col gap-8">
+        {
+          /* Meta row: Home breadcrumb on the left, date badge + one badge per tag on the right */
+        }
+        <div class="flex flex-wrap items-center justify-between gap-8">
           <a href="/" class="flex items-center gap-2">
-            <span class="flex items-center justify-center size-7 rounded-md bg-portfolio-muted/15">
+            <span
+              class="bg-portfolio-muted/15 flex size-7 items-center justify-center rounded-md"
+            >
               <Home width={16} height={16} className="text-portfolio-muted" />
             </span>
-            <span class="font-mono text-base text-portfolio-muted underline">Home</span>
+            <span class="text-portfolio-muted font-mono text-base underline"
+              >Home</span
+            >
           </a>
 
-          <div class="flex items-center gap-8 flex-wrap">
+          <div class="flex flex-wrap items-center gap-8">
             <div class="flex items-center gap-2">
-              <HugeiconsIcon icon={Calendar04Icon} size={16} color="currentColor" className="text-portfolio-ink" />
-              <time datetime={publishDate.toISOString()} class="font-mono text-sm text-portfolio-ink">
+              <HugeiconsIcon
+                icon={Calendar04Icon}
+                size={16}
+                color="currentColor"
+                className="text-portfolio-ink"
+              />
+              <time
+                datetime={publishDate.toISOString()}
+                class="text-portfolio-ink font-mono text-sm"
+              >
                 {formattedDate}
               </time>
             </div>
-            <div class="flex items-center gap-3 flex-wrap">
-              {tags.map((tag) => {
-                const config = categoryConfig[tag];
-                if (!config) return null;
-                const CategoryIcon = config.icon;
-                return (
-                  <div class="flex items-center gap-2">
-                    <CategoryIcon width={16} height={16} className={config.text} />
-                    <span class="font-mono text-sm text-portfolio-ink">{tag}</span>
-                  </div>
-                );
-              })}
+            <div class="flex flex-wrap items-center gap-3">
+              {
+                tags.map((tag) => {
+                  const config = categoryConfig[tag];
+                  if (!config) return null;
+                  const CategoryIcon = config.icon;
+                  return (
+                    <div class="flex items-center gap-2">
+                      <CategoryIcon
+                        width={16}
+                        height={16}
+                        className={config.text}
+                      />
+                      <span class="text-portfolio-ink font-mono text-sm">
+                        {tag}
+                      </span>
+                    </div>
+                  );
+                })
+              }
             </div>
           </div>
         </div>
 
-        {/* Headline — accentWord (if set) renders italicized in the post's primary-category color.
+        {
+          /* Headline — accentWord (if set) renders italicized in the post's primary-category color.
             .portfolio-headline (global.css) is the shared big-title treatment
             every headline on the site uses, including its fluid clamp()
-            font-size. */}
+            font-size. */
+        }
         <h1 class="portfolio-headline">
           {titleBefore}
-          {accentIndex >= 0 && (
-            <span class={`italic ${primaryCategory?.text ?? ''}`}>{accentWord}</span>
-          )}
+          {
+            accentIndex >= 0 && (
+              <span class={`italic ${primaryCategory?.text ?? ""}`}>
+                {accentWord}
+              </span>
+            )
+          }
           {titleAfter}
         </h1>
 
         {/* Dek */}
-        <p class="font-plex-sans text-2xl leading-10 text-portfolio-ink">
+        <p class="font-plex-sans text-portfolio-ink text-2xl leading-10">
           {description}
         </p>
       </header>
 
-      {/* Body — narrower reading column than the header above. Spacing between
+      {
+        /* Body — narrower reading column than the header above. Spacing between
           elements is handled per-type via margin-bottom in the <style> block
           below, not a uniform flex gap, since headings/paragraphs/footnotes
-          each need a different amount of space after them. */}
-      <div data-animate class="article-body max-w-[800px] font-plex-sans text-base leading-8 text-portfolio-ink">
+          each need a different amount of space after them. */
+      }
+      <div
+        data-animate
+        class="article-body font-plex-sans text-portfolio-ink max-w-[800px] text-base leading-8"
+      >
         <slot />
       </div>
     </article>

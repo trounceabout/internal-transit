@@ -10,9 +10,9 @@ export default function UcChip({ children }: UcChipProps) {
     <span
       className="inline-flex h-[var(--uc-demo-size-md)] shrink-0 items-center justify-center gap-[var(--uc-demo-space-100)] rounded-[var(--uc-demo-radius-sm)] border px-[var(--uc-demo-space-100)] py-[var(--uc-demo-space-100)] text-base whitespace-nowrap"
       style={{
-        backgroundColor: 'var(--uc-demo-active-bg-main)',
-        borderColor: 'var(--uc-demo-active-border-weak)',
-        color: 'var(--uc-demo-active-text-main)',
+        backgroundColor: "var(--uc-demo-active-bg-main)",
+        borderColor: "var(--uc-demo-active-border-weak)",
+        color: "var(--uc-demo-active-text-main)",
       }}
     >
       {children}

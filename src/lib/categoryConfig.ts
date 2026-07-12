@@ -19,7 +19,12 @@ import { Campfire as CampfireIcon } from "pixelarticons/react/Campfire";
 // (which also reuses `text` for its headline's category-colored accent word).
 export const categoryConfig: Record<
   string,
-  { icon: ComponentType<SVGProps<SVGSVGElement>>; text: string; hoverText: string; bg: string }
+  {
+    icon: ComponentType<SVGProps<SVGSVGElement>>;
+    text: string;
+    hoverText: string;
+    bg: string;
+  }
 > = {
   design: {
     icon: PencilRulerIcon,

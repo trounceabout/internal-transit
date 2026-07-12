@@ -1,16 +1,21 @@
-import { useState } from 'react';
-import { Tabs } from '@base-ui/react/tabs';
-import { AnimatePresence, motion, useReducedMotion, type Transition } from 'motion/react';
-import '@/styles/undercurrent-demo.css';
-import { DOCS_CONTENT } from './docsContent';
-import type { DocsTabId } from './types';
+import { useState } from "react";
+import { Tabs } from "@base-ui/react/tabs";
+import {
+  AnimatePresence,
+  motion,
+  useReducedMotion,
+  type Transition,
+} from "motion/react";
+import "@/styles/undercurrent-demo.css";
+import { DOCS_CONTENT } from "./docsContent";
+import type { DocsTabId } from "./types";
 
 const TABS: { value: DocsTabId; label: string }[] = [
-  { value: 'overview', label: 'Overview' },
-  { value: 'theming', label: 'Theming' },
-  { value: 'development', label: 'Development' },
-  { value: 'component-standards', label: 'Component standards' },
-  { value: 'versioning', label: 'Versioning' },
+  { value: "overview", label: "Overview" },
+  { value: "theming", label: "Theming" },
+  { value: "development", label: "Development" },
+  { value: "component-standards", label: "Component standards" },
+  { value: "versioning", label: "Versioning" },
 ];
 
 /* Storybook-style docs viewer for the "Make the system easier to use and
@@ -42,16 +47,16 @@ const TABS: { value: DocsTabId; label: string }[] = [
 /* Simple opacity crossfade on tab switch — kept subtle since this is a
    documentation viewer, not a hero animation; it should register as a
    polish detail, not call attention to itself. */
-const PANEL_TRANSITION: Transition = { duration: 0.3, ease: 'easeOut' };
+const PANEL_TRANSITION: Transition = { duration: 0.3, ease: "easeOut" };
 
 export default function DocsViewerSandbox() {
-  const [activeTab, setActiveTab] = useState<DocsTabId>('overview');
+  const [activeTab, setActiveTab] = useState<DocsTabId>("overview");
   const shouldReduceMotion = useReducedMotion();
 
   return (
     <div
       className="uc-demo relative mt-10 h-145 w-full overflow-hidden rounded-lg border"
-      style={{ borderColor: 'oklch(35.9% 0.0137 286deg)' }}
+      style={{ borderColor: "oklch(35.9% 0.0137 286deg)" }}
     >
       <div className="flex h-full flex-col pt-10 pr-10 pl-10">
         <Tabs.Root
@@ -59,20 +64,22 @@ export default function DocsViewerSandbox() {
           onValueChange={(value) => setActiveTab(value as DocsTabId)}
           className="flex min-h-0 flex-1 flex-col rounded-t-lg border border-b-0"
           style={{
-            backgroundColor: 'var(--uc-demo-neutral-bg-main)',
-            borderColor: 'var(--uc-demo-neutral-border-weak)',
+            backgroundColor: "var(--uc-demo-neutral-bg-main)",
+            borderColor: "var(--uc-demo-neutral-border-weak)",
           }}
         >
           <Tabs.List
             className="relative flex shrink-0 overflow-x-auto rounded-t-lg px-6"
-            style={{ borderBottom: '1px solid var(--uc-demo-neutral-border-weak)' }}
+            style={{
+              borderBottom: "1px solid var(--uc-demo-neutral-border-weak)",
+            }}
           >
             {TABS.map((tab) => (
               <Tabs.Tab
                 key={tab.value}
                 value={tab.value}
                 className="shrink-0 cursor-pointer px-4 py-3 text-sm font-medium whitespace-nowrap outline-none"
-                style={{ color: 'var(--uc-demo-neutral-text-main)' }}
+                style={{ color: "var(--uc-demo-neutral-text-main)" }}
               >
                 {tab.label}
               </Tabs.Tab>
@@ -85,9 +92,9 @@ export default function DocsViewerSandbox() {
             <Tabs.Indicator
               className="absolute bottom-0 left-0 h-0.5 transition-all duration-200"
               style={{
-                backgroundColor: 'var(--uc-demo-neutral-text-main)',
-                width: 'var(--active-tab-width)',
-                transform: 'translateX(var(--active-tab-left))',
+                backgroundColor: "var(--uc-demo-neutral-text-main)",
+                width: "var(--active-tab-width)",
+                transform: "translateX(var(--active-tab-left))",
               }}
             />
           </Tabs.List>
@@ -111,7 +118,13 @@ export default function DocsViewerSandbox() {
               region — not worth it for a documentation viewer). */}
           <div className="min-h-0 flex-1 overflow-y-auto p-6 sm:p-8">
             {TABS.map((tab) => (
-              <Tabs.Panel key={tab.value} value={tab.value} keepMounted className="contents" render={<div />}>
+              <Tabs.Panel
+                key={tab.value}
+                value={tab.value}
+                keepMounted
+                className="contents"
+                render={<div />}
+              >
                 <AnimatePresence initial={false}>
                   {activeTab === tab.value && (
                     <motion.div

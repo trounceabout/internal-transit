@@ -7,77 +7,72 @@ import { categoryConfig } from "@/lib/categoryConfig";
 
 // Fetch all blog posts, filter out drafts, sort newest first
 const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
-    (a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf(),
+  (a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf(),
 );
 ---
 
 <BaseLayout title="Blog" description="Thoughts and writing." activeNav="blog">
-    <main class="mx-auto max-w-3xl px-6 py-16 font-mono">
-        {/* Visually hidden h1 for screen readers and SEO */}
-        <h1 class="sr-only">Blog</h1>
-        <ul class="flex flex-col gap-12">
-            {
-                posts.map((post) => (
-                    <li data-animate class="flex flex-col gap-3">
-                        <div class="flex flex-col gap-1">
-                            <a
-                                href={`/blog/${post.id}`}
-                                class="text-xl font-semibold text-portfolio-ink hover:text-portfolio-accent hover:underline transition-colors"
-                            >
-                                {post.data.title}
-                            </a>
-                            <p class="text-md text-portfolio-ink">
-                                {post.data.description}
-                            </p>
-                        </div>
+  <main class="mx-auto max-w-3xl px-6 py-16 font-mono">
+    {/* Visually hidden h1 for screen readers and SEO */}
+    <h1 class="sr-only">Blog</h1>
+    <ul class="flex flex-col gap-12">
+      {
+        posts.map((post) => (
+          <li data-animate class="flex flex-col gap-3">
+            <div class="flex flex-col gap-1">
+              <a
+                href={`/blog/${post.id}`}
+                class="text-portfolio-ink hover:text-portfolio-accent text-xl font-semibold transition-colors hover:underline"
+              >
+                {post.data.title}
+              </a>
+              <p class="text-md text-portfolio-ink">{post.data.description}</p>
+            </div>
 
-                        {/* Date + category tags on the same row */}
-                        <div class="flex items-center gap-9 flex-wrap">
-                            <div class="flex items-center gap-1.5">
-                                <HugeiconsIcon
-                                    icon={Calendar04Icon}
-                                    size={16}
-                                    className="text-portfolio-muted"
-                                />
-                                <time
-                                    datetime={post.data.publishDate.toISOString()}
-                                    class="text-sm text-portfolio-muted"
-                                >
-                                    {post.data.publishDate.toLocaleDateString(
-                                        "en-US",
-                                        {
-                                            year: "numeric",
-                                            month: "long",
-                                            day: "numeric",
-                                        },
-                                    )}
-                                </time>
-                            </div>
+            {/* Date + category tags on the same row */}
+            <div class="flex flex-wrap items-center gap-9">
+              <div class="flex items-center gap-1.5">
+                <HugeiconsIcon
+                  icon={Calendar04Icon}
+                  size={16}
+                  className="text-portfolio-muted"
+                />
+                <time
+                  datetime={post.data.publishDate.toISOString()}
+                  class="text-portfolio-muted text-sm"
+                >
+                  {post.data.publishDate.toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </time>
+              </div>
 
-                            {/* Tags: icon gets the category color, text is muted and adopts color + underline on hover */}
-                            <div class="flex items-center gap-3">
-                                {post.data.tags.map((tag) => {
-                                    const config = categoryConfig[tag];
-                                    if (!config) return null;
-                                    const CategoryIcon = config.icon;
-                                    return (
-                                        <span class="flex items-center gap-1.5 text-sm font-medium cursor-default group">
-                                            <span class={config.text}>
-                                                <CategoryIcon width={16} height={16} />
-                                            </span>
-                                            <span
-                                                class={`text-portfolio-muted group-hover:underline ${config.hoverText}`}
-                                            >
-                                                {tag}
-                                            </span>
-                                        </span>
-                                    );
-                                })}
-                            </div>
-                        </div>
-                    </li>
-                ))
-            }
-        </ul>
-    </main>
+              {/* Tags: icon gets the category color, text is muted and adopts color + underline on hover */}
+              <div class="flex items-center gap-3">
+                {post.data.tags.map((tag) => {
+                  const config = categoryConfig[tag];
+                  if (!config) return null;
+                  const CategoryIcon = config.icon;
+                  return (
+                    <span class="group flex cursor-default items-center gap-1.5 text-sm font-medium">
+                      <span class={config.text}>
+                        <CategoryIcon width={16} height={16} />
+                      </span>
+                      <span
+                        class={`text-portfolio-muted group-hover:underline ${config.hoverText}`}
+                      >
+                        {tag}
+                      </span>
+                    </span>
+                  );
+                })}
+              </div>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </main>
 </BaseLayout>

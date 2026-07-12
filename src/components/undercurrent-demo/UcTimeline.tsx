@@ -1,5 +1,5 @@
-import { CheckCircle2 } from 'lucide-react';
-import type { UcTimelineStatus } from './types';
+import { CheckCircle2 } from "lucide-react";
+import type { UcTimelineStatus } from "./types";
 
 interface UcTimelineItemData {
   status: UcTimelineStatus;
@@ -13,8 +13,8 @@ interface UcTimelineProps {
 }
 
 const CONNECTOR_COLOR: Record<UcTimelineStatus, string> = {
-  success: 'var(--uc-demo-timeline-success-icon)',
-  neutral: 'var(--uc-demo-timeline-connector)',
+  success: "var(--uc-demo-timeline-success-icon)",
+  neutral: "var(--uc-demo-timeline-connector)",
 };
 
 /* A vertical status/audit log — new bespoke component, no analog among the
@@ -38,7 +38,9 @@ export default function UcTimeline({ items }: UcTimelineProps) {
             {!isFirst && (
               <div
                 className="absolute top-0 left-2 h-1/2 w-px -translate-x-1/2"
-                style={{ backgroundColor: CONNECTOR_COLOR[items[index - 1].status] }}
+                style={{
+                  backgroundColor: CONNECTOR_COLOR[items[index - 1].status],
+                }}
               />
             )}
             {/* Segment leading OUT of this item, colored by this item's
@@ -58,36 +60,49 @@ export default function UcTimeline({ items }: UcTimelineProps) {
   );
 }
 
-function UcTimelineItem({ status, label, duration, timestamp }: UcTimelineItemData) {
+function UcTimelineItem({
+  status,
+  label,
+  duration,
+  timestamp,
+}: UcTimelineItemData) {
   const iconColor =
-    status === 'success' ? 'var(--uc-demo-timeline-success-icon)' : 'var(--uc-demo-timeline-neutral-icon)';
+    status === "success"
+      ? "var(--uc-demo-timeline-success-icon)"
+      : "var(--uc-demo-timeline-neutral-icon)";
 
   return (
     <div className="relative flex items-center gap-[var(--uc-demo-space-100)] py-[var(--uc-demo-space-100)]">
       <CheckCircle2
         size={16}
         className="z-10 shrink-0"
-        style={{ color: iconColor, backgroundColor: 'var(--uc-demo-neutral-bg-main)' }}
+        style={{
+          color: iconColor,
+          backgroundColor: "var(--uc-demo-neutral-bg-main)",
+        }}
       />
       <span
         className="min-w-0 flex-1 truncate text-sm"
-        style={{ color: 'var(--uc-demo-neutral-text-main)' }}
+        style={{ color: "var(--uc-demo-neutral-text-main)" }}
       >
         {label}
       </span>
       <span
         className="inline-flex shrink-0 items-center rounded-[var(--uc-demo-radius-xs)] px-[var(--uc-demo-duration-tag-padding-x)] text-xs whitespace-nowrap"
         style={{
-          height: 'var(--uc-demo-duration-tag-height)',
-          backgroundColor: 'var(--uc-demo-neutral-bg-weak)',
-          color: 'var(--uc-demo-neutral-text-weak)',
+          height: "var(--uc-demo-duration-tag-height)",
+          backgroundColor: "var(--uc-demo-neutral-bg-weak)",
+          color: "var(--uc-demo-neutral-text-weak)",
         }}
       >
         {duration}
       </span>
       <span
         className="hidden shrink-0 truncate text-sm sm:block"
-        style={{ color: 'var(--uc-demo-neutral-text-weak)', fontFamily: "'Geist Mono', monospace" }}
+        style={{
+          color: "var(--uc-demo-neutral-text-weak)",
+          fontFamily: "'Geist Mono', monospace",
+        }}
       >
         {timestamp}
       </span>

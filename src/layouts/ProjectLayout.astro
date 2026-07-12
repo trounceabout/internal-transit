@@ -4,12 +4,12 @@
 // icon+eyebrow badge, and adds a Role/Scope properties row plus a Loom embed
 // (hidden until the reader opts in via "Watch the overview") that articles
 // don't have.
-import BaseLayout from './BaseLayout.astro';
-import Lightbox from '@/components/Lightbox.astro';
-import PillButton from '@/components/case-study/PillButton.astro';
-import { Home } from 'pixelarticons/react/Home';
-import { Play } from 'pixelarticons/react/Play';
-import type { ComponentType, SVGProps } from 'react';
+import BaseLayout from "./BaseLayout.astro";
+import Lightbox from "@/components/Lightbox.astro";
+import PillButton from "@/components/case-study/PillButton.astro";
+import { Home } from "pixelarticons/react/Home";
+import { Play } from "pixelarticons/react/Play";
+import type { ComponentType, SVGProps } from "react";
 
 interface Props {
   name: string;
@@ -51,12 +51,16 @@ const dek = description ?? tagline;
 // config. Applied to `tagline` (the headline text), not `dek` — the
 // headline and the intro paragraph below it are two separate strings.
 const accentIndex = accentPhrase ? tagline.indexOf(accentPhrase) : -1;
-const taglineBefore = accentIndex >= 0 ? tagline.slice(0, accentIndex) : tagline;
-const taglineAfter = accentIndex >= 0 ? tagline.slice(accentIndex + (accentPhrase?.length ?? 0)) : '';
+const taglineBefore =
+  accentIndex >= 0 ? tagline.slice(0, accentIndex) : tagline;
+const taglineAfter =
+  accentIndex >= 0
+    ? tagline.slice(accentIndex + (accentPhrase?.length ?? 0))
+    : "";
 
 // Loom share URLs (loom.com/share/<id>) don't render embedded — the player
 // requires the /embed/<id> path.
-const embedSrc = loomUrl?.replace('/share/', '/embed/');
+const embedSrc = loomUrl?.replace("/share/", "/embed/");
 
 // JSX/Astro only renders a variable as a component if it starts with a
 // capital letter — `icon` comes in lowercase as a prop, so it needs a
@@ -65,121 +69,153 @@ const Icon = icon;
 ---
 
 <BaseLayout title={name} description={tagline}>
-  {/* Warms up the connection to Loom's domains as soon as the page loads,
+  {
+    /* Warms up the connection to Loom's domains as soon as the page loads,
       instead of paying full DNS+TLS+redirect latency at the moment the
       reader clicks "Watch the overview". Rendered into BaseLayout's named
       "head" slot — a <link> in the default slot stays in <body> where
       it's written, it isn't auto-hoisted to <head> the way <style>/<script>
-      tags are. */}
-  {embedSrc && (
-    <Fragment slot="head">
-      <link rel="preconnect" href="https://www.loom.com" />
-      <link rel="preconnect" href="https://cdn.loom.com" crossorigin />
-    </Fragment>
-  )}
+      tags are. */
+  }
+  {
+    embedSrc && (
+      <Fragment slot="head">
+        <link rel="preconnect" href="https://www.loom.com" />
+        <link rel="preconnect" href="https://cdn.loom.com" crossorigin />
+      </Fragment>
+    )
+  }
   <main class="mx-auto max-w-[1120px] py-18">
     <article class="px-6 sm:px-10 lg:px-[60px]">
-      <header data-animate class="flex flex-col gap-8 mb-12">
-        {/* Breadcrumb: Home badge, then the project's own icon badge + eyebrow label
-            (that project badge/label markup matches the home page's Work list rows) */}
+      <header data-animate class="mb-12 flex flex-col gap-8">
+        {
+          /* Breadcrumb: Home badge, then the project's own icon badge + eyebrow label
+            (that project badge/label markup matches the home page's Work list rows) */
+        }
         <div class="flex items-center gap-4">
           <a href="/" class="flex items-center gap-2">
-            <span class="flex items-center justify-center size-7 rounded-md bg-portfolio-muted/15">
+            <span
+              class="bg-portfolio-muted/15 flex size-7 items-center justify-center rounded-md"
+            >
               <Home width={16} height={16} className="text-portfolio-muted" />
             </span>
-            <span class="font-mono text-base text-portfolio-muted underline">Home</span>
+            <span class="text-portfolio-muted font-mono text-base underline"
+              >Home</span
+            >
           </a>
           <span class="text-portfolio-muted">•</span>
           <div class="flex items-center gap-2">
             <span
-              class="flex items-center justify-center size-7 rounded-md shrink-0"
+              class="flex size-7 shrink-0 items-center justify-center rounded-md"
               style={{
-                backgroundColor: 'var(--badge-color)',
-                ...(badgeColor ? { '--badge-color-light': badgeColor } : {}),
-                ...(badgeColorDark ? { '--badge-color-dark': badgeColorDark } : {}),
+                backgroundColor: "var(--badge-color)",
+                ...(badgeColor ? { "--badge-color-light": badgeColor } : {}),
+                ...(badgeColorDark
+                  ? { "--badge-color-dark": badgeColorDark }
+                  : {}),
               }}
             >
               <Icon
                 width={16}
                 height={16}
                 style={{
-                  color: 'var(--icon-color)',
-                  ...(iconColor ? { '--icon-color-light': iconColor } : {}),
-                  ...(iconColorDark ? { '--icon-color-dark': iconColorDark } : {}),
+                  color: "var(--icon-color)",
+                  ...(iconColor ? { "--icon-color-light": iconColor } : {}),
+                  ...(iconColorDark
+                    ? { "--icon-color-dark": iconColorDark }
+                    : {}),
                 }}
               />
             </span>
-            <p class="font-mono text-base tracking-[-0.18px] text-portfolio-ink">{name}</p>
+            <p
+              class="text-portfolio-ink font-mono text-base tracking-[-0.18px]"
+            >
+              {name}
+            </p>
           </div>
         </div>
 
-        {/* Headline — accentPhrase (if set) renders italicized in the project's own iconColor.
+        {
+          /* Headline — accentPhrase (if set) renders italicized in the project's own iconColor.
             .portfolio-headline (global.css) is the shared big-title treatment
             every headline on the site uses (home page, blog posts, case
-            studies), including its fluid clamp() font-size. */}
+            studies), including its fluid clamp() font-size. */
+        }
         <h1 class="portfolio-headline">
           {taglineBefore}
-          {accentIndex >= 0 && (
-            <span
-              class="italic"
-              style={{
-                color: 'var(--icon-color)',
-                ...(iconColor ? { '--icon-color-light': iconColor } : {}),
-                ...(iconColorDark ? { '--icon-color-dark': iconColorDark } : {}),
-              }}
-            >{accentPhrase}</span>
-          )}
+          {
+            accentIndex >= 0 && (
+              <span
+                class="italic"
+                style={{
+                  color: "var(--icon-color)",
+                  ...(iconColor ? { "--icon-color-light": iconColor } : {}),
+                  ...(iconColorDark
+                    ? { "--icon-color-dark": iconColorDark }
+                    : {}),
+                }}
+              >
+                {accentPhrase}
+              </span>
+            )
+          }
           {taglineAfter}
         </h1>
       </header>
 
-      {/* Body — same max-width and typography as the article template's body column */}
+      {
+        /* Body — same max-width and typography as the article template's body column */
+      }
       <div data-animate class="flex flex-col gap-10">
-        <p class="font-plex-sans text-2xl leading-10 text-portfolio-ink">
+        <p class="font-plex-sans text-portfolio-ink text-2xl leading-10">
           {dek}
         </p>
 
-        {(embedSrc || role || scope) && (
-          <div class="flex flex-col gap-10">
-            {/* Properties row: overview toggle + Role/Scope, all optional so
+        {
+          (embedSrc || role || scope) && (
+            <div class="flex flex-col gap-10">
+              {/* Properties row: overview toggle + Role/Scope, all optional so
                 a case study can omit any of them. The toggle now opens the
                 shared Lightbox (rendered once below) instead of an inline
                 accordion — clicking it is just another lightbox trigger,
                 identified to Lightbox.astro's delegated listener the same
                 way a case-study image is (see LightboxImage.astro). */}
-            <div class="flex flex-wrap gap-10 items-start">
-              {embedSrc && (
-                <PillButton
-                  id="overview-toggle"
-                  icon={Play}
-                  label="Watch the overview"
-                  iconColor="oklch(54.6% 0.245 262.881)"
-                  background="color-mix(in oklch, oklch(54.6% 0.245 262.881) 15%, transparent)"
-                  data-lightbox-trigger
-                  data-lightbox-type="iframe"
-                  data-lightbox-src={embedSrc}
-                />
-              )}
+              <div class="flex flex-wrap items-start gap-10">
+                {embedSrc && (
+                  <PillButton
+                    id="overview-toggle"
+                    icon={Play}
+                    label="Watch the overview"
+                    iconColor="oklch(54.6% 0.245 262.881)"
+                    background="color-mix(in oklch, oklch(54.6% 0.245 262.881) 15%, transparent)"
+                    data-lightbox-trigger
+                    data-lightbox-type="iframe"
+                    data-lightbox-src={embedSrc}
+                  />
+                )}
 
-              {role && (
-                <div class="flex flex-col gap-1 font-mono text-sm tracking-[-0.14px]">
-                  <p class="text-portfolio-muted">Role</p>
-                  <p class="text-portfolio-ink whitespace-nowrap">{role}</p>
-                </div>
-              )}
+                {role && (
+                  <div class="flex flex-col gap-1 font-mono text-sm tracking-[-0.14px]">
+                    <p class="text-portfolio-muted">Role</p>
+                    <p class="text-portfolio-ink whitespace-nowrap">{role}</p>
+                  </div>
+                )}
 
-              {scope && (
-                <div class="flex flex-col gap-1 flex-1 min-w-[240px] font-mono text-sm tracking-[-0.14px]">
-                  <p class="text-portfolio-muted">Scope</p>
-                  <p class="text-portfolio-ink">{scope}</p>
-                </div>
-              )}
+                {scope && (
+                  <div class="flex min-w-[240px] flex-1 flex-col gap-1 font-mono text-sm tracking-[-0.14px]">
+                    <p class="text-portfolio-muted">Scope</p>
+                    <p class="text-portfolio-ink">{scope}</p>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-        )}
+          )
+        }
 
         {/* Rest of the MDX body */}
-        <div class="article-body font-plex-sans text-base leading-8 text-portfolio-ink">
+        <div
+          class="article-body font-plex-sans text-portfolio-ink text-base leading-8"
+        >
           <slot />
         </div>
       </div>
@@ -301,7 +337,11 @@ const Icon = icon;
     margin-top: var(--ping-card-padding);
     margin-bottom: var(--ping-card-padding);
     border: 1px solid color-mix(in oklch, var(--icon-color) 50%, transparent);
-    background: linear-gradient(0deg, color-mix(in oklch, var(--icon-color) 0%, transparent) 0%, color-mix(in oklch, var(--icon-color) 13%, transparent) 100%);
+    background: linear-gradient(
+      0deg,
+      color-mix(in oklch, var(--icon-color) 0%, transparent) 0%,
+      color-mix(in oklch, var(--icon-color) 13%, transparent) 100%
+    );
     background-origin: border-box;
     background-clip: padding-box, padding-box, border-box;
   }

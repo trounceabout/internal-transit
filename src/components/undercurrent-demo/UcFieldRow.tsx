@@ -1,7 +1,11 @@
-import type { ComponentType } from 'react';
+import type { ComponentType } from "react";
 
 interface UcField {
-  icon: ComponentType<{ size?: number; className?: string; style?: React.CSSProperties }>;
+  icon: ComponentType<{
+    size?: number;
+    className?: string;
+    style?: React.CSSProperties;
+  }>;
   label: string;
   value: string;
 }
@@ -23,7 +27,7 @@ export default function UcFieldRow({ fields }: UcFieldRowProps) {
           <div key={field.label} className="flex min-w-0 flex-col gap-1">
             <span
               className="text-xs"
-              style={{ color: 'var(--uc-demo-neutral-text-weak)' }}
+              style={{ color: "var(--uc-demo-neutral-text-weak)" }}
             >
               {field.label}
             </span>
@@ -31,11 +35,11 @@ export default function UcFieldRow({ fields }: UcFieldRowProps) {
               <Icon
                 size={16}
                 className="shrink-0"
-                style={{ color: 'var(--uc-demo-neutral-text-weak)' }}
+                style={{ color: "var(--uc-demo-neutral-text-weak)" }}
               />
               <span
                 className="truncate text-sm"
-                style={{ color: 'var(--uc-demo-neutral-text-main)' }}
+                style={{ color: "var(--uc-demo-neutral-text-main)" }}
               >
                 {field.value}
               </span>

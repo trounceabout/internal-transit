@@ -5,4 +5,4 @@
 // rather than a literal value, so it swaps automatically when the reader
 // toggles light/dark — a hardcoded string here would be frozen at render
 // time and couldn't react to the client-side theme toggle in Footer.astro.
-export const MEDIA_FRAME_SHADOW = 'var(--media-frame-shadow)';
+export const MEDIA_FRAME_SHADOW = "var(--media-frame-shadow)";

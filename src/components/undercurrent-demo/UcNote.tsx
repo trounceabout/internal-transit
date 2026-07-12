@@ -1,4 +1,4 @@
-import { Info } from 'lucide-react';
+import { Info } from "lucide-react";
 
 interface UcNoteProps {
   children: React.ReactNode;
@@ -11,16 +11,16 @@ export default function UcNote({ children }: UcNoteProps) {
   return (
     <div
       className="flex w-full items-center gap-[var(--uc-demo-space-150)] rounded-[var(--uc-demo-radius-sm)] border px-[var(--uc-demo-space-200)] py-[var(--uc-demo-space-100)]"
-      style={{ borderColor: 'var(--uc-demo-active-border-weak)' }}
+      style={{ borderColor: "var(--uc-demo-active-border-weak)" }}
     >
       <Info
         size={16}
         className="shrink-0"
-        style={{ color: 'var(--uc-demo-neutral-text-main)' }}
+        style={{ color: "var(--uc-demo-neutral-text-main)" }}
       />
       <span
         className="text-sm leading-6"
-        style={{ color: 'var(--uc-demo-neutral-text-main)' }}
+        style={{ color: "var(--uc-demo-neutral-text-main)" }}
       >
         {children}
       </span>

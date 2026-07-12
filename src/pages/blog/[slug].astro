@@ -1,11 +1,11 @@
 ---
-import BlogLayout from '@/layouts/BlogLayout.astro';
-import { getCollection, render } from 'astro:content';
+import BlogLayout from "@/layouts/BlogLayout.astro";
+import { getCollection, render } from "astro:content";
 
 // getStaticPaths tells Astro which pages to build at compile time.
 // One page is generated per blog post.
 export async function getStaticPaths() {
-  const posts = await getCollection('blog');
+  const posts = await getCollection("blog");
   return posts.map((post) => ({
     // In Astro 6, entries use .id instead of .slug
     params: { slug: post.id },

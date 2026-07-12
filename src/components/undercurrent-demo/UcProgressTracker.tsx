@@ -13,13 +13,13 @@ export default function UcProgressTracker({ value }: UcProgressTrackerProps) {
   return (
     <div
       className="relative h-16 w-full overflow-hidden rounded-[var(--uc-demo-radius-sm)] border"
-      style={{ borderColor: 'var(--uc-demo-active-border-main)' }}
+      style={{ borderColor: "var(--uc-demo-active-border-main)" }}
     >
       <div
         className="absolute inset-y-0 left-0 rounded-[var(--uc-demo-radius-sm)]"
         style={{
           width: `${value}%`,
-          backgroundColor: 'var(--uc-demo-active-bg-main)',
+          backgroundColor: "var(--uc-demo-active-bg-main)",
         }}
       />
       <div

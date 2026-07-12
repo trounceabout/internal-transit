@@ -1,4 +1,4 @@
-import { Flag } from 'lucide-react';
+import { Flag } from "lucide-react";
 
 interface UcAlertProps {
   title: string;
@@ -16,26 +16,29 @@ interface UcAlertProps {
 export default function UcAlert({ title, body, dismissLabel }: UcAlertProps) {
   return (
     <div
-      className="flex items-start w-full gap-[var(--uc-demo-space-100)] rounded-[var(--uc-demo-radius-md)] border p-[var(--uc-demo-space-200)]"
+      className="flex w-full items-start gap-[var(--uc-demo-space-100)] rounded-[var(--uc-demo-radius-md)] border p-[var(--uc-demo-space-200)]"
       style={{
-        backgroundColor: 'var(--uc-demo-neutral-bg-main)',
-        borderColor: 'var(--uc-demo-active-border-medium)',
+        backgroundColor: "var(--uc-demo-neutral-bg-main)",
+        borderColor: "var(--uc-demo-active-border-medium)",
       }}
     >
       <Flag
         size={24}
         className="shrink-0 pt-2"
-        style={{ color: 'var(--uc-demo-active-icon-main)' }}
+        style={{ color: "var(--uc-demo-active-icon-main)" }}
       />
       <div className="flex flex-1 flex-col items-stretch gap-[var(--uc-demo-space-200)] sm:flex-row sm:items-center sm:justify-end">
         <div className="flex flex-1 flex-col gap-0">
           <span
             className="font-medium"
-            style={{ color: 'var(--uc-demo-neutral-text-main)' }}
+            style={{ color: "var(--uc-demo-neutral-text-main)" }}
           >
             {title}
           </span>
-          <span className="text-sm" style={{ color: 'var(--uc-demo-neutral-text-main)' }}>
+          <span
+            className="text-sm"
+            style={{ color: "var(--uc-demo-neutral-text-main)" }}
+          >
             {body}
           </span>
         </div>
@@ -44,8 +47,8 @@ export default function UcAlert({ title, body, dismissLabel }: UcAlertProps) {
             type="button"
             className="inline-flex h-[var(--uc-demo-size-lg)] w-full items-center justify-center rounded-[var(--uc-demo-radius-full)] px-[var(--uc-demo-space-150)] text-sm font-medium sm:w-auto"
             style={{
-              backgroundColor: 'var(--uc-demo-neutral-bg-weak)',
-              color: 'var(--uc-demo-neutral-text-main)',
+              backgroundColor: "var(--uc-demo-neutral-bg-weak)",
+              color: "var(--uc-demo-neutral-text-main)",
             }}
           >
             {dismissLabel}

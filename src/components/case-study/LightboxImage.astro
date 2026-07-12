@@ -4,8 +4,8 @@
 // a darkening scrim + expand icon as a "click to enlarge" affordance.
 // Shares the same "media frame" shadow as LoopVideo's video box, so
 // clickable and non-clickable inline media still read as one visual family.
-import { ArrowsScale } from 'pixelarticons/react/ArrowsScale';
-import { MEDIA_FRAME_SHADOW } from '@/lib/media';
+import { ArrowsScale } from "pixelarticons/react/ArrowsScale";
+import { MEDIA_FRAME_SHADOW } from "@/lib/media";
 
 interface Props {
   src: string;
@@ -17,19 +17,24 @@ const { src, alt, class: className } = Astro.props;
 ---
 
 <span
-  class:list={['lightbox-hover-wrap cursor-pointer', className]}
+  class:list={["lightbox-hover-wrap cursor-pointer", className]}
   data-lightbox-trigger
   data-lightbox-type="image"
   role="button"
   tabindex="0"
 >
-  {/* MEDIA_FRAME_SHADOW's inset layers are meant to sit on this outer,
+  {
+    /* MEDIA_FRAME_SHADOW's inset layers are meant to sit on this outer,
       clipping box as a bevel along the rounded edge — putting them on the
       <img> itself (no separate overflow:hidden container) let the inset
       highlight render as a visible sliver inside the image's own content
       instead of flush against the corner. Same shape as LoopVideo.astro's
-      wrapping div. */}
-  <div class="rounded-lg overflow-hidden relative" style={{ boxShadow: MEDIA_FRAME_SHADOW }}>
+      wrapping div. */
+  }
+  <div
+    class="relative overflow-hidden rounded-lg"
+    style={{ boxShadow: MEDIA_FRAME_SHADOW }}
+  >
     <img src={src} alt={alt} class="block w-full" />
   </div>
   <ArrowsScale width={32} height={32} className="lightbox-expand-icon" />
@@ -61,7 +66,7 @@ const { src, alt, class: className } = Astro.props;
      token: it's a scrim over content, not page chrome, so it shouldn't
      flip to a cream color in light mode). */
   .lightbox-hover-wrap::after {
-    content: '';
+    content: "";
     position: absolute;
     inset: 0;
     border-radius: 0.5rem; /* matches the img's own rounded-lg */

@@ -15,13 +15,13 @@ scope: Design systems, component design, theming, documentation, design-to-dev w
 published: true
 ---
 
-import LabeledRow from '@/components/case-study/LabeledRow.astro';
-import LightboxImage from '@/components/case-study/LightboxImage.astro';
-import LoopVideo from '@/components/case-study/LoopVideo.astro';
-import Postscript from '@/components/case-study/Postscript.astro';
-import UndercurrentSandbox from '@/components/undercurrent-demo/UndercurrentSandbox.tsx';
-import ThemeRevealSandbox from '@/components/undercurrent-demo/ThemeRevealSandbox.tsx';
-import DocsViewerSandbox from '@/components/undercurrent-demo/DocsViewerSandbox.tsx';
+import LabeledRow from "@/components/case-study/LabeledRow.astro";
+import LightboxImage from "@/components/case-study/LightboxImage.astro";
+import LoopVideo from "@/components/case-study/LoopVideo.astro";
+import Postscript from "@/components/case-study/Postscript.astro";
+import UndercurrentSandbox from "@/components/undercurrent-demo/UndercurrentSandbox.tsx";
+import ThemeRevealSandbox from "@/components/undercurrent-demo/ThemeRevealSandbox.tsx";
+import DocsViewerSandbox from "@/components/undercurrent-demo/DocsViewerSandbox.tsx";
 
 <section class="ping-section">
 
@@ -29,7 +29,10 @@ Our product had grown through years of one-off decisions, uneven patterns, and d
 
 I helped grow Undercurrent into a more dependable shared system — one that could support day-to-day product work, improve consistency across surfaces, and create stronger foundations for bigger efforts like theming and dark mode.
 
-<LightboxImage src="/projects/undercurrent/solution-intro.png" alt="Undercurrent design system overview with color, type, spacing, and component previews" />
+<LightboxImage
+  src="/projects/undercurrent/solution-intro.png"
+  alt="Undercurrent design system overview with color, type, spacing, and component previews"
+/>
 
 </section>
 <section class="ping-section ping-section--problem">
@@ -69,8 +72,13 @@ That work happened in three overlapping layers.
 <section class="ping-section">
 
 <LabeledRow label="Strengthen the building blocks">
-As the only designer to work on Undercurrent, I was responsible for shaping its shared UI from the ground up. That included core components like `Card`, `Slider`, and `TextField`, along with the patterns and visual decisions that made the system feel cohesive.
-That work did not stop at initial design. I continued refining the system over time, improving weak spots, resolving inconsistencies, and tightening the details that made the library more dependable.
+  As the only designer to work on Undercurrent, I was responsible for shaping
+  its shared UI from the ground up. That included core components like `Card`,
+  `Slider`, and `TextField`, along with the patterns and visual decisions that
+  made the system feel cohesive. That work did not stop at initial design. I
+  continued refining the system over time, improving weak spots, resolving
+  inconsistencies, and tightening the details that made the library more
+  dependable.
 </LabeledRow>
 
 <UndercurrentSandbox client:visible />
@@ -80,7 +88,10 @@ That work did not stop at initial design. I continued refining the system over t
 <section class="ping-section">
 
 <LabeledRow label="Build stronger theming foundations">
-I also helped strengthen the system through theming work across typography, color behavior, brand themes, and dark-mode-related issues. That work made Undercurrent more adaptable over time and created stronger foundations for broader visual change across products.
+  I also helped strengthen the system through theming work across typography,
+  color behavior, brand themes, and dark-mode-related issues. That work made
+  Undercurrent more adaptable over time and created stronger foundations for
+  broader visual change across products.
 </LabeledRow>
 
 <ThemeRevealSandbox client:visible />
@@ -90,7 +101,12 @@ I also helped strengthen the system through theming work across typography, colo
 <section class="ping-section">
 
 <LabeledRow label="Make the system easier to use and trust">
-A large part of my focus has been helping make Undercurrent more usable through documentation, implementation support, and stronger design-to-development alignment. That’s included work like Storybook documentation and a large amount of Code Connect-related effort across many components and patterns. That work helped make the system easier to understand, easier to adopt, and more dependable over time.
+  A large part of my focus has been helping make Undercurrent more usable
+  through documentation, implementation support, and stronger
+  design-to-development alignment. That’s included work like Storybook
+  documentation and a large amount of Code Connect-related effort across many
+  components and patterns. That work helped make the system easier to
+  understand, easier to adopt, and more dependable over time.
 </LabeledRow>
 
 <DocsViewerSandbox client:visible />
@@ -99,14 +115,36 @@ A large part of my focus has been helping make Undercurrent more usable through 
 
 <Postscript iconColor="#0B7FA8" iconColorDark="#2DC7FF">
   <Fragment slot="why-it-worked">
-    <p>As the system became more complete and more reliable, it created a shared foundation for teams working across different apps and product areas. It improved consistency across experiences, reduced implementation drift between design and code, and made it easier to scale product work across surfaces with more confidence.</p>
-    <p>One of the clearest lessons from the work was that the value of a design system is not just in the library itself. It is in how well that library holds up when teams actually depend on it.</p>
+    <p>
+      As the system became more complete and more reliable, it created a shared
+      foundation for teams working across different apps and product areas. It
+      improved consistency across experiences, reduced implementation drift
+      between design and code, and made it easier to scale product work across
+      surfaces with more confidence.
+    </p>
+    <p>
+      One of the clearest lessons from the work was that the value of a design
+      system is not just in the library itself. It is in how well that library
+      holds up when teams actually depend on it.
+    </p>
   </Fragment>
   <Fragment slot="key-takeaway">
-    <p>A design system becomes meaningful when it improves the product, not when it grows in size.</p>
-    <p>We created (and are still creating) a system that is more structured, more usable, and more trustworthy, while making the experience within our product feel more connected over time. That’s more valuable than any individual component.</p>
+    <p>
+      A design system becomes meaningful when it improves the product, not when
+      it grows in size.
+    </p>
+    <p>
+      We created (and are still creating) a system that is more structured, more
+      usable, and more trustworthy, while making the experience within our
+      product feel more connected over time. That’s more valuable than any
+      individual component.
+    </p>
   </Fragment>
   <Fragment slot="project-status">
-    <p>It has expanded over time through component work, theme and typography improvements, documentation, Code Connect support, system polish, and ongoing stewardship across multiple product surfaces.</p>
+    <p>
+      It has expanded over time through component work, theme and typography
+      improvements, documentation, Code Connect support, system polish, and
+      ongoing stewardship across multiple product surfaces.
+    </p>
   </Fragment>
 </Postscript>
