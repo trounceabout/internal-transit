@@ -17,14 +17,17 @@ function withTime<T extends Record<string, number>>(values: T[]): DataPoint[] {
   }));
 }
 
-/* ─── CPU Utilization — % used, previous period (idx 0-23) + current (24-47) ── */
+/* ─── CPU Utilization — % used, previous period (idx 0-23) + current (24-47).
+ * The current period's average sits above the 80% warning threshold (not
+ * just individual spikes) so the elevated color shows by default, before
+ * any hovering — a server that's been running hot, not just briefly busy. */
 export const cpuData: DataPoint[] = withTime(
   [
     58, 60, 63, 61, 59, 62, 65, 68, 70, 66, 63, 61, 59, 62, 64, 67, 69, 65, 62,
     60, 63, 66, 68, 64,
     // current period
-    62, 65, 68, 71, 73, 70, 67, 64, 66, 69, 72, 75, 73, 70, 68, 65, 63, 66, 69,
-    72, 74, 71, 68, 75,
+    76, 79, 82, 85, 87, 84, 81, 78, 80, 88, 91, 93, 87, 82, 80, 77, 75, 78, 81,
+    84, 86, 83, 80, 89,
   ].map((cpu) => ({ cpu })),
 );
 

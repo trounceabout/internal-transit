@@ -29,7 +29,7 @@ export default function WtCard({
 }: WtCardProps) {
   return (
     <div
-      className="flex h-full flex-col rounded-tl-[16px] rounded-tr-[16px] rounded-bl-[var(--wt-demo-radius-md)] rounded-br-[var(--wt-demo-radius-md)]"
+      className="flex h-full flex-col overflow-hidden rounded-[var(--wt-demo-radius-md)]"
       style={{ backgroundColor: footer ? footerBgColor : undefined }}
     >
       <div

@@ -21,7 +21,7 @@ import {
 import { cpuData } from "./mockData";
 
 const VCPU_COUNT = 4;
-const ELEVATED_THRESHOLD = 65;
+const ELEVATED_THRESHOLD = 80;
 
 export default function CpuUtilizationCard() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
