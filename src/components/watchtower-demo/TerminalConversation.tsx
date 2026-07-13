@@ -1,9 +1,103 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
+import { RobotFacePleased } from "pixelarticons/react/RobotFacePleased";
+import { RobotFaceWeirdHappy } from "pixelarticons/react/RobotFaceWeirdHappy";
 import "@/styles/watchtower-demo-editor.css";
 import { PROMPT_TEXT, RESPONSE_BLOCKS, type ResponseBlock } from "./conversationContent";
 import { useStreamingReveal } from "./useStreamingReveal";
 import { useTypewriter } from "./useTypewriter";
+
+/** How often the working icon swaps between the two robot faces. */
+const ICON_SWAP_MS = 500;
+
+/** Rotating "working" verbs — matches Claude Code's own randomized status
+ * line vocabulary (Galloping, Pondering, etc.), just enough variety to not
+ * repeat within one run. */
+const WORKING_VERBS = ["Galloping", "Percolating", "Noodling", "Marinating"];
+/** Past-tense verbs for the completed summary line ("Sautéed for..."),
+ * matching Claude Code's own habit of using an unrelated done-verb rather
+ * than the past tense of whatever verb was showing while it worked. */
+const DONE_VERBS = ["Sautéed", "Simmered", "Whisked", "Kneaded"];
+
+function formatDuration(totalSeconds: number): string {
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return minutes > 0 ? `${minutes}m ${seconds}s` : `${seconds}s`;
+}
+
+/**
+ * Live "working" status line while the response streams (an alternating
+ * robot-face icon, rotating verb, live elapsed time + climbing fake token
+ * count), then freezes into a static grayed-out "done" summary once
+ * `isDone` flips — matching Claude Code's own status line, which never
+ * disappears, just settles into a dimmed record of how long the turn took.
+ */
+function WorkingIndicator({
+  isDone,
+  reduceMotion,
+}: {
+  isDone: boolean;
+  reduceMotion: boolean;
+}) {
+  const [verb] = useState(
+    () => WORKING_VERBS[Math.floor(Math.random() * WORKING_VERBS.length)],
+  );
+  const [doneVerb] = useState(
+    () => DONE_VERBS[Math.floor(Math.random() * DONE_VERBS.length)],
+  );
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const [tokens, setTokens] = useState(0);
+  const [showPleased, setShowPleased] = useState(true);
+
+  useEffect(() => {
+    if (isDone) return;
+    const start = Date.now();
+    const id = setInterval(() => {
+      setElapsedSeconds(Math.floor((Date.now() - start) / 1000));
+      // Fake token count that climbs unevenly, like a real streaming counter.
+      setTokens((prev) => prev + 15 + Math.floor(Math.random() * 40));
+    }, 400);
+    return () => clearInterval(id);
+    // isDone stops the interval for good once true — elapsedSeconds/tokens
+    // simply hold whatever their last tick left them at, which is exactly
+    // the frozen "done" value the summary below reads.
+  }, [isDone]);
+
+  useEffect(() => {
+    if (isDone || reduceMotion) return;
+    const id = setInterval(() => setShowPleased((prev) => !prev), ICON_SWAP_MS);
+    return () => clearInterval(id);
+  }, [isDone, reduceMotion]);
+
+  const WorkingIcon = showPleased ? RobotFacePleased : RobotFaceWeirdHappy;
+
+  if (isDone) {
+    return (
+      <p
+        className="my-2 flex items-center gap-1.5 font-mono text-[13px]"
+        style={{ color: "var(--wt-editor-text-muted)" }}
+      >
+        <RobotFacePleased aria-hidden="true" width={16} height={16} />
+        {doneVerb} for {formatDuration(elapsedSeconds)}
+      </p>
+    );
+  }
+
+  return (
+    <p
+      className="my-2 flex items-center gap-1.5 font-mono text-[13px]"
+      style={{ color: "var(--wt-editor-text-muted)" }}
+    >
+      <WorkingIcon
+        aria-hidden="true"
+        width={16}
+        height={16}
+        style={{ color: "var(--wt-editor-accent)" }}
+      />
+      {verb}&hellip; ({elapsedSeconds}s &middot; &darr; {tokens} tokens)
+    </p>
+  );
+}
 
 function TrafficLights() {
   return (
@@ -222,15 +316,25 @@ export default function TerminalConversation() {
               ))}
           </div>
 
+          {/* Working status row — its own row above the input, not part of
+             the scrollback. Shows a live spinner/verb/timer/token count
+             while the response streams, then freezes into a static grayed
+             summary once done (never disappears entirely). */}
+          {promptDone && (
+            <div className="shrink-0 px-5">
+              <WorkingIndicator isDone={responseDone} reduceMotion={shouldReduceMotion} />
+            </div>
+          )}
+
           {/* Input row — shows the prompt typing in place, character by
              character, until it's done; then clears back to an idle
              prompt marker (the "submitted" prompt has already moved to
              the scrollback above by that point). */}
           <div
             className="flex shrink-0 items-center gap-2 border-t px-4 py-2.5 font-mono text-[13px]"
-            style={{ borderColor: "var(--wt-editor-border)" }}
+            style={{ borderColor: "oklch(57.8% 0.103 227deg)" }}
           >
-            <span style={{ color: "var(--wt-editor-accent)" }}>&#10095;</span>
+            <span style={{ color: "oklch(78.2% 0.00782 261deg)" }}>&#10095;</span>
             {!promptDone && promptStarted && (
               <span style={{ color: "var(--wt-editor-text-strong)" }}>
                 {visiblePrompt}
@@ -239,7 +343,7 @@ export default function TerminalConversation() {
             )}
             {promptDone && (
               <span style={{ color: "var(--wt-editor-text-muted)" }}>
-                {responseDone ? "Ready for the next request" : ""}
+                {responseDone ? "Full send it" : ""}
               </span>
             )}
           </div>
@@ -247,7 +351,7 @@ export default function TerminalConversation() {
           <div
             className="flex shrink-0 items-center gap-2 border-t px-4 py-2 text-[11px]"
             style={{
-              borderColor: "var(--wt-editor-border)",
+              borderColor: "oklch(57.8% 0.103 227deg)",
               color: "var(--wt-editor-text-muted)",
             }}
           >
