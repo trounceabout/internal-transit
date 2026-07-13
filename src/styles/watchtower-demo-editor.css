@@ -1,0 +1,68 @@
+/* Watchtower case-study "typing code editor" sandbox — scoped design
+   tokens for the editor chrome (frame background, gutter, line numbers,
+   wrap guides, cursor). Kept separate from watchtower-demo.css since this
+   token set (editor chrome) is conceptually unrelated to the dashboard
+   cards' tokens (chart colors, stat highlights) — same "one file per
+   concern" split as undercurrent-demo.css vs. watchtower-demo.css.
+
+   Values are translated from ~/.config/zed/themes/linear-dark.json's
+   editor-chrome colors (dark) with a derived light companion (no
+   linear-light.json exists to translate directly — see editorThemes.ts's
+   comment for the same rationale applied to the syntax token colors).
+
+   Only imported by TypingCodeEditor.tsx, so these rules never affect any
+   other page. */
+
+.wt-editor {
+  font-family: var(--font-mono);
+}
+
+.wt-editor {
+  --wt-editor-bg: #1f2023;
+  --wt-editor-gutter-bg: #1f2023;
+  --wt-editor-border: #3c3e44;
+  --wt-editor-text-main: #c1c3c8;
+  --wt-editor-text-muted: #595c64;
+  --wt-editor-line-number: #4f5259;
+  --wt-editor-line-number-active: #c1c3c8;
+  --wt-editor-wrap-guide: #2e2f33;
+  --wt-editor-wrap-guide-active: #3c3e44;
+  --wt-editor-cursor: #c9d5ff;
+  --wt-editor-breadcrumb-text: #595c64;
+}
+
+.dark .wt-editor,
+.wt-editor.dark {
+  /* Explicit restatement of dark values — see watchtower-demo.css for why
+     this exists: dark values ARE the defaults here, this just gives light
+     mode below something concrete to override. */
+  --wt-editor-bg: #1f2023;
+  --wt-editor-gutter-bg: #1f2023;
+  --wt-editor-border: #3c3e44;
+  --wt-editor-text-main: #c1c3c8;
+  --wt-editor-text-muted: #595c64;
+  --wt-editor-line-number: #4f5259;
+  --wt-editor-line-number-active: #c1c3c8;
+  --wt-editor-wrap-guide: #2e2f33;
+  --wt-editor-wrap-guide-active: #3c3e44;
+  --wt-editor-cursor: #c9d5ff;
+  --wt-editor-breadcrumb-text: #595c64;
+}
+
+/* ─── Light mode overrides ───────────────────────────────────────────
+   :not(.dark) on .wt-editor itself (not just :root) — same specificity
+   guard as watchtower-demo.css's identical rule. */
+:root:not(.dark) .wt-editor:not(.dark),
+.wt-editor.light {
+  --wt-editor-bg: #ffffff;
+  --wt-editor-gutter-bg: #ffffff;
+  --wt-editor-border: #e3e4e8;
+  --wt-editor-text-main: #282a30;
+  --wt-editor-text-muted: #9a9da4;
+  --wt-editor-line-number: #c2c4c9;
+  --wt-editor-line-number-active: #282a30;
+  --wt-editor-wrap-guide: #edeef1;
+  --wt-editor-wrap-guide-active: #d7d9dd;
+  --wt-editor-cursor: #3a4bd6;
+  --wt-editor-breadcrumb-text: #9a9da4;
+}
