@@ -1,0 +1,149 @@
+---
+name: Project Watchtower
+tagline: Turning empty signals into something actually useful
+icon: CastleTowerIcon
+iconColor: "#E17100"
+iconColorDark: "#FD9A00"
+badgeColor: "#E1710020"
+badgeColorDark: "#FD9A0020"
+order: 3
+description: How I helped redesign server monitoring from a limited, hard-to-interpret view into a more actionable dashboard with clearer modules and better context.
+accentPhrase: "something actually useful"
+loomUrl: "https://www.loom.com/share/713804fa07a949be85edef23a559d1c5"
+role: Design lead, Design engineer
+scope: Product design, dashboard UX, information design, data visualization, implementation
+published: true
+---
+
+import LabeledRow from "@/components/case-study/LabeledRow.astro";
+import LightboxImage from "@/components/case-study/LightboxImage.astro";
+import LoopVideo from "@/components/case-study/LoopVideo.astro";
+import Postscript from "@/components/case-study/Postscript.astro";
+import WatchtowerModulesSandbox from "@/components/watchtower-demo/WatchtowerModulesSandbox.tsx";
+import ThemeRevealSandbox from "@/components/undercurrent-demo/ThemeRevealSandbox.tsx";
+import TerminalConversation from "@/components/watchtower-demo/TerminalConversation.tsx";
+
+<section class="ping-section">
+
+Our existing server monitoring experience exposed very little of what customers actually needed to understand server health. The data we did show lacked context, important metrics were missing entirely, and there was no simple way to understand whether a server was healthy without already knowing how to interpret the numbers.
+
+I helped shape a new monitoring experience that made server health easier to understand at a glance, easier to investigate in detail, and easier to act on when something needed attention.
+
+<LightboxImage
+  src="/projects/watchtower/WatchtowerOpener.png"
+  alt="Undercurrent design system overview with color, type, spacing, and component previews"
+/>
+
+</section>
+<section class="ping-section ping-section--problem">
+
+## The problem
+
+The original monitoring experience was too limited to be meaningfully useful.
+
+Customers could only see a small set of metrics, and even those were presented without enough context to make them actionable. A server could be under real strain with little to no clues in the interface. There was no strong threshold guidance or clear path from a concerning metric to a next step.
+
+We didn’t just need to add more charts. We needed to make monitoring easier to understand and more useful in practice.
+
+</section>
+
+<section class="ping-section ping-section--approach">
+
+## The approach
+
+This was a product-design problem, not a dashboard-skinning exercise.
+
+The goal wasn’t to just surface more infrastructure data. It was to translate server health into an experience customers could scan, interpret, and act on with less effort. That meant thinking carefully about module structure, time ranges, and the relationship between high-level overview and per-server detail.
+
+It also meant contributing across design and implementation.
+
+<div class="flex flex-col items-stretch gap-10 sm:flex-row">
+    <div class="flex-1">
+        <p class="text-sm text-gray-400 mb-2">The previous monitoring tab</p>
+        <LightboxImage
+            src="/projects/watchtower/solution-old.png"
+            alt="The old monitoring tab, with fewer modules and a less detailed view"
+            class="min-w-0 flex-1"
+        />
+    </div>
+    <div class="flex-1">
+        <p class="text-sm text-gray-400 mb-2">The new direction</p>
+        <LightboxImage
+            src="/projects/watchtower/solution-new.png"
+            alt="The redesigned monitoring tab, with more modules and a more detailed view"
+            class="min-w-0 flex-1"
+        />
+    </div>
+</div>
+
+</section>
+
+<section class="ping-section ping-section--solution" style="--icon-color-light: #E17100; --icon-color-dark: #FD9A00">
+
+## The solution
+
+Building on the product direction defined in the brief, I designed key modules and flows, then implemented them directly so the final product stayed closely aligned with the intended experience.
+
+The work focused on making monitoring easier to understand at a glance, more actionable when something needed attention, and more cohesive across the different views customers would rely on to assess server health.
+
+</section>
+
+<section class="ping-section">
+
+<LabeledRow label="Turning raw data into clear signals">
+    The bulk of the work was redesigning the monitoring modules themselves so they communicated more than just data points.
+    
+    I designed key modules for CPU, RAM, load average, disk health, and network activity, with a focus on making each module easier to scan, interpret, and understand in context.
+</LabeledRow>
+
+<WatchtowerModulesSandbox client:visible />
+
+</section>
+
+<section class="ping-section">
+
+<LabeledRow label="Add context and actionability">
+    A major part of the redesign was making the experience more actionable.
+    
+    I helped define threshold cues, severity behavior, and supporting guidance so customers could better understand when a metric was healthy, when it needed attention, and when it pointed to a larger problem. That made the dashboard feel less like a collection of charts and more like a product that could help customers make decisions.
+</LabeledRow>
+
+<LoopVideo webm="/projects/watchtower/Watchtower2.webm" mp4="/projects/watchtower/Watchtower2.mp4" />
+
+</section>
+
+<section class="ping-section">
+
+<LabeledRow label="Carry the work into implementation">
+    My role extended beyond design files. I also implemented several of the shipped modules directly, including work across core metrics, disk health, and network-related monitoring.
+    
+    That helped keep the final experience closely aligned with the original design intent and let me refine details in the product itself rather than stopping at handoff.
+</LabeledRow>
+
+<TerminalConversation client:visible />
+
+</section>
+
+<Postscript iconColor="#E17100" iconColorDark="#FD9A00">
+  <Fragment slot="why-it-worked">
+    <p>
+        This project was one of a few that were meant to lay the groundwork of a fully-fledged Dashboards feature within our product. The design decisions, both visual and under the hood, would have an outsized impact since they would inform many other views across multiple surfaces within the app.
+    </p>
+    <p>
+        Just as importantly, it reframed monitoring as a proper product experience instead of a technical afterthought. It shifted the value from simply showing data to helping customers understand what that data meant and what to do with it.
+    </p>
+  </Fragment>
+  <Fragment slot="key-takeaway">
+    <p>
+        Good monitoring design is not just about exposing metrics. It’s about turning technical signals into something people can read, trust, and act on.
+    </p>
+    <p>
+        For me, the most meaningful part was the opportunity to shape that translation directly, from problem framing and module design to implementation of the experience itself.
+    </p>
+  </Fragment>
+  <Fragment slot="project-status">
+    <p>
+        This effort is still in the works, with initial frontend implementation underway, backend work continuing to expose the new data, and a fleet-wide view in design.
+    </p>
+  </Fragment>
+</Postscript>
