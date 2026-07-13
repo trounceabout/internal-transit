@@ -1,0 +1,175 @@
+/* Watchtower case-study sandbox — scoped design tokens.
+   A visual clone of the "Watchtower1/Live modules" Figma frame (server
+   monitoring dashboard), rebuilt from scratch for this one demo. Mirrors
+   undercurrent-demo.css's structure (neutral bg/text/border tokens, a
+   sizing scale, explicit light/dark blocks keyed off the site's `.dark`
+   class) but is its own independent token set — Watchtower's brand colors
+   (#E17100 light / #FD9A00 dark) differ from Undercurrent's, and this
+   dashboard needs a wider chart-series palette than a single brand pair
+   can cover.
+
+   Only imported by this sandbox's root component, so these rules never
+   affect any other page. */
+
+.wt-demo {
+  font-family: var(--font-sans);
+}
+
+/* ─── Neutral tokens (dark is the default, matching this site's .dark-class
+   convention) ────────────────────────────────────────────────────────── */
+.wt-demo {
+  --wt-demo-neutral-bg-main: #1c1c1e;
+  --wt-demo-neutral-bg-weak: #141415;
+  --wt-demo-neutral-text-main: #ffffff;
+  --wt-demo-neutral-text-weak: #a3a3a8;
+  --wt-demo-neutral-border-weak: #333338;
+
+  /* ─── Semantic status tokens ──────────────────────────────────────── */
+  --wt-demo-danger-text: #ff6b6b;
+  --wt-demo-danger-bg: #4a1414;
+  --wt-demo-danger-bg-strong: #7f1d1d;
+  --wt-demo-warning-text: #f2c94c;
+  --wt-demo-success-text: #4ade80;
+  /* Elevated-value text — CPU/RAM's big % turns this amber/gold once usage
+     crosses each card's own threshold (65% CPU, 80% RAM), flagging "worth
+     a second look" without escalating all the way to danger red. */
+  --wt-demo-elevated-text: oklch(90.5% 0.166 98.1deg);
+
+  /* ─── Info icon accent — ties back to the case study's own brand pair ── */
+  --wt-demo-icon-accent: #fd9a00;
+
+  /* ─── Per-card background gradients — CPU Utilization's card body reads
+     as a warm amber wash instead of the flat neutral surface every other
+     card uses, straight from the Figma frame's own layer styles. ──────── */
+  --wt-demo-cpu-card-bg: linear-gradient(
+    0deg,
+    rgba(133, 77, 14, 0.25) 0%,
+    rgba(38, 37, 35, 0.25) 100%
+  );
+
+  /* ─── Chart series colors (stroke + low-opacity fill/glow per series) —
+     picked directly from the Figma reference, dark-theme values. One-off
+     hex values pending any future themeable data-color token system, same
+     as Wallaby's own graphColors.ts admits for its charts. ──────────── */
+  --wt-demo-chart-cpu-stroke: #e8b339;
+  --wt-demo-chart-cpu-fill: #5a3d12;
+  --wt-demo-chart-ram-stroke: #6f8fd6;
+  --wt-demo-chart-ram-fill: #2a3a5c;
+  --wt-demo-chart-bandwidth-incoming: #4c6ef5;
+  --wt-demo-chart-bandwidth-outgoing: #a9bbfa;
+  --wt-demo-chart-bandwidth-cumulative: #e64980;
+  --wt-demo-chart-network-incoming: #d8e4fb;
+  --wt-demo-chart-network-incoming-fill: #3a4a6b;
+  --wt-demo-chart-network-outgoing: #40c67c;
+  --wt-demo-chart-network-outgoing-fill: #1f4a34;
+
+  /* ─── Hover overlay ──────────────────────────────────────────────── */
+  --wt-demo-hover-line: #6a6a70;
+  --wt-demo-hover-dot-stroke: var(--wt-demo-neutral-bg-main);
+  --wt-demo-hover-label-bg: #2a2a2d;
+  --wt-demo-hover-label-text: #d4d4d8;
+
+  /* ─── Sizing scale ───────────────────────────────────────────────── */
+  --wt-demo-space-50: 4px;
+  --wt-demo-space-100: 8px;
+  --wt-demo-space-150: 12px;
+  --wt-demo-space-200: 16px;
+  --wt-demo-space-300: 24px;
+
+  --wt-demo-radius-xs: 6px;
+  --wt-demo-radius-sm: 8px;
+  --wt-demo-radius-md: 12px;
+}
+
+.dark .wt-demo,
+.wt-demo.dark {
+  /* Explicit restatement of dark values (identical to the base block
+     above) — see undercurrent-demo.css for why this exists: dark values
+     ARE the defaults here, this just gives light mode below something
+     concrete to override. */
+  --wt-demo-neutral-bg-main: #1c1c1e;
+  --wt-demo-neutral-bg-weak: #141415;
+  --wt-demo-neutral-text-main: #ffffff;
+  --wt-demo-neutral-text-weak: #a3a3a8;
+  --wt-demo-neutral-border-weak: #333338;
+
+  --wt-demo-danger-text: #ff6b6b;
+  --wt-demo-danger-bg: #4a1414;
+  --wt-demo-danger-bg-strong: #7f1d1d;
+  --wt-demo-warning-text: #f2c94c;
+  --wt-demo-success-text: #4ade80;
+  --wt-demo-elevated-text: oklch(90.5% 0.166 98.1deg);
+
+  --wt-demo-icon-accent: #fd9a00;
+
+  --wt-demo-cpu-card-bg: linear-gradient(
+    0deg,
+    rgba(133, 77, 14, 0.25) 0%,
+    rgba(38, 37, 35, 0.25) 100%
+  );
+
+  --wt-demo-chart-cpu-stroke: #e8b339;
+  --wt-demo-chart-cpu-fill: #5a3d12;
+  --wt-demo-chart-ram-stroke: #6f8fd6;
+  --wt-demo-chart-ram-fill: #2a3a5c;
+  --wt-demo-chart-bandwidth-incoming: #4c6ef5;
+  --wt-demo-chart-bandwidth-outgoing: #a9bbfa;
+  --wt-demo-chart-bandwidth-cumulative: #e64980;
+  --wt-demo-chart-network-incoming: #d8e4fb;
+  --wt-demo-chart-network-incoming-fill: #3a4a6b;
+  --wt-demo-chart-network-outgoing: #40c67c;
+  --wt-demo-chart-network-outgoing-fill: #1f4a34;
+
+  --wt-demo-hover-line: #6a6a70;
+  --wt-demo-hover-dot-stroke: var(--wt-demo-neutral-bg-main);
+  --wt-demo-hover-label-bg: #2a2a2d;
+  --wt-demo-hover-label-text: #d4d4d8;
+}
+
+/* ─── Light mode overrides ───────────────────────────────────────────
+   :not(.dark) on .wt-demo itself (not just :root) — see
+   undercurrent-demo.css's identical rule for why this specificity
+   matters: without it, a page that's currently in light mode could have
+   this selector's specificity beaten by a stray `.wt-demo.dark` opt-in
+   elsewhere. There's no such opt-in here today, but the pattern is kept
+   consistent with the sibling token file regardless. */
+:root:not(.dark) .wt-demo:not(.dark),
+.wt-demo.light {
+  --wt-demo-neutral-bg-main: #ffffff;
+  --wt-demo-neutral-bg-weak: #f6f5f4;
+  --wt-demo-neutral-text-main: #18181b;
+  --wt-demo-neutral-text-weak: #6b6b70;
+  --wt-demo-neutral-border-weak: #e5e5e8;
+
+  --wt-demo-danger-text: #c53030;
+  --wt-demo-danger-bg: #fdecec;
+  --wt-demo-danger-bg-strong: #dc2626;
+  --wt-demo-warning-text: #b7791f;
+  --wt-demo-success-text: #15803d;
+  --wt-demo-elevated-text: oklch(55.4% 0.121 66.4deg);
+
+  --wt-demo-icon-accent: #e17100;
+
+  --wt-demo-cpu-card-bg: linear-gradient(
+    0deg,
+    rgba(254, 240, 138, 0.25) 0%,
+    rgba(255, 255, 255, 0.25) 100%
+  );
+
+  --wt-demo-chart-cpu-stroke: #c17f0a;
+  --wt-demo-chart-cpu-fill: #faf0dc;
+  --wt-demo-chart-ram-stroke: #3d5ec2;
+  --wt-demo-chart-ram-fill: #e6ecfb;
+  --wt-demo-chart-bandwidth-incoming: #4c6ef5;
+  --wt-demo-chart-bandwidth-outgoing: #a9bbfa;
+  --wt-demo-chart-bandwidth-cumulative: #e64980;
+  --wt-demo-chart-network-incoming: #4c6ef5;
+  --wt-demo-chart-network-incoming-fill: #eef2fd;
+  --wt-demo-chart-network-outgoing: #2f9e5c;
+  --wt-demo-chart-network-outgoing-fill: #e8f7ee;
+
+  --wt-demo-hover-line: #b0b0b5;
+  --wt-demo-hover-dot-stroke: var(--wt-demo-neutral-bg-main);
+  --wt-demo-hover-label-bg: #f1f1f2;
+  --wt-demo-hover-label-text: #46464a;
+}
