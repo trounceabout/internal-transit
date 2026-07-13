@@ -9,7 +9,7 @@ badgeColorDark: "#FD9A0020"
 order: 3
 description: How I helped redesign server monitoring from a limited, hard-to-interpret view into a more actionable dashboard with clearer modules and better context.
 accentPhrase: "something actually useful"
-loomUrl: "https://www.loom.com/share/b5f62ab0fd034a04a184dae2ab9839c7"
+loomUrl: "https://www.loom.com/share/713804fa07a949be85edef23a559d1c5"
 role: Design lead, Design engineer
 scope: Product design, dashboard UX, information design, data visualization, implementation
 published: true
@@ -57,13 +57,32 @@ The goal wasn’t to just surface more infrastructure data. It was to translate 
 
 It also meant contributing across design and implementation.
 
+<div class="flex flex-col items-stretch gap-10 sm:flex-row">
+    <div class="flex-1">
+        <p class="text-sm text-gray-400 mb-2">The previous monitoring tab</p>
+        <LightboxImage
+            src="/projects/watchtower/solution-old.png"
+            alt="The old monitoring tab, with fewer modules and a less detailed view"
+            class="min-w-0 flex-1"
+        />
+    </div>
+    <div class="flex-1">
+        <p class="text-sm text-gray-400 mb-2">The new direction</p>
+        <LightboxImage
+            src="/projects/watchtower/solution-new.png"
+            alt="The redesigned monitoring tab, with more modules and a more detailed view"
+            class="min-w-0 flex-1"
+        />
+    </div>
+</div>
+
 </section>
 
 <section class="ping-section ping-section--solution" style="--icon-color-light: #E17100; --icon-color-dark: #FD9A00">
 
 ## The solution
 
-I used what my colleague had gathered in the product brief to design key modules and flows, and implemented them directly so the final product stayed closely aligned with the original intent.
+Building on the product direction defined in the brief, I designed key modules and flows, then implemented them directly so the final product stayed closely aligned with the intended experience.
 
 The work focused on making monitoring easier to understand at a glance, more actionable when something needed attention, and more cohesive across the different views customers would rely on to assess server health.
 
@@ -71,10 +90,10 @@ The work focused on making monitoring easier to understand at a glance, more act
 
 <section class="ping-section">
 
-<LabeledRow label="Turn raw data into clear signals">
+<LabeledRow label="Turning raw data into clear signals">
     The bulk of the work was redesigning the monitoring modules themselves so they communicated more than just data points.
     
-    I designed key modules for core server metrics, important networking signals, and disk health. The focus throughout was on making each module easier to scan, interpret, and understand in context.
+    I designed key modules for CPU, RAM, load average, disk health, and network activity, with a focus on making each module easier to scan, interpret, and understand in context.
 </LabeledRow>
 
 <WatchtowerModulesSandbox client:visible />
@@ -83,7 +102,7 @@ The work focused on making monitoring easier to understand at a glance, more act
 
 <section class="ping-section">
 
-<LabeledRow label="Add structure and actionability">
+<LabeledRow label="Add context and actionability">
     A major part of the redesign was making the experience more actionable.
     
     I helped define threshold cues, severity behavior, and supporting guidance so customers could better understand when a metric was healthy, when it needed attention, and when it pointed to a larger problem. That made the dashboard feel less like a collection of charts and more like a product that could help customers make decisions.
@@ -124,7 +143,7 @@ The work focused on making monitoring easier to understand at a glance, more act
   </Fragment>
   <Fragment slot="project-status">
     <p>
-        This effort is still in the works, with the initial frontend implementation of the dashboard through the first stage and the backend working on making the new data available. Frontend work on the fleet view is underway as well.
+        This effort is still in the works, with initial frontend implementation underway, backend work continuing to expose the new data, and a fleet-wide view in design.
     </p>
   </Fragment>
 </Postscript>
