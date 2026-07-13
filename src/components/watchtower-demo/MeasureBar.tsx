@@ -22,14 +22,7 @@ export default function MeasureBar({ percentage }: MeasureBarProps) {
     >
       <div style={{ width: `${lightSegment}%`, backgroundColor: "#bfdbfe" }} />
       <div style={{ width: `${mediumSegment}%`, backgroundColor: "#3d7bf5" }} />
-      <div
-        className="border-r-2"
-        style={{
-          width: `${darkSegment}%`,
-          backgroundColor: "#1c42a8",
-          borderColor: "var(--wt-demo-neutral-text-main)",
-        }}
-      />
+      <div style={{ width: `${darkSegment}%`, backgroundColor: "#1c42a8" }} />
     </div>
   );
 }
