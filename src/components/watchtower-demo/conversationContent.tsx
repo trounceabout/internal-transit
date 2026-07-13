@@ -6,7 +6,7 @@
  * real system, company, or business logic.
  */
 export const PROMPT_TEXT =
-  "Take a look at this Figma file and work up a plan for how to implement it: figma.com/design/9f3k2p/dashboard-v2";
+  "Take a look at this Figma file for the monitoring modules and work up a plan for how to implement it: figma.com/design/9f3k2p/watchtower-modules";
 
 export interface DiffLine {
   /** Line number as it appears in the file after the change (matches how
@@ -30,41 +30,46 @@ export type ResponseBlock =
     };
 
 export const RESPONSE_BLOCKS: ResponseBlock[] = [
+  { type: "heading", text: "Context" },
   {
     type: "paragraph",
-    text: "I'll look at the Figma frames and check the existing component library before planning.",
+    text: "The frame covers five live modules — CPU, RAM, disk space, bandwidth, and network speed — each with a hover state that swaps the headline stat from a period average to the exact point under the cursor. I'll check what's already built before adding anything new.",
   },
   { type: "heading", text: "Approach" },
   {
     type: "bullet",
-    text: "Reuse the existing card shell and stat-highlight primitive rather than building a new layout from scratch.",
+    text: "Reuse CpuUtilizationCard, RamUsageCard, and NetworkSpeedCard as the base — they already share one hover-driven StatHighlight pattern, so the new modules should follow the same shape rather than inventing another.",
   },
   {
     type: "bullet",
-    text: "Add a shared hover state so the chart and the summary numbers stay in sync when scrubbing.",
+    text: "DiskSpaceCard has no chart in the Figma frame, just a segmented usage bar — that one can skip the hover wiring entirely instead of forcing it into the shared pattern.",
   },
   {
     type: "bullet",
-    text: "Match the light and dark token values already defined for the rest of the dashboard.",
+    text: "Bandwidth's stacked bars need a dual-axis chart for the cumulative line, so it can't reuse the single-series chart setup the others use.",
+  },
+  {
+    type: "bullet",
+    text: "Pull the color and spacing tokens from watchtower-demo.css rather than hardcoding new values, so light and dark mode stay correct for free.",
   },
   { type: "heading", text: "Changes" },
   {
     type: "diff",
-    filePath: "src/components/dashboard/StatCard.tsx",
+    filePath: "src/components/watchtower-demo/BandwidthCard.tsx",
     addedCount: 2,
     removedCount: 1,
     lines: [
-      { lineNumber: 42, kind: "remove", text: "  const [value, setValue] = useState(0);" },
+      { lineNumber: 27, kind: "remove", text: "  const [hoverIndex, setHoverIndex] = useState(0);" },
       {
-        lineNumber: 42,
+        lineNumber: 27,
         kind: "add",
-        text: "  const [value, setValue] = useState<number | null>(null);",
+        text: "  const [hoverIndex, setHoverIndex] = useState<number | null>(null);",
       },
-      { lineNumber: 43, kind: "add", text: "  const isHovering = value !== null;" },
+      { lineNumber: 28, kind: "add", text: "  const isHovering = hoverIndex !== null;" },
     ],
   },
   {
     type: "paragraph",
-    text: "This keeps the idle and hovered states explicit instead of overloading zero as a sentinel.",
+    text: "This keeps the idle and hovered states explicit instead of overloading index 0 as a stand-in for \"nothing is hovered.\"",
   },
 ];
