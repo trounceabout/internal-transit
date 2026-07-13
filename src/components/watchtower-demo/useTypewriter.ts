@@ -1,21 +1,19 @@
 import { useEffect, useRef, useState, type RefObject } from "react";
 import { useInView, useReducedMotion } from "motion/react";
-import { findBurstAt, findBurstRanges } from "./typingBursts";
 
 const START_DELAY_MS = 1500;
-const BASE_INTERVAL_MS = 3;
-const JITTER_MS = 8;
-const PAUSE_CHARS = new Set(["\n", "{", "}", ";"]);
-const PAUSE_EXTRA_MS = 45;
-const PAUSE_JITTER_MS = 55;
-/** Occasional longer "thinking" pause, roughly 1 in 40 characters. */
-const THINKING_PAUSE_CHANCE = 1 / 40;
-const THINKING_PAUSE_MS = 70;
-const THINKING_PAUSE_JITTER_MS = 90;
-/** Pause before/after an autocomplete burst — a beat as if a suggestion
- * popup appeared and got accepted, not an instant snap. */
-const BURST_DELAY_MS = 90;
-const BURST_JITTER_MS = 60;
+const BASE_INTERVAL_MS = 28;
+const JITTER_MS = 17;
+const PAUSE_CHARS = new Set([",", ".", ":", ";"]);
+const PAUSE_EXTRA_MS = 120;
+const PAUSE_JITTER_MS = 130;
+/** Occasional longer "thinking" pause, roughly 1 in 25 characters — more
+ * frequent than the code-editor version since this is a single short
+ * sentence, not a long snippet, so a pause or two reads as natural rather
+ * than sparse. */
+const THINKING_PAUSE_CHANCE = 1 / 25;
+const THINKING_PAUSE_MS = 150;
+const THINKING_PAUSE_JITTER_MS = 150;
 
 function nextDelay(char: string): number {
   let delay = BASE_INTERVAL_MS + Math.random() * JITTER_MS;
@@ -39,13 +37,12 @@ export interface UseTypewriterResult {
 
 /**
  * Drives a character-by-character typing reveal: waits for `rootRef` to
- * scroll into view, pauses START_DELAY_MS (so the header/file-path shows
- * first, matching the Figma reference), then reveals `fullText` one
- * character at a time with non-linear per-character timing (small jitter,
- * extra pauses after structural punctuation/newlines, occasional longer
- * "thinking" pauses) so the cadence reads as a person typing rather than a
- * fixed-interval mechanical reveal. Runs once — does not reset/retype if
- * the element scrolls out and back into view.
+ * scroll into view, pauses START_DELAY_MS (so the terminal chrome shows
+ * first), then reveals `fullText` one character at a time with non-linear
+ * per-character timing (small jitter, extra pauses after punctuation,
+ * occasional longer "thinking" pauses) so the cadence reads as a person
+ * typing rather than a fixed-interval mechanical reveal. Runs once — does
+ * not reset/retype if the element scrolls out and back into view.
  */
 export function useTypewriter(
   rootRef: RefObject<Element | null>,
@@ -68,27 +65,11 @@ export function useTypewriter(
       return () => clearTimeout(id);
     }
 
-    const burstRanges = findBurstRanges(fullText);
-
     const startTimeout = setTimeout(() => {
       setHasStartedTyping(true);
 
       let count = 0;
       const revealNext = () => {
-        // If the reveal cursor sits at the start of an autocomplete-style
-        // closer (a self-closing "/>", "</Tag>", or a "}}" pair closer),
-        // jump straight to its end in one step instead of one character at
-        // a time — mimics an editor auto-inserting the matching closer.
-        const burst = findBurstAt(burstRanges, count);
-        if (burst) {
-          count = burst.end;
-          setRevealedCount(count);
-          if (count >= fullText.length) return;
-          const delay = BURST_DELAY_MS + Math.random() * BURST_JITTER_MS;
-          timeoutRef.current = setTimeout(revealNext, delay);
-          return;
-        }
-
         count += 1;
         setRevealedCount(count);
         if (count >= fullText.length) return;

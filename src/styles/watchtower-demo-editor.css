@@ -1,17 +1,16 @@
-/* Watchtower case-study "typing code editor" sandbox — scoped design
-   tokens for the editor chrome (frame background, gutter, line numbers,
-   wrap guides, cursor). Kept separate from watchtower-demo.css since this
-   token set (editor chrome) is conceptually unrelated to the dashboard
-   cards' tokens (chart colors, stat highlights) — same "one file per
-   concern" split as undercurrent-demo.css vs. watchtower-demo.css.
+/* Watchtower case-study "terminal conversation" sandbox — scoped design
+   tokens for the terminal chrome (window background, border, muted text,
+   cursor, diff-line colors). Kept separate from watchtower-demo.css since
+   this token set is conceptually unrelated to the dashboard cards' tokens
+   (chart colors, stat highlights) — same "one file per concern" split as
+   undercurrent-demo.css vs. watchtower-demo.css.
 
    Values are translated from ~/.config/zed/themes/linear-dark.json's
    editor-chrome colors (dark) with a derived light companion (no
-   linear-light.json exists to translate directly — see editorThemes.ts's
-   comment for the same rationale applied to the syntax token colors).
+   linear-light.json exists to translate directly).
 
-   Only imported by TypingCodeEditor.tsx, so these rules never affect any
-   other page. */
+   Only imported by TerminalConversation.tsx, so these rules never affect
+   any other page. */
 
 .wt-editor {
   font-family: var(--font-mono);
@@ -19,16 +18,26 @@
 
 .wt-editor {
   --wt-editor-bg: #1f2023;
-  --wt-editor-gutter-bg: #1f2023;
   --wt-editor-border: #3c3e44;
   --wt-editor-text-main: #c1c3c8;
   --wt-editor-text-muted: #595c64;
-  --wt-editor-line-number: #4f5259;
-  --wt-editor-line-number-active: #c1c3c8;
-  --wt-editor-wrap-guide: #2e2f33;
-  --wt-editor-wrap-guide-active: #3c3e44;
+  --wt-editor-text-strong: #e1e2e5;
   --wt-editor-cursor: #c9d5ff;
-  --wt-editor-breadcrumb-text: #595c64;
+  --wt-editor-accent: #7e89ec;
+  /* Submitted user-prompt bubble — a subtle lift off the terminal
+     background so the prompt reads as a distinct block from the
+     assistant response below it, matching Claude Code's own transcript
+     styling. */
+  --wt-editor-prompt-bg: #2a2b30;
+  /* Status-bar model name — a warm amber highlight, distinct from the
+     indigo accent used elsewhere, matching Claude Code's own status line. */
+  --wt-editor-model-text: #ffbf71;
+
+  /* Diff block — flat line-prefix colors, no tokenization. */
+  --wt-editor-diff-add-bg: #14361f;
+  --wt-editor-diff-add-text: #a2d484;
+  --wt-editor-diff-remove-bg: #3a1616;
+  --wt-editor-diff-remove-text: #eb5757;
 }
 
 .dark .wt-editor,
@@ -37,16 +46,19 @@
      this exists: dark values ARE the defaults here, this just gives light
      mode below something concrete to override. */
   --wt-editor-bg: #1f2023;
-  --wt-editor-gutter-bg: #1f2023;
   --wt-editor-border: #3c3e44;
   --wt-editor-text-main: #c1c3c8;
   --wt-editor-text-muted: #595c64;
-  --wt-editor-line-number: #4f5259;
-  --wt-editor-line-number-active: #c1c3c8;
-  --wt-editor-wrap-guide: #2e2f33;
-  --wt-editor-wrap-guide-active: #3c3e44;
+  --wt-editor-text-strong: #e1e2e5;
   --wt-editor-cursor: #c9d5ff;
-  --wt-editor-breadcrumb-text: #595c64;
+  --wt-editor-accent: #7e89ec;
+  --wt-editor-prompt-bg: #2a2b30;
+  --wt-editor-model-text: #ffbf71;
+
+  --wt-editor-diff-add-bg: #14361f;
+  --wt-editor-diff-add-text: #a2d484;
+  --wt-editor-diff-remove-bg: #3a1616;
+  --wt-editor-diff-remove-text: #eb5757;
 }
 
 /* ─── Light mode overrides ───────────────────────────────────────────
@@ -55,14 +67,17 @@
 :root:not(.dark) .wt-editor:not(.dark),
 .wt-editor.light {
   --wt-editor-bg: #ffffff;
-  --wt-editor-gutter-bg: #ffffff;
   --wt-editor-border: #e3e4e8;
   --wt-editor-text-main: #282a30;
   --wt-editor-text-muted: #9a9da4;
-  --wt-editor-line-number: #c2c4c9;
-  --wt-editor-line-number-active: #282a30;
-  --wt-editor-wrap-guide: #edeef1;
-  --wt-editor-wrap-guide-active: #d7d9dd;
+  --wt-editor-text-strong: #16171a;
   --wt-editor-cursor: #3a4bd6;
-  --wt-editor-breadcrumb-text: #9a9da4;
+  --wt-editor-accent: #5459c9;
+  --wt-editor-prompt-bg: #f1f1f3;
+  --wt-editor-model-text: #b5690a;
+
+  --wt-editor-diff-add-bg: #e6f5e9;
+  --wt-editor-diff-add-text: #227a3b;
+  --wt-editor-diff-remove-bg: #fbe8e8;
+  --wt-editor-diff-remove-text: #b3261e;
 }
