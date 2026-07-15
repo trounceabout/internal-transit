@@ -336,14 +336,16 @@ const Icon = icon;
     padding-right: var(--ping-card-padding);
   }
 
-  /* Decorative grid-line background for "The approach", inspired by
-     aphera.co's feature-section treatment. Two repeating-linear-gradients
-     (one per axis) draw 1px hairlines every 20px using the same weak
+  /* Decorative dot-grid background for "The approach". A single tiled
+     radial-gradient draws a 1px dot every 24px using the same weak
      --section-border-color hairline already used for "The problem"'s
      outline, so it reads as part of this design system rather than a
-     borrowed effect. (A per-project accent-color tint was tried here and
-     reverted — read as too loud/colorful for this background texture even
-     at 25% strength; the neutral hairline color works better.)
+     borrowed effect. (An earlier version of this used a two-axis
+     repeating-linear-gradient line grid, matching aphera.co's reference;
+     swapped to dots after finding a closer reference. A per-project
+     accent-color tint was also tried and reverted — read as too loud/
+     colorful for this background texture even at 25% strength; the
+     neutral hairline color works better.)
      Deliberately ::after, not ::before: generated content always paints
      after an element's real children by spec, so ::after guarantees this
      stays behind the section's images/copy without depending on z-index
@@ -365,23 +367,16 @@ const Icon = icon;
        (BaseLayout.astro) is what stops it from ever causing a horizontal
        scrollbar on narrow viewports instead. */
     inset: 0 -40px;
-    background-image:
-      repeating-linear-gradient(
-        90deg,
-        transparent 0,
-        transparent 19px,
-        var(--section-border-color) 19px,
-        transparent 20px,
-        transparent 40px
-      ),
-      repeating-linear-gradient(
-        0deg,
-        transparent 0,
-        transparent 19px,
-        var(--section-border-color) 19px,
-        transparent 20px,
-        transparent 40px
-      );
+    /* "1px, transparent 1px" (not "0, transparent 1px") is what makes a
+       crisp dot instead of a soft blurred blob — the color stays solid from
+       center out to the 1px radius, then cuts hard to transparent at that
+       same radius. */
+    background-image: radial-gradient(
+      circle,
+      var(--section-border-color) 1px,
+      transparent 1px
+    );
+    background-size: 24px 24px;
     /* Fades the grid out near all four edges instead of cutting off hard
        — two gradients (one per axis) multiplied together via
        mask-composite: intersect, so a point only stays fully opaque where
