@@ -121,46 +121,120 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* Primitives: raw palette values, theme-agnostic, no semantic meaning
+   attached. Not registered in @theme above, so none of these generate
+   Tailwind utility classes - they only exist to be referenced by the
+   semantic --portfolio-* and --brand-* tokens below. (Note: avoid
+   writing any "bg-<color>-<step>"-shaped string in this file's comments,
+   even as a negative example - Tailwind's content scanner reads CSS
+   comments too and will generate the utility anyway.)
+
+   Imported steps are hand-copied from Tailwind v4s own installed
+   palette (node_modules/tailwindcss/theme.css) as static values, so
+   this tier stays a stable, curated subset rather than silently
+   drifting if Tailwind is upgraded later. --brand-* primitives are
+   bespoke: colors that dont land near any imported step (a warm cream
+   background, this sites specific effect-token tuning), authored
+   directly rather than forced onto an ill-fitting step. */
+:root {
+  --zinc-900: #18181b;
+  --zinc-600: #52525c;
+  --zinc-400: #9f9fa9;
+
+  --teal-700: #00786f;
+  --teal-400: #00d5be;
+
+  --indigo-700: #432dd7;
+  --indigo-400: #7c86ff;
+  --purple-700: #8200db;
+  --purple-400: #c27aff;
+  --orange-700: #ca3500;
+  --orange-400: #ff8904;
+  --amber-800: #973c00;
+  --amber-700: #bb4d00;
+  --amber-400: #ffb900;
+  --amber-300: #ffd230;
+  --green-700: #008236;
+  --green-400: #05df72;
+  --fuchsia-700: #a800b7;
+  --fuchsia-400: #ed6aff;
+
+  /* Hover-variant steps: one step darker (light mode) / one step lighter
+       (dark mode) than each category's base step above, per the file's
+       existing "hover = adjacent shade, same hue" pattern. */
+  --indigo-800: #3730a3;
+  --indigo-300: #a5b4fc;
+  --purple-800: #6b21a8;
+  --purple-300: #d8b4fe;
+  --orange-800: #9a3412;
+  --orange-300: #fdba74;
+  --amber-900: #713f12;
+  --amber-500: #facc15;
+  --teal-800: #115e59;
+  --teal-300: #5eead4;
+  --green-800: #166534;
+  --green-300: #86efac;
+  --fuchsia-800: #86198f;
+  --fuchsia-300: #f0abfc;
+  --amber-600: #92400e;
+  --amber-200: #fcd34d;
+
+  /* Bespoke — no imported step lands near this site's warm cream/near-black
+       surfaces or its specific effect-token tuning. */
+  --brand-cream: #fff9f2;
+  --brand-warm-tan: #ffe9cd; /* inline `code` background, light mode */
+  --brand-cool-dark: #36363c; /* inline `code` background, dark mode */
+  --brand-warm-white: #fffaf5; /* lightbox backdrop base, light mode */
+  --brand-section-border-dark: #3c3c44; /* Figma dark-mode section stroke — bluer than zinc-700/800, kept exact */
+}
+
 :root {
   /* Unconditional light/dark constants for --portfolio-bg — referenced by
        both the theme-conditional --portfolio-bg below and the theme-sweep
        probes in Footer.astro, so there's one source of truth for these two
        hex values regardless of which theme is currently active. */
-  --portfolio-bg-light: #fff9f2;
-  --portfolio-bg-dark: #18181b;
+  --portfolio-bg-light: var(--brand-cream);
+  --portfolio-bg-dark: var(--zinc-900);
 
   /* Portfolio theme (light) — from the light-mode Figma frame */
   --portfolio-bg: var(--portfolio-bg-light);
   --portfolio-bg-gradient: none;
-  --portfolio-ink: #18181b;
+  --portfolio-ink: var(--zinc-900);
   /* Single dim/secondary tone (consolidated from the old muted/muted-2/
        footnote/nav-muted split — all four did the same job at slightly
-       different, sometimes-contrast-failing shades). #6b6b6b on the light
-       bg computes to 5.1:1, passing WCAG AA-normal (4.5:1) with margin. */
-  --portfolio-muted: #6b6b6b;
-  /* Deeper teal than the dark-mode accent — #40C6B0 only hits 2.02:1 on
-       this light bg (fails badly); #0F7A6B computes to 5.0:1. */
-  --portfolio-accent: #0f7a6b;
+       different, sometimes-contrast-failing shades). --zinc-600 computes
+       to 7.38:1 on the light bg, passing WCAG AA-normal (4.5:1) with a
+       comfortable margin — heavier than the site's old hand-picked
+       #6b6b6b (5.1:1), accepted as part of moving onto a real scale. */
+  --portfolio-muted: var(--zinc-600);
+  /* --teal-600 (the step matching the category colors' 600-700 weight
+       pattern for light mode) fails WCAG AA here (3.51:1) — --teal-700
+       computes to 5.13:1, passing with margin. This intentionally makes
+       light-mode accent share a primitive with the "culture" category
+       below (same hue+weight) — an accepted overlap, not a bug. */
+  --portfolio-accent: var(--teal-700);
 
-  /* Blog category tag colors — each shifted to a shade weight from the
-       same hue family that clears 4.5:1 on this bg (the original single
-       Tailwind palette shade, shared with dark mode, failed here). */
-  --portfolio-category-design: #4338ca;
-  --portfolio-category-design-hover: #3730a3;
-  --portfolio-category-philosophy: #7e22ce;
-  --portfolio-category-philosophy-hover: #6b21a8;
-  --portfolio-category-craft: #c2410c;
-  --portfolio-category-craft-hover: #9a3412;
-  --portfolio-category-creativity: #854d0e;
-  --portfolio-category-creativity-hover: #713f12;
-  --portfolio-category-culture: #0f766e;
-  --portfolio-category-culture-hover: #115e59;
-  --portfolio-category-games: #15803d;
-  --portfolio-category-games-hover: #166534;
-  --portfolio-category-art: #a21caf;
-  --portfolio-category-art-hover: #86198f;
-  --portfolio-category-outdoors: #b45309;
-  --portfolio-category-outdoors-hover: #92400e;
+  /* Blog category tag colors — each mapped to whichever step in its hue
+       family clears 4.5:1 against this bg (not a blanket "light=700"
+       rule; see design.md's mapping table for the full contrast check).
+       creativity and outdoors both land in the amber family, distinguished
+       by weight only — an accepted overlap, not a mistake. */
+  --portfolio-category-design: var(--indigo-700);
+  --portfolio-category-design-hover: var(--indigo-800);
+  --portfolio-category-philosophy: var(--purple-700);
+  --portfolio-category-philosophy-hover: var(--purple-800);
+  --portfolio-category-craft: var(--orange-700);
+  --portfolio-category-craft-hover: var(--orange-800);
+  --portfolio-category-creativity: var(--amber-800);
+  --portfolio-category-creativity-hover: var(--amber-900);
+  --portfolio-category-culture: var(--teal-700);
+  --portfolio-category-culture-hover: var(--teal-800);
+  --portfolio-category-games: var(--green-700);
+  --portfolio-category-games-hover: var(--green-800);
+  --portfolio-category-art: var(--fuchsia-700);
+  --portfolio-category-art-hover: var(--fuchsia-800);
+  --portfolio-category-outdoors: var(--amber-700);
+  --portfolio-category-outdoors-hover: var(--amber-600);
 
   --radius: 0.625rem;
 
@@ -179,14 +253,19 @@
        near-black scrim below. Unlike --media-frame-shadow above, this one
        genuinely needs to flip per theme (the old dark-only rgba(24,24,27,.7)
        looked wrong once the rest of the page went light). */
-  --lightbox-backdrop: oklch(98.8% 0.00852 67.7deg / 70%);
+  --lightbox-backdrop: color-mix(
+    in oklch,
+    var(--brand-warm-white) 70%,
+    transparent
+  );
 
   /* Case-study section stroke — a plain 1px outline (e.g. "The problem"
-       in Ping). Figma's dark-mode value (#3c3c44) is a light-on-dark gray
-       border; in light mode there's no equivalent Figma frame, so this is a
-       low-opacity tint of --portfolio-ink instead, kept subtle enough to
-       read as a hairline rather than a heavy outline. */
-  --section-border-color: rgba(24, 24, 27, 0.15);
+       in Ping). Figma's dark-mode value (--brand-section-border-dark) is a
+       light-on-dark gray border; in light mode there's no equivalent Figma
+       frame, so this is a low-opacity tint of --portfolio-ink's own
+       primitive instead, kept subtle enough to read as a hairline rather
+       than a heavy outline. */
+  --section-border-color: color-mix(in oklch, var(--zinc-900) 15%, transparent);
 }
 
 .dark {
@@ -196,31 +275,32 @@
     0px 4px 7px 0px rgba(0, 0, 0, 0.85), 0px 1px 2px 0px rgba(0, 0, 0, 0.5),
     inset 0px 0.5px 0px 0px rgba(255, 255, 255, 0.1),
     inset 0px 0px 0.5px 0px rgba(255, 255, 255, 0.3);
-  --lightbox-backdrop: rgba(24, 24, 27, 0.7);
-  --section-border-color: #3c3c44;
+  --lightbox-backdrop: color-mix(in oklch, var(--zinc-900) 70%, transparent);
+  --section-border-color: var(--brand-section-border-dark);
   --portfolio-bg-gradient: linear-gradient(to bottom, #242429, #18181b);
-  --portfolio-ink: #fff9f2;
-  /* #BBBBBB on this bg computes to 9.23:1 — the same value the old
-       footnote-only token already used, since it worked well here. */
-  --portfolio-muted: #bbbbbb;
-  --portfolio-accent: #40c6b0;
+  --portfolio-ink: var(--brand-cream);
+  /* --zinc-400 computes to 6.75:1 on this bg — heavier than the site's
+       old hand-picked #bbbbbb (9.23:1), accepted as part of moving onto
+       a real scale (same tradeoff as --portfolio-muted's light value above). */
+  --portfolio-muted: var(--zinc-400);
+  --portfolio-accent: var(--teal-400);
 
-  --portfolio-category-design: #818cf8;
-  --portfolio-category-design-hover: #a5b4fc;
-  --portfolio-category-philosophy: #c084fc;
-  --portfolio-category-philosophy-hover: #d8b4fe;
-  --portfolio-category-craft: #fb923c;
-  --portfolio-category-craft-hover: #fdba74;
-  --portfolio-category-creativity: #eab308;
-  --portfolio-category-creativity-hover: #facc15;
-  --portfolio-category-culture: #2dd4bf;
-  --portfolio-category-culture-hover: #5eead4;
-  --portfolio-category-games: #4ade80;
-  --portfolio-category-games-hover: #86efac;
-  --portfolio-category-art: #e879f9;
-  --portfolio-category-art-hover: #f0abfc;
-  --portfolio-category-outdoors: #fbbf24;
-  --portfolio-category-outdoors-hover: #fcd34d;
+  --portfolio-category-design: var(--indigo-400);
+  --portfolio-category-design-hover: var(--indigo-300);
+  --portfolio-category-philosophy: var(--purple-400);
+  --portfolio-category-philosophy-hover: var(--purple-300);
+  --portfolio-category-craft: var(--orange-400);
+  --portfolio-category-craft-hover: var(--orange-300);
+  --portfolio-category-creativity: var(--amber-400);
+  --portfolio-category-creativity-hover: var(--amber-500);
+  --portfolio-category-culture: var(--teal-400);
+  --portfolio-category-culture-hover: var(--teal-300);
+  --portfolio-category-games: var(--green-400);
+  --portfolio-category-games-hover: var(--green-300);
+  --portfolio-category-art: var(--fuchsia-400);
+  --portfolio-category-art-hover: var(--fuchsia-300);
+  --portfolio-category-outdoors: var(--amber-300);
+  --portfolio-category-outdoors-hover: var(--amber-200);
 }
 
 @layer base {
@@ -261,11 +341,11 @@
     font-family: var(--font-mono);
     border-radius: 4px;
     padding: 4px;
-    background-color: oklch(94.5% 0.044 73.9deg);
+    background-color: var(--brand-warm-tan);
   }
 
   .dark code {
-    background-color: oklch(33.5% 0.0104 286deg);
+    background-color: var(--brand-cool-dark);
   }
 }
 
