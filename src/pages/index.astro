@@ -38,7 +38,7 @@ const latestPosts = (await getCollection("blog", ({ data }) => !data.draft))
       </p>
       <p
         data-animate
-        class="font-plex-sans text-md text-portfolio-ink w-full leading-normal font-light tracking-wider whitespace-nowrap lg:text-lg"
+        class="font-plex-sans text-md text-portfolio-text w-full leading-normal font-light tracking-wider whitespace-nowrap lg:text-lg"
       >
         Product designer based in Rock Hill, SC
       </p>
@@ -86,7 +86,7 @@ const latestPosts = (await getCollection("blog", ({ data }) => !data.draft))
                         style={{ color: "var(--icon-color)" }}
                       />
                     </span>
-                    <p class="text-portfolio-ink font-mono text-base tracking-[-0.16px] whitespace-nowrap">
+                    <p class="text-portfolio-text font-mono text-base tracking-[-0.16px] whitespace-nowrap">
                       {project.data.name}
                     </p>
                   </div>
@@ -114,7 +114,7 @@ const latestPosts = (await getCollection("blog", ({ data }) => !data.draft))
             <div data-animate class="flex flex-col gap-3">
               <a
                 href={`/blog/${post.id}`}
-                class="text-portfolio-ink hover:text-portfolio-accent font-mono text-base tracking-[-0.16px] transition-colors"
+                class="text-portfolio-text hover:text-portfolio-accent font-mono text-base tracking-[-0.16px] transition-colors"
               >
                 {post.data.title}
               </a>
