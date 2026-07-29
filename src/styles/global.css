@@ -122,12 +122,23 @@
 }
 
 :root {
-  /* Unconditional light/dark constants for --portfolio-bg — referenced by
-       both the theme-conditional --portfolio-bg below and the theme-sweep
-       probes in Footer.astro, so there's one source of truth for these two
-       hex values regardless of which theme is currently active. */
+  /* Unconditional light/dark constants for --portfolio-bg — the
+       theme-conditional --portfolio-bg below is derived from these, so
+       there's one source of truth for the two hex values regardless of which
+       theme is currently active. */
   --portfolio-bg-light: #fff9f2;
   --portfolio-bg-dark: #18181b;
+
+  /* Theme-toggle pixel dissolve — every tunable for the sweep lives here.
+       See the ::view-transition rules near the bottom of this file.
+       The two cell sizes are deliberately coprime: two checkerboards that
+       share no common factor stay out of phase with each other for a long
+       run, so their overlap reads as irregular speckle instead of a visible
+       repeating chessboard. */
+  --theme-sweep-duration: 700ms;
+  --dither-cell: 7px;
+  --dither-cell-alt: 11px;
+  --dither-band: 60px;
 
   /* Portfolio theme (light) — from the light-mode Figma frame */
   --portfolio-bg: var(--portfolio-bg-light);
@@ -296,10 +307,14 @@
 /* Theme-toggle sweep, driven by the View Transitions API (see the click
    handler in Footer.astro). The browser snapshots the page before and after
    the .dark class toggles into ::view-transition-old(root) and
-   ::view-transition-new(root); overriding the default cross-fade with a
-   clip-path keyframe reveals the new-theme screenshot as an expanding line
-   sweeping across, with the old screenshot sitting untouched underneath —
-   so each side of the line is already showing its correct final theme. */
+   ::view-transition-new(root); overriding the default cross-fade and masking
+   the new-theme screenshot reveals it as a sweeping band, with the old
+   screenshot sitting untouched underneath — so each side of the sweep is
+   already showing its correct final theme.
+
+   A mask (rather than the clip-path this used to use) is what makes the
+   pixelated edge possible: clip-path can only describe a hard geometric
+   shape, whereas a mask's edge is whatever image you feed it. */
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
@@ -314,28 +329,164 @@
   z-index: 2;
 }
 
+/* Accent flecks. The dissolve masks holes in the new-theme snapshot, and a
+   background-image on that same pseudo-element paints in exactly those holes
+   — so these colors only ever show through the dither band, never over solid
+   page content.
+
+   Four sparse checkerboards at coprime sizes, each a different category hue.
+   Sizes are large relative to --dither-cell so only a small fraction of the
+   knocked-out cells land on a colored patch; the rest fall on `transparent`
+   and show the old theme underneath as usual.
+
+   These read var(--portfolio-category-*), which are theme-conditional — and
+   .dark has already toggled by the time this animates, so each hue resolves
+   to the *destination* theme's value and stays legible against the
+   background it's landing on. */
+[data-theme-sweep-direction]::view-transition-new(root) {
+  background-image:
+    conic-gradient(
+      var(--portfolio-category-art) 0 25%,
+      transparent 25% 100%
+    ),
+    conic-gradient(
+      var(--portfolio-category-games) 0 25%,
+      transparent 25% 100%
+    ),
+    conic-gradient(
+      var(--portfolio-category-creativity) 0 25%,
+      transparent 25% 100%
+    ),
+    conic-gradient(
+      var(--portfolio-category-culture) 0 25%,
+      transparent 25% 100%
+    );
+  background-size:
+    calc(var(--dither-cell) * 13) calc(var(--dither-cell) * 11),
+    calc(var(--dither-cell) * 17) calc(var(--dither-cell) * 7),
+    calc(var(--dither-cell) * 11) calc(var(--dither-cell) * 19),
+    calc(var(--dither-cell) * 23) calc(var(--dither-cell) * 13);
+  background-repeat: repeat;
+}
+
+/* Three stacked mask layers, composited together:
+
+     1. SOLID + BAND (linear-gradient) — opaque across everything the sweep
+        has already passed, then a --dither-band-tall ramp down to
+        transparent. Sized to 200% of the viewport so sliding it a full 100%
+        carries the edge cleanly from one side of the screen to the other.
+     2. + 3. CHECKERBOARDS (conic-gradients) — two tiled 2x2 checkers at
+        coprime cell sizes. `intersect` confines them to layer 1, and because
+        the two never line up, the cells they knock out of the ramp look
+        irregular rather than like a chessboard.
+
+   The ramp in layer 1 is what turns a uniform speckle strip into a dissolve:
+   where the gradient is near-opaque the checkers barely register, and where
+   it fades out they punch through, so cell density falls off across the band.
+
+   Only mask-position is animated (see the keyframes below) — animating
+   mask-size instead would stretch the cells visibly mid-sweep. */
+[data-theme-sweep-direction]::view-transition-new(root) {
+  mask-size:
+    100% 200%,
+    var(--dither-cell) var(--dither-cell),
+    var(--dither-cell-alt) var(--dither-cell-alt);
+  mask-repeat: no-repeat, repeat, repeat;
+  mask-composite: intersect;
+  animation-duration: var(--theme-sweep-duration);
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
 [data-theme-sweep-direction="light"]::view-transition-new(root) {
-  animation: theme-sweep-up 500ms ease-in-out forwards;
+  mask-image:
+    linear-gradient(
+      to top,
+      #000 0 calc(50% - var(--dither-band)),
+      transparent 50%
+    ),
+    conic-gradient(
+      #000 0 25%,
+      transparent 25% 50%,
+      #000 50% 75%,
+      transparent 75%
+    ),
+    conic-gradient(
+      #000 0 25%,
+      transparent 25% 50%,
+      #000 50% 75%,
+      transparent 75%
+    );
+  animation-name: theme-sweep-up;
 }
 
 [data-theme-sweep-direction="dark"]::view-transition-new(root) {
-  animation: theme-sweep-down 500ms ease-in-out forwards;
+  mask-image:
+    linear-gradient(
+      to bottom,
+      #000 0 calc(50% - var(--dither-band)),
+      transparent 50%
+    ),
+    conic-gradient(
+      #000 0 25%,
+      transparent 25% 50%,
+      #000 50% 75%,
+      transparent 75%
+    ),
+    conic-gradient(
+      #000 0 25%,
+      transparent 25% 50%,
+      #000 50% 75%,
+      transparent 75%
+    );
+  animation-name: theme-sweep-down;
 }
 
+/* Only the first (gradient) layer travels; the checkerboards stay pinned so
+   cells hold still and wink on and off in place as the ramp passes over
+   them, rather than the whole grid sliding down the screen with the edge. */
 @keyframes theme-sweep-up {
   from {
-    clip-path: inset(100% 0 0 0);
+    mask-position:
+      0 200%,
+      0 0,
+      0 0;
   }
   to {
-    clip-path: inset(0 0 0 0);
+    mask-position:
+      0 100%,
+      0 0,
+      0 0;
   }
 }
 
 @keyframes theme-sweep-down {
   from {
-    clip-path: inset(0 0 100% 0);
+    mask-position:
+      0 -100%,
+      0 0,
+      0 0;
   }
   to {
-    clip-path: inset(0 0 0 0);
+    mask-position:
+      0 0%,
+      0 0,
+      0 0;
+  }
+}
+
+/* Belt-and-braces reduced-motion guard. The click handler in Footer.astro
+   already skips startViewTransition entirely when this is set, so these
+   pseudo-elements shouldn't ever exist — but the animation shouldn't depend
+   on a JS check alone to be accessible. */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+
+  [data-theme-sweep-direction]::view-transition-new(root) {
+    mask-image: none;
+    background-image: none;
   }
 }
