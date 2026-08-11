@@ -1,0 +1,1 @@
+There's a small weird interaction when you mouse over the left most data point. Since we don't have data to compare it to, there isn't a percentage change, but that causes some jarring layout shift. Can we put in some placeholder data for percentage change on that initial value to prevent that? [Image #9]
