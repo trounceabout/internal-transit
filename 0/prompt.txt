@@ -1,0 +1,1 @@
+That worked! I didn't realize the color switcher in the footer was a button. it doesn't present as one, so we should prevent it from scaling if we can. Maybe we just apply this to the pillbutton after all
