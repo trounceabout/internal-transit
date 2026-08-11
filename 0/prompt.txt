@@ -1,0 +1,1 @@
+Let's remove the border from the top of that element
