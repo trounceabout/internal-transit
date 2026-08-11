@@ -1,0 +1,19 @@
+Review this change for security vulnerabilities.
+
+Changed files (you may Read these and any other file in the repo):
+  - package.json
+
+Unified diff (only + lines are new):
+
+=== DIFF: package.json ===
+@@ -32,6 +32,7 @@
+     "prettier-plugin-tailwindcss": "^0.8.0",
+     "react": "^19.2.4",
+     "react-dom": "^19.2.4",
++    "recharts": "2.15.4",
+     "shadcn": "^4.1.0",
+     "tailwind-merge": "^3.5.0",
+     "tailwindcss": "^4.2.2",
+
+
+Investigate per the method in your instructions, then return the findings list.
