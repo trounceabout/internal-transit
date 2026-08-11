@@ -1,0 +1,1 @@
+Can we change the tooltip for the CPU, RAM, and network graphs to be hours rather than days, since it appears to be over a 1-2 day period (so all the tooltips look the same right now)?
