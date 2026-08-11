@@ -1,0 +1,1 @@
+Never mind, that must have been a bug. It's working properly now, but the content starts at the top of the window instead of the bottom just below the input like it should
