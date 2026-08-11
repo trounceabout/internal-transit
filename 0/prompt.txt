@@ -1,0 +1,5 @@
+We have a new feature to implement. For the Approach section of projects, I want to mimic what's been done in background of the "Build your system, repeat it" section of this page: https://aphera.co/#features Here's a screenshot of it [Image #1]
+
+I want a grid just like that, but using our weak border color (like what's around the problem section. I also want to animate it in on scroll similar to how this page has done it. They did this in the before pseudo layer. Here's a screenshot of what I can see in the browser inspect panel [Image #2]
+
+Let's work up a plan and create a new feature branch for this.
