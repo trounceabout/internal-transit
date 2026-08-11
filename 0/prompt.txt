@@ -1,0 +1,1 @@
+After restarting, it's still rendering as IBM Plex Sans despite it showing mono in the inspector
