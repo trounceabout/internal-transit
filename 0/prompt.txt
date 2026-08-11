@@ -1,0 +1,1 @@
+How do we smooth that transition out? Right now it instantly goes from 100% to 97% on click
