@@ -1,0 +1,3 @@
+That's really close, but we have a few tweaks to make [Image #21]
+- The initial prompt is showing up at the top of the window rather than in the input
+- The way you work in terminal is from top to bottom, with the content scrolling as you go. We need to simulate that behavior, so your response (starting with "I'll look at the Figma" should start just above the input, then scroll up and be pushed our of the window as the rest of the response appears
