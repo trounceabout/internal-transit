@@ -1,0 +1,4 @@
+Okay, a few things:
+- Let's use oklch for all our colors, especially since we'r eusing Tailwind scales and those are oklch by default
+- Let's also change the portfolio accent color from teal to emerald
+- Change the -ink token to -text
