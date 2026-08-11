@@ -1,0 +1,4 @@
+Few more tweaks:
+- Now the Bandwidth and Network speed graphs are too short. They were the right height before [Image #5]
+- The ram graph still isn't filling all the way to the bottom of the card. The graph should be full bleed in the card. This was already correctly done on the Radar page in Wallaby if you need a reference
+- The tooltip is showing up in some of the graphs (not all) but it's not on top and correctly tracking in relation to the mouse. Again, this was already correctly implemented on that Radar page, so we may be able to use that [Image #6]
