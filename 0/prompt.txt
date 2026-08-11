@@ -1,0 +1,1 @@
+After the prompt was entered, the content instantly rendered all at once
