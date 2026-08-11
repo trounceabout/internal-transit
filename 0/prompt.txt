@@ -1,0 +1,1 @@
+kill the openspec stuff, I'm not a fan. but let's commit the changes to the actual site
