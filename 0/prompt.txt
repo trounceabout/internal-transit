@@ -1,0 +1,1 @@
+That looks great, including on small screens. Let's try making the color match the project's highlight (the one used for the icon and in the title)
