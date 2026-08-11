@@ -1,0 +1,1 @@
+Could we add a blur effect to the overlay within the lightbox? Something like blur(calc(var(--blur-300, 16px) / 2))
