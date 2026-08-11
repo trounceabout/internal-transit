@@ -1,0 +1,151 @@
+Review this change for security vulnerabilities.
+
+Changed files (you may Read these and any other file in the repo):
+  - scripts/generate-dither-mask.py
+
+Unified diff (only + lines are new):
+
+=== DIFF: scripts/generate-dither-mask.py ===
+@@ -1,64 +1,98 @@
+-"""Generate the theme-dissolve mask as a 1-bit-alpha PNG.
++"""Generate the theme-dissolve mask tiles as 1-bit-alpha PNGs.
+ 
+-Cell grid with per-row probability ramping from sparse (leading edge) to
+-solid, matching the density curve measured off alike.page's divider:
+-~2% at the first row rising to ~87% by the last.
++Each tile contains the whole sweep edge, top to bottom:
+ 
+-Written with zlib + struct only so it needs no third-party imports.
++    EMPTY rows   nothing revealed yet
++    BAND rows    the dither — per-row probability ramping toward solid
++    SOLID rows   fully revealed
++
++so the CSS can slide one image across the viewport and get a dissolving
++edge, with no second layer to drift out of sync with it. The band's density
++curve matches alike.page's divider, measured off its DOM: ~2% at the sparse
++end rising to ~87% before it goes solid.
++
++Two tiles are emitted, the second vertically mirrored, so each sweep
++direction keeps its sparse end pointing at the leading edge.
++
++Run this and paste the two tokens it prints into the :root block in
++src/styles/global.css. If you change ROW COUNTS, update
++--dither-tile-height there to match (it's --dither-cell * total rows).
++
++Uses only zlib/struct/random/base64 from the stdlib — no dependencies.
+ """
+-import zlib, struct, random, base64
+ 
+-COLS, ROWS = 64, 10          # tile is 64 cells wide, 10 rows deep
+-random.seed(20260729)         # deterministic: same tile every build
++import base64
++import random
++import struct
++import zlib
+ 
+-# Density curve. Eased so it starts very sparse, accelerates through the
+-# middle, and saturates at the end — an even linear ramp reads mechanical.
+-def density(row):
+-    t = row / (ROWS - 1)
+-    return round(t ** 1.6, 4)
++COLS = 64  # cells across; the tile repeats horizontally
++EMPTY = 2  # fully transparent rows, ahead of the edge
++BAND = 10  # dithered rows
++SOLID = 2  # fully opaque rows, behind the edge
++ROWS = EMPTY + BAND + SOLID
++
++SEED = 20260729  # fixed so every run produces the identical tile
++EASING = 1.6  # >1 holds the sparse end longer; 1.0 is a straight ramp
++
++
++def build(reverse=False):
++    """Rows top to bottom: empty, dithered ramp, solid."""
++    random.seed(SEED)
++    grid = [[0] * COLS for _ in range(EMPTY)]
++    for i in range(BAND):
++        # Eased rather than linear — an even ramp reads mechanical.
++        probability = ((i + 1) / BAND) ** EASING
++        grid.append([1 if random.random() < probability else 0 for _ in range(COLS)])
++    grid.extend([1] * COLS for _ in range(SOLID))
++    return list(reversed(grid)) if reverse else grid
+ 
+-grid = [[1 if random.random() < density(r) else 0 for _ in range(COLS)]
+-        for r in range(ROWS)]
+ 
+ def chunk(tag, data):
+-    return (struct.pack(">I", len(data)) + tag + data
+-            + struct.pack(">I", zlib.crc32(tag + data) & 0xFFFFFFFF))
++    return (
++        struct.pack(">I", len(data))
++        + tag
++        + data
++        + struct.pack(">I", zlib.crc32(tag + data) & 0xFFFFFFFF)
++    )
+ 
+ 
+-def encode(g):
++def encode(grid):
+     """8-bit greyscale+alpha PNG (colour type 4).
+ 
+     Grey is always 0; only alpha varies, which is all a mask reads.
+     """
+     raw = b""
+-    for row in g:
+-        raw += b"\x00"                     # filter type 0 (None) per scanline
++    for row in grid:
++        raw += b"\x00"  # filter type 0 (None), one per scanline
+         for cell in row:
+-            raw += bytes([0, 255 if cell else 0])   # grey, alpha
+-    return (b"\x89PNG\r\n\x1a\n"
+-            + chunk(b"IHDR", struct.pack(">IIBBBBB", COLS, ROWS, 8, 4, 0, 0, 0))
+-            + chunk(b"IDAT", zlib.compress(raw, 9))
+-            + chunk(b"IEND", b""))
++            raw += bytes([0, 255 if cell else 0])  # grey, alpha
++    return (
++        b"\x89PNG\r\n\x1a\n"
++        + chunk(b"IHDR", struct.pack(">IIBBBBB", COLS, len(grid), 8, 4, 0, 0, 0))
++        + chunk(b"IDAT", zlib.compress(raw, 9))
++        + chunk(b"IEND", b"")
++    )
++
+ 
+-def preview(g, title):
++def preview(grid, title):
+     print(f"\n{title}")
+-    for r, row in enumerate(g):
+-        bar = "".join("#" if c else "." for c in row[:48])
+-        print(f"{r:>3}  {sum(row) / COLS:>5.0%}  {bar}")
++    for index, row in enumerate(grid):
++        bar = "".join("#" if cell else "." for cell in row[:48])
++        print(f"{index:>3}  {sum(row) / COLS:>5.0%}  {bar}")
+ 
+ 
+-# The ramp runs one way, so the upward sweep needs a vertically mirrored copy
+-# to keep its sparse end pointing at the leading edge.
+-flipped = list(reversed(grid))
+-png_down = encode(grid)
+-png_up = encode(flipped)
++down, up = build(), build(reverse=True)
++png_down, png_up = encode(down), encode(up)
+ 
+-preview(grid, "--dither-noise (downward sweep, going dark)")
+-preview(flipped, "--dither-noise-flipped (upward sweep, going light)")
++preview(down, "--dither-noise  (sweeping down, going dark)")
++preview(up, "--dither-noise-flipped  (sweeping up, going light)")
+ 
+ print(f"\n{COLS}x{ROWS} cells — {len(png_down)} and {len(png_up)} bytes")
+-print("\nPaste these into the :root block in src/styles/global.css:\n")
+-print(f'  --dither-noise: url("data:image/png;base64,'
+-      f'{base64.b64encode(png_down).decode()}");')
+-print(f'  --dither-noise-flipped: url("data:image/png;base64,'
+-      f'{base64.b64encode(png_up).decode()}");')
++print(f"--dither-tile-height must be --dither-cell * {ROWS}")
++print("\nPaste into the :root block in src/styles/global.css:\n")
++print(f'  --dither-noise: url("data:image/png;base64,{base64.b64encode(png_down).decode()}");')
++print(
++    f'  --dither-noise-flipped: url("data:image/png;base64,'
++    f'{base64.b64encode(png_up).decode()}");'
++)
+
+
+Investigate per the method in your instructions, then return the findings list.
