@@ -128,7 +128,7 @@ const Icon = icon;
               />
             </span>
             <p
-              class="text-portfolio-ink font-mono text-base tracking-[-0.18px]"
+              class="text-portfolio-text font-mono text-base tracking-[-0.18px]"
             >
               {name}
             </p>
@@ -167,7 +167,7 @@ const Icon = icon;
         /* Body — same max-width and typography as the article template's body column */
       }
       <div data-animate class="flex flex-col gap-10">
-        <p class="font-plex-sans text-portfolio-ink text-2xl leading-10">
+        <p class="font-plex-sans text-portfolio-text text-2xl leading-10">
           {dek}
         </p>
 
@@ -197,14 +197,14 @@ const Icon = icon;
                 {role && (
                   <div class="flex flex-col gap-1 font-mono text-sm tracking-[-0.14px]">
                     <p class="text-portfolio-muted">Role</p>
-                    <p class="text-portfolio-ink whitespace-nowrap">{role}</p>
+                    <p class="text-portfolio-text whitespace-nowrap">{role}</p>
                   </div>
                 )}
 
                 {scope && (
                   <div class="flex min-w-[240px] flex-1 flex-col gap-1 font-mono text-sm tracking-[-0.14px]">
                     <p class="text-portfolio-muted">Scope</p>
-                    <p class="text-portfolio-ink">{scope}</p>
+                    <p class="text-portfolio-text">{scope}</p>
                   </div>
                 )}
               </div>
@@ -214,7 +214,7 @@ const Icon = icon;
 
         {/* Rest of the MDX body */}
         <div
-          class="article-body font-plex-sans text-portfolio-ink text-base leading-8"
+          class="article-body font-plex-sans text-portfolio-text text-base leading-8"
         >
           <slot />
         </div>
@@ -358,7 +358,7 @@ const Icon = icon;
     font-weight: 500;
     font-size: 1.5rem; /* 24px */
     line-height: 2.5rem; /* 40px */
-    color: var(--portfolio-ink);
+    color: var(--portfolio-text);
   }
 
   .article-body :global(p) {

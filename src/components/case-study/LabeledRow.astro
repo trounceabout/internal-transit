@@ -13,12 +13,12 @@ const { label } = Astro.props;
 
 <div class="flex w-full flex-col items-start gap-4 sm:flex-row">
   <span
-    class="font-plex-sans text-portfolio-ink w-full shrink-0 text-lg leading-8 font-semibold sm:w-[248px]"
+    class="font-plex-sans text-portfolio-text w-full shrink-0 text-lg leading-8 font-semibold sm:w-[248px]"
   >
     {label}
   </span>
   <div
-    class="font-plex-sans text-portfolio-ink min-w-0 flex-1 text-lg leading-8 font-light [&_p]:mb-4 [&_p:last-child]:mb-0"
+    class="font-plex-sans text-portfolio-text min-w-0 flex-1 text-lg leading-8 font-light [&_p]:mb-4 [&_p:last-child]:mb-0"
   >
     <slot />
   </div>
