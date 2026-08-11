@@ -1,0 +1,1 @@
+Why is there a dupe of the launch.json? (launch 2.json)
