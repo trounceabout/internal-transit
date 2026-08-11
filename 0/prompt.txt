@@ -1,0 +1,3 @@
+Okay, I found an example of what I really want here: a dot grid. I still want the animation, but let's go with this instead of the lines. Here's what it looks like: [Image #2]
+
+And here's the code that seems to be making it happen: [Image #3]
