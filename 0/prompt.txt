@@ -1,0 +1,1 @@
+Can we add an animation to the lightbox? Currently it just pops in instantly. A fade in would be nice
