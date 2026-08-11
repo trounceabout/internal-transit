@@ -1,0 +1,14 @@
+Review this change for security vulnerabilities.
+
+Changed files (you may Read these and any other file in the repo):
+  - openspec/changes/standardize-color-tokens/.openspec.yaml
+
+Unified diff (only + lines are new):
+
+=== DIFF: openspec/changes/standardize-color-tokens/.openspec.yaml ===
+@@ -0,0 +1,2 @@
++schema: spec-driven
++created: 2026-07-27
+
+
+Investigate per the method in your instructions, then return the findings list.
