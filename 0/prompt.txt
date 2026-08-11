@@ -1,0 +1,807 @@
+Review this change for security vulnerabilities.
+
+Changed files (you may Read these and any other file in the repo):
+  - package.json
+  - src/components/watchtower-demo/TypingCodeEditor.tsx
+  - src/components/watchtower-demo/editorThemes.ts
+  - src/components/watchtower-demo/typingBursts.ts
+  - src/components/watchtower-demo/typingCodeSnippet.ts
+  - src/components/watchtower-demo/useTypewriter.ts
+
+Unified diff (only + lines are new):
+
+=== DIFF: package.json ===
+@@ -34,6 +34,7 @@
+     "react-dom": "^19.2.4",
+     "recharts": "2.15.4",
+     "shadcn": "^4.1.0",
++    "shiki": "^4.3.1",
+     "tailwind-merge": "^3.5.0",
+     "tailwindcss": "^4.2.2",
+     "tw-animate-css": "^1.4.0"
+
+
+=== DIFF: src/components/watchtower-demo/TypingCodeEditor.tsx ===
+@@ -0,0 +1,278 @@
++import { useEffect, useRef, useState } from "react";
++import { motion, useReducedMotion } from "motion/react";
++import "@/styles/watchtower-demo-editor.css";
++import {
++  CODE_SNIPPET,
++  FILE_PATH,
++  getTokenizedLines,
++  type TokenizedLine,
++} from "./typingCodeSnippet";
++import { useTypewriter } from "./useTypewriter";
++
++/**
++ * Tracks the site's real light/dark state (the `.dark` class on
++ * <html>, toggled by Footer.astro) — there's no React state for this
++ * anywhere in the codebase to subscribe to, since the toggle is plain DOM
++ * classList manipulation, so this reads it directly on mount and watches
++ * for changes via MutationObserver.
++ */
++function useIsDarkTheme(): boolean {
++  // Lazy initializer runs during render (not inside an effect), so the
++  // very first client render already reflects the real theme instead of
++  // flashing the default before an effect catches up. Guarded for SSR,
++  // where `document` doesn't exist yet — BaseLayout.astro's inline script
++  // already sets the .dark class before hydration, so this only runs
++  // client-side anyway.
++  const [isDark, setIsDark] = useState(
++    () => typeof document !== "undefined" && document.documentElement.classList.contains("dark"),
++  );
++
++  useEffect(() => {
++    const root = document.documentElement;
++    const observer = new MutationObserver(() => {
++      setIsDark(root.classList.contains("dark"));
++    });
++    observer.observe(root, { attributes: true, attributeFilter: ["class"] });
++    return () => observer.disconnect();
++  }, []);
++
++  return isDark;
++}
++
++const INDENT_SIZE = 2;
++
++function countLeadingIndent(line: string): number {
++  const match = /^ */.exec(line);
++  const spaces = match ? match[0].length : 0;
++  return Math.floor(spaces / INDENT_SIZE);
++}
++
++const SNIPPET_LINES = CODE_SNIPPET.replace(/\n$/, "").split("\n");
++const LINE_INDENTS = SNIPPET_LINES.map(countLeadingIndent);
++
++/**
++ * Strips the first `count` characters of leading whitespace from a
++ * tokenized line. Indentation is rendered structurally (line-wrapper
++ * padding + absolutely-positioned guide lines keyed off each line's
++ * indent level), not via the literal space characters Shiki bakes into
++ * each line's first token — those still need to exist for the typewriter's
++ * character-count timing to match CODE_SNIPPET exactly, so they're
++ * stripped here at render time rather than removed from the source.
++ */
++function stripLeadingWhitespace(tokens: TokenizedLine, count: number): TokenizedLine {
++  if (count <= 0 || tokens.length === 0) return tokens;
++  const [first, ...rest] = tokens;
++  const stripped = first.text.slice(count);
++  return stripped ? [{ ...first, text: stripped }, ...rest] : rest;
++}
++
++interface VisibleLine {
++  lineNumber: number;
++  indent: number;
++  tokens: TokenizedLine;
++  /** True for the single line currently mid-reveal — this is where the cursor renders. */
++  isCurrentLine: boolean;
++}
++
++/**
++ * Walks tokenLines against revealedCount (a character offset into the
++ * flattened CODE_SNIPPET, newlines included) and returns only the lines
++ * that should render, with the in-progress line's tokens trimmed to its
++ * exact revealed character count. Single source of truth for "how much of
++ * the snippet is visible right now" — everything downstream just renders
++ * what this returns.
++ */
++function computeVisibleLines(
++  tokenLines: TokenizedLine[],
++  revealedCount: number,
++): VisibleLine[] {
++  const result: VisibleLine[] = [];
++  let budget = revealedCount;
++
++  for (let i = 0; i < tokenLines.length; i++) {
++    if (budget <= 0) break;
++    const line = tokenLines[i];
++    const lineLength = line.reduce((sum, t) => sum + t.text.length, 0);
++    const lineWithNewlineLength = lineLength + 1; // +1 for the \n joining this line to the next
++
++    const indentChars = (LINE_INDENTS[i] ?? 0) * INDENT_SIZE;
++
++    if (budget >= lineWithNewlineLength) {
++      result.push({
++        lineNumber: i + 1,
++        indent: LINE_INDENTS[i] ?? 0,
++        tokens: stripLeadingWhitespace(line, indentChars),
++        isCurrentLine: false,
++      });
++      budget -= lineWithNewlineLength;
++    } else {
++      // Partially revealed — this is the current line, trim its tokens.
++      const trimmed: TokenizedLine = [];
++      let consumed = 0;
++      for (const token of line) {
++        if (consumed >= budget) break;
++        const remaining = budget - consumed;
++        if (token.text.length <= remaining) {
++          trimmed.push(token);
++          consumed += token.text.length;
++        } else {
++          trimmed.push({ ...token, text: token.text.slice(0, remaining) });
++          consumed += remaining;
++        }
++      }
++      // Cap indent stripping at what's actually been typed so far, so the
++      // line's indentation visually "types in" rather than snapping to
++      // full depth before the rest of the line has appeared.
++      const strippableIndent = Math.min(indentChars, consumed);
++      result.push({
++        lineNumber: i + 1,
++        indent: LINE_INDENTS[i] ?? 0,
++        tokens: stripLeadingWhitespace(trimmed, strippableIndent),
++        isCurrentLine: true,
++      });
++      budget = 0;
++    }
++  }
++
++  return result;
++}
++
++export default function TypingCodeEditor() {
++  const rootRef = useRef<HTMLDivElement>(null);
++  const shouldReduceMotion = useReducedMotion();
++  const isDarkTheme = useIsDarkTheme();
++  const [tokenLines, setTokenLines] = useState<{
++    dark: TokenizedLine[];
++    light: TokenizedLine[];
++  } | null>(null);
++
++  useEffect(() => {
++    let cancelled = false;
++    getTokenizedLines().then((lines) => {
++      if (!cancelled) setTokenLines(lines);
++    });
++    return () => {
++      cancelled = true;
++    };
++  }, []);
++
++  const { revealedCount, hasStartedTyping, isDone } = useTypewriter(
++    rootRef,
++    CODE_SNIPPET,
++  );
++
++  // Dark and light are pre-tokenized separately (Shiki resolves each
++  // token's color against its own theme at tokenization time) — line/
++  // indent structure is identical between them, only the colors baked
++  // into each token differ, so switching sets is enough to retheme.
++  const visibleLines =
++    tokenLines && hasStartedTyping
++      ? computeVisibleLines(
++          isDarkTheme ? tokenLines.dark : tokenLines.light,
++          revealedCount,
++        )
++      : [];
++
++  return (
++    <div
++      ref={rootRef}
++      className="wt-editor relative mt-10 h-145 w-full overflow-hidden rounded-lg border"
++      style={{ borderColor: "var(--wt-editor-border)" }}
++    >
++      <div className="flex h-full flex-col pt-10 pr-10 pl-10">
++        <div
++          className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-t-xl border border-b-0"
++          style={{
++            backgroundColor: "var(--wt-editor-bg)",
++            borderColor: "var(--wt-editor-border)",
++          }}
++        >
++          <div
++            className="border-b px-5 py-3 text-sm italic"
++            style={{
++              borderColor: "var(--wt-editor-border)",
++              color: "var(--wt-editor-text-muted)",
++            }}
++          >
++            {FILE_PATH}
++          </div>
++
++          <div className="min-h-0 flex-1 overflow-hidden px-5 py-4 font-mono text-[13px] leading-6 whitespace-pre">
++            {visibleLines.map((line) => (
++              <CodeLine
++                key={line.lineNumber}
++                lineNumber={line.lineNumber}
++                indent={line.indent}
++                tokens={line.tokens}
++                showCursor={line.isCurrentLine && !isDone}
++                reduceMotion={Boolean(shouldReduceMotion)}
++              />
++            ))}
++          </div>
++        </div>
++      </div>
++    </div>
++  );
++}
++
++function CodeLine({
++  lineNumber,
++  indent,
++  tokens,
++  showCursor,
++  reduceMotion,
++}: {
++  lineNumber: number;
++  indent: number;
++  tokens: TokenizedLine;
++  showCursor: boolean;
++  reduceMotion: boolean;
++}) {
++  return (
++    <div className="flex">
++      <span
++        className="w-8 shrink-0 pr-4 text-right select-none"
++        style={{ color: "var(--wt-editor-line-number)" }}
++      >
++        {lineNumber}
++      </span>
++      <span className="relative flex-1" style={{ paddingLeft: `${indent * 16}px` }}>
++        {Array.from({ length: indent }).map((_, guideIndex) => (
++          <span
++            key={guideIndex}
++            aria-hidden="true"
++            className="absolute top-0 bottom-0 w-px"
++            style={{
++              left: `${guideIndex * 16}px`,
++              backgroundColor: "var(--wt-editor-wrap-guide)",
++            }}
++          />
++        ))}
++        {tokens.map((token, i) => (
++          <span
++            key={i}
++            style={{
++              color: token.color || "var(--wt-editor-text-main)",
++              fontStyle: token.italic ? "italic" : undefined,
++            }}
++          >
++            {token.text}
++          </span>
++        ))}
++        {showCursor && (
++          <motion.span
++            aria-hidden="true"
++            className="ml-[1px] inline-block h-[15px] w-[7px] translate-y-[2px] align-middle"
++            style={{ backgroundColor: "var(--wt-editor-cursor)" }}
++            animate={reduceMotion ? { opacity: 1 } : { opacity: [1, 1, 0, 0] }}
++            transition={
++              reduceMotion
++                ? undefined
++                : { duration: 1, repeat: Infinity, times: [0, 0.5, 0.51, 1] }
++            }
++          />
++        )}
++      </span>
++    </div>
++  );
++}
+
+
+=== DIFF: src/components/watchtower-demo/editorThemes.ts ===
+@@ -0,0 +1,167 @@
++import type { ThemeRegistrationRaw } from "shiki";
++
++/**
++ * Shiki themes translated from ~/.config/zed/themes/linear-dark.json's
++ * `syntax` block — Zed's theme JSON isn't TextMate-compatible, so each
++ * token role is manually mapped to the TextMate scope(s) Shiki's TSX
++ * grammar actually emits. Only the `syntax` (token color) values are
++ * translated here; editor chrome (background, gutter, line numbers, wrap
++ * guides) lives in watchtower-demo-editor.css instead, since Shiki only
++ * needs to own token foreground colors — this component renders its own
++ * line numbers/guides rather than using Shiki's HTML output wholesale.
++ */
++export const linearDarkTheme: ThemeRegistrationRaw = {
++  name: "linear-dark",
++  type: "dark",
++  fg: "#c1c3c8",
++  bg: "#1f2023",
++  settings: [
++    {
++      scope: ["comment", "comment.line", "comment.block"],
++      settings: { foreground: "#8b8e98", fontStyle: "italic" },
++    },
++    {
++      scope: [
++        "keyword",
++        "keyword.control",
++        "storage.type",
++        "storage.modifier",
++        "keyword.operator.new",
++      ],
++      settings: { foreground: "#7e89ec", fontStyle: "italic" },
++    },
++    {
++      scope: ["keyword.operator"],
++      settings: { foreground: "#5da6b8" },
++    },
++    {
++      scope: ["entity.name.tag", "support.class.component"],
++      settings: { foreground: "#83acf8" },
++    },
++    {
++      scope: ["entity.name.function", "support.function", "meta.function-call"],
++      settings: { foreground: "#1abdda" },
++    },
++    {
++      scope: ["string", "string.quoted", "string.template"],
++      settings: { foreground: "#a2d484" },
++    },
++    {
++      scope: ["entity.name.type", "support.type", "entity.other.inherited-class"],
++      settings: { foreground: "#88e6d6", fontStyle: "italic" },
++    },
++    {
++      scope: ["entity.other.attribute-name", "entity.other.attribute-name.jsx"],
++      settings: { foreground: "#cba0ff", fontStyle: "italic" },
++    },
++    {
++      scope: ["constant.numeric", "constant.language", "constant.language.boolean"],
++      settings: { foreground: "#ffbf71" },
++    },
++    {
++      scope: ["variable", "variable.other.readwrite", "variable.parameter"],
++      settings: { foreground: "#e1e2e5" },
++    },
++    {
++      scope: [
++        "variable.other.property",
++        "meta.object-literal.key",
++        "support.type.property-name",
++      ],
++      settings: { foreground: "#f3b7e9" },
++    },
++    {
++      scope: [
++        "punctuation",
++        "punctuation.definition",
++        "punctuation.separator",
++        "punctuation.terminator",
++        "meta.brace",
++      ],
++      settings: { foreground: "#5da6b8" },
++    },
++  ],
++};
++
++/**
++ * Derived light companion — no linear-light.json exists to translate
++ * directly, so these values are hand-recalibrated from linear-dark's hues
++ * for contrast against a light background (same approach
++ * watchtower-demo.css already uses to derive its own light overrides from
++ * its dark block). Each color keeps the dark theme's hue/role but is
++ * darkened enough to clear ~4.5:1 contrast against a near-white editor
++ * background, matching this codebase's existing WCAG-aware token practice
++ * (see global.css's --portfolio-muted rationale).
++ */
++export const linearLightTheme: ThemeRegistrationRaw = {
++  name: "linear-light",
++  type: "light",
++  fg: "#282a30",
++  bg: "#ffffff",
++  settings: [
++    {
++      scope: ["comment", "comment.line", "comment.block"],
++      settings: { foreground: "#6b6f76", fontStyle: "italic" },
++    },
++    {
++      scope: [
++        "keyword",
++        "keyword.control",
++        "storage.type",
++        "storage.modifier",
++        "keyword.operator.new",
++      ],
++      settings: { foreground: "#5459c9", fontStyle: "italic" },
++    },
++    {
++      scope: ["keyword.operator"],
++      settings: { foreground: "#2b7186" },
++    },
++    {
++      scope: ["entity.name.tag", "support.class.component"],
++      settings: { foreground: "#2f6fd6" },
++    },
++    {
++      scope: ["entity.name.function", "support.function", "meta.function-call"],
++      settings: { foreground: "#0e8fa8" },
++    },
++    {
++      scope: ["string", "string.quoted", "string.template"],
++      settings: { foreground: "#3a7d3f" },
++    },
++    {
++      scope: ["entity.name.type", "support.type", "entity.other.inherited-class"],
++      settings: { foreground: "#1a8f80", fontStyle: "italic" },
++    },
++    {
++      scope: ["entity.other.attribute-name", "entity.other.attribute-name.jsx"],
++      settings: { foreground: "#8452c9", fontStyle: "italic" },
++    },
++    {
++      scope: ["constant.numeric", "constant.language", "constant.language.boolean"],
++      settings: { foreground: "#b5690a" },
++    },
++    {
++      scope: ["variable", "variable.other.readwrite", "variable.parameter"],
++      settings: { foreground: "#282a30" },
++    },
++    {
++      scope: [
++        "variable.other.property",
++        "meta.object-literal.key",
++        "support.type.property-name",
++      ],
++      settings: { foreground: "#a83e94" },
++    },
++    {
++      scope: [
++        "punctuation",
++        "punctuation.definition",
++        "punctuation.separator",
++        "punctuation.terminator",
++        "meta.brace",
++      ],
++      settings: { foreground: "#2b7186" },
++    },
++  ],
++};
+
+
+=== DIFF: src/components/watchtower-demo/typingBursts.ts ===
+@@ -0,0 +1,109 @@
++export interface BurstRange {
++  /** Character offset (into CODE_SNIPPET) where the burst starts. */
++  start: number;
++  /** Character offset where the burst ends (exclusive). */
++  end: number;
++}
++
++/**
++ * Scans `code` for editor-autocomplete-style closer patterns — a
++ * self-closing tag's trailing "/>", a closing tag like "</Box>", and a
++ * brace pair's closer immediately following its opener with nothing but
++ * whitespace/other closers in between (e.g. "}}" right after "{{...}}"'s
++ * content ends) — and returns the character ranges that should reveal as
++ * one instant jump rather than character-by-character, mimicking an editor
++ * auto-inserting the matching closer the moment you type the opener.
++ *
++ * Deliberately conservative: only exact closing-tag/brace-pair patterns are
++ * detected, not general "autocomplete a whole identifier" behavior — false
++ * positives here would visibly skip real typed content.
++ */
++/** Common short prefix an editor would realistically still hand-type before
++ * a suggestion is confident enough to accept — e.g. typing "lab" then
++ * accepting "el" to complete "label". Kept small (1-2 chars) so the burst
++ * still reads as "mostly autocompleted," not "appeared from nothing." */
++const MANUAL_PREFIX_CHARS = 2;
++
++export function findBurstRanges(code: string): BurstRange[] {
++  const ranges: BurstRange[] = [];
++
++  // Self-closing tags: "/>" right after the tag's own attributes, e.g.
++  // `<StatHighlight label="Total" value={totalLabel} />` — burst just the
++  // final " />" (or "/>"), not the whole tag.
++  const selfClosingPattern = /\s*\/>/g;
++  for (const match of code.matchAll(selfClosingPattern)) {
++    ranges.push({ start: match.index, end: match.index + match[0].length });
++  }
++
++  // Closing tags: "</Name>" — burst the whole closer as one unit.
++  const closingTagPattern = /<\/[A-Za-z][A-Za-z0-9.]*>/g;
++  for (const match of code.matchAll(closingTagPattern)) {
++    ranges.push({ start: match.index, end: match.index + match[0].length });
++  }
++
++  // Matched double-brace pairs opened by "={{ " — burst the closing "}}"
++  // once its matching opener has been typed (e.g. sx={{ display: "flex" }}
++  // bursts in the trailing " }}").
++  const doubleBraceClosePattern = / \}\}/g;
++  for (const match of code.matchAll(doubleBraceClosePattern)) {
++    ranges.push({ start: match.index, end: match.index + match[0].length });
++  }
++
++  // JSX attribute names — "label=", "value=", "unit=", "sx=", etc. — the
++  // few leading chars are hand-typed, then the rest of the identifier
++  // (plus the "=") bursts in as an accepted suggestion. Matches a bare
++  // identifier immediately followed by "=" (not "=="), only where it reads
++  // as an attribute (preceded by whitespace, i.e. inside a tag).
++  const attrNamePattern = /(?<=[\s<])([A-Za-z][A-Za-z0-9]*)=(?!=)/g;
++  for (const match of code.matchAll(attrNamePattern)) {
++    const name = match[1];
++    if (name.length > MANUAL_PREFIX_CHARS) {
++      const nameStart = match.index;
++      ranges.push({
++        start: nameStart + MANUAL_PREFIX_CHARS,
++        end: nameStart + name.length + 1, // +1 for the "="
++      });
++    }
++  }
++
++  // Property-access identifiers — ".value", ".unit", etc. — same
++  // hand-type-a-prefix-then-accept pattern as attribute names.
++  const propertyAccessPattern = /\.([A-Za-z][A-Za-z0-9]*)/g;
++  for (const match of code.matchAll(propertyAccessPattern)) {
++    const name = match[1];
++    if (name.length > MANUAL_PREFIX_CHARS) {
++      const nameStart = match.index + 1; // skip the "."
++      ranges.push({
++        start: nameStart + MANUAL_PREFIX_CHARS,
++        end: nameStart + name.length,
++      });
++    }
++  }
++
++  return mergeOverlapping(ranges.sort((a, b) => a.start - b.start));
++}
++
++function mergeOverlapping(ranges: BurstRange[]): BurstRange[] {
++  const merged: BurstRange[] = [];
++  for (const range of ranges) {
++    const last = merged.at(-1);
++    if (last && range.start <= last.end) {
++      last.end = Math.max(last.end, range.end);
++    } else {
++      merged.push({ ...range });
++    }
++  }
++  return merged;
++}
++
++/**
++ * Given the reveal cursor sitting at `fromIndex`, returns the burst range
++ * whose start exactly equals `fromIndex`, if any — the caller advances
++ * straight to `range.end` in one step instead of one character at a time.
++ */
++export function findBurstAt(
++  ranges: BurstRange[],
++  fromIndex: number,
++): BurstRange | undefined {
++  return ranges.find((r) => r.start === fromIndex);
++}
+
+
+=== DIFF: src/components/watchtower-demo/typingCodeSnippet.ts ===
+@@ -0,0 +1,95 @@
++import { createHighlighter } from "shiki";
++import { linearDarkTheme, linearLightTheme } from "./editorThemes";
++
++/**
++ * Original snippet (not real Wallaby/employer code) shaped to mirror the
++ * pattern from the case study's reference screenshot: a couple of imports,
++ * a small bit of derived-state logic, then a GraphCard/StatHighlight JSX
++ * return block. Long enough to overflow the editor frame once fully typed,
++ * per the "only need enough code to go out of the frame" brief — no scroll
++ * container, it just runs past the visible bottom edge.
++ */
++export const FILE_PATH = "src/components/BandwidthGraph/BandwidthGraph.tsx";
++
++export const CODE_SNIPPET = `import { ResponsiveContainer, ComposedChart } from "recharts";
++import { StatHighlight } from "../StatHighlight";
++
++const incomingChange = computeChange(series, "incoming");
++const outgoingChange = computeChange(series, "outgoing");
++const totalLabel = formatTotal(series);
++
++return (
++  <GraphCard {...CARD} {...rest}>
++    <Box sx={{ display: "flex", flexDirection: "column", p: 200, gap: 150 }}>
++      {/* Three StatHighlights in a row */}
++      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 400 }}>
++        <StatHighlight
++          label="Incoming"
++          value={formattedIncoming.value}
++          unit={formattedIncoming.unit}
++          change={incomingChange}
++        />
++        <StatHighlight
++          label="Outgoing"
++          value={formattedOutgoing.value}
++          unit={formattedOutgoing.unit}
++          change={outgoingChange}
++        />
++        <StatHighlight label="Total" value={totalLabel} />
++      </Box>
++    </Box>
++
++    {/* Chart — full bleed */}
++    <Box sx={{ flexGrow: 1, pt: 200 }}>
++      <ResponsiveContainer width="100%" height="100%">
++        <ComposedChart data={series}>
++          <CartesianGrid vertical={false} />
++          <XAxis dataKey="time" hide />
++`;
++
++export interface CodeToken {
++  text: string;
++  color: string;
++  italic: boolean;
++}
++
++export type TokenizedLine = CodeToken[];
++
++let cachedTokens: { dark: TokenizedLine[]; light: TokenizedLine[] } | null = null;
++
++/**
++ * Tokenizes CODE_SNIPPET once against both themes and caches the result —
++ * this is fixed, build-time-known content, so there's no reason to
++ * re-tokenize per render or per component instance.
++ */
++export async function getTokenizedLines(): Promise<{
++  dark: TokenizedLine[];
++  light: TokenizedLine[];
++}> {
++  if (cachedTokens) return cachedTokens;
++
++  const highlighter = await createHighlighter({
++    themes: [linearDarkTheme, linearLightTheme],
++    langs: ["tsx"],
++  });
++
++  const toLines = (themeName: string): TokenizedLine[] => {
++    const { tokens } = highlighter.codeToTokens(CODE_SNIPPET, {
++      lang: "tsx",
++      theme: themeName,
++    });
++    return tokens.map((line) =>
++      line.map((token) => ({
++        text: token.content,
++        color: token.color ?? "",
++        italic: (token.fontStyle ?? 0) === 1,
++      })),
++    );
++  };
++
++  cachedTokens = {
++    dark: toLines("linear-dark"),
++    light: toLines("linear-light"),
++  };
++  return cachedTokens;
++}
+
+
+=== DIFF: src/components/watchtower-demo/useTypewriter.ts ===
+@@ -0,0 +1,114 @@
++import { useEffect, useRef, useState, type RefObject } from "react";
++import { useInView, useReducedMotion } from "motion/react";
++import { findBurstAt, findBurstRanges } from "./typingBursts";
++
++const START_DELAY_MS = 1500;
++const BASE_INTERVAL_MS = 3;
++const JITTER_MS = 8;
++const PAUSE_CHARS = new Set(["\n", "{", "}", ";"]);
++const PAUSE_EXTRA_MS = 45;
++const PAUSE_JITTER_MS = 55;
++/** Occasional longer "thinking" pause, roughly 1 in 40 characters. */
++const THINKING_PAUSE_CHANCE = 1 / 40;
++const THINKING_PAUSE_MS = 70;
++const THINKING_PAUSE_JITTER_MS = 90;
++/** Pause before/after an autocomplete burst — a beat as if a suggestion
++ * popup appeared and got accepted, not an instant snap. */
++const BURST_DELAY_MS = 90;
++const BURST_JITTER_MS = 60;
++
++function nextDelay(char: string): number {
++  let delay = BASE_INTERVAL_MS + Math.random() * JITTER_MS;
++  if (PAUSE_CHARS.has(char)) {
++    delay += PAUSE_EXTRA_MS + Math.random() * PAUSE_JITTER_MS;
++  }
++  if (Math.random() < THINKING_PAUSE_CHANCE) {
++    delay += THINKING_PAUSE_MS + Math.random() * THINKING_PAUSE_JITTER_MS;
++  }
++  return delay;
++}
++
++export interface UseTypewriterResult {
++  /** Number of characters revealed so far, into the flattened `fullText`. */
++  revealedCount: number;
++  /** True once START_DELAY_MS has elapsed and typing has begun. */
++  hasStartedTyping: boolean;
++  /** True once every character has been revealed. */
++  isDone: boolean;
++}
++
++/**
++ * Drives a character-by-character typing reveal: waits for `rootRef` to
++ * scroll into view, pauses START_DELAY_MS (so the header/file-path shows
++ * first, matching the Figma reference), then reveals `fullText` one
++ * character at a time with non-linear per-character timing (small jitter,
++ * extra pauses after structural punctuation/newlines, occasional longer
++ * "thinking" pauses) so the cadence reads as a person typing rather than a
++ * fixed-interval mechanical reveal. Runs once — does not reset/retype if
++ * the element scrolls out and back into view.
++ */
++export function useTypewriter(
++  rootRef: RefObject<Element | null>,
++  fullText: string,
++): UseTypewriterResult {
++  const isInView = useInView(rootRef, { once: true, amount: 0.4 });
++  const shouldReduceMotion = useReducedMotion();
++  const [revealedCount, setRevealedCount] = useState(0);
++  const [hasStartedTyping, setHasStartedTyping] = useState(false);
++  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
++
++  useEffect(() => {
++    if (!isInView) return;
++
++    if (shouldReduceMotion) {
++      const id = setTimeout(() => {
++        setHasStartedTyping(true);
++        setRevealedCount(fullText.length);
++      }, 0);
++      return () => clearTimeout(id);
++    }
++
++    const burstRanges = findBurstRanges(fullText);
++
++    const startTimeout = setTimeout(() => {
++      setHasStartedTyping(true);
++
++      let count = 0;
++      const revealNext = () => {
++        // If the reveal cursor sits at the start of an autocomplete-style
++        // closer (a self-closing "/>", "</Tag>", or a "}}" pair closer),
++        // jump straight to its end in one step instead of one character at
++        // a time — mimics an editor auto-inserting the matching closer.
++        const burst = findBurstAt(burstRanges, count);
++        if (burst) {
++          count = burst.end;
++          setRevealedCount(count);
++          if (count >= fullText.length) return;
++          const delay = BURST_DELAY_MS + Math.random() * BURST_JITTER_MS;
++          timeoutRef.current = setTimeout(revealNext, delay);
++          return;
++        }
++
++        count += 1;
++        setRevealedCount(count);
++        if (count >= fullText.length) return;
++        const delay = nextDelay(fullText[count - 1]);
++        timeoutRef.current = setTimeout(revealNext, delay);
++      };
++      revealNext();
++    }, START_DELAY_MS);
++
++    return () => {
++      clearTimeout(startTimeout);
++      if (timeoutRef.current) clearTimeout(timeoutRef.current);
++    };
++    // fullText is fixed content for this component's lifetime; only isInView/shouldReduceMotion should retrigger.
++    // eslint-disable-next-line react-hooks/exhaustive-deps
++  }, [isInView, shouldReduceMotion]);
++
++  return {
++    revealedCount,
++    hasStartedTyping,
++    isDone: revealedCount >= fullText.length,
++  };
++}
+
+
+Investigate per the method in your instructions, then return the findings list.
