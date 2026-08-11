@@ -1,0 +1,1 @@
+It might just be that the 200ms is too quick. Let's try 300ms and see if that helps
