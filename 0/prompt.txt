@@ -1,0 +1,1 @@
+that propmt bg should be full width and not have rounded corners
