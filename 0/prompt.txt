@@ -1,0 +1,4 @@
+Dark theme: [Image #1]
+Light theme: [Image #2]
+
+This should be about the same size as the other imagery used in this area. In Figma, this one is 1000px wide and 510px tall (hugging content). We don't have to set hard values unless we absolutely need to so that we don't negatively impact responsiveness
