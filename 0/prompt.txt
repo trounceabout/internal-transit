@@ -1,0 +1,1 @@
+I fixed the padding (told you backwards by mistake) but for some reason the content is sticking to 32px tall despite the actual text being 18px [Image #11]
