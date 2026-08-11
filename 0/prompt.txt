@@ -1,0 +1,1 @@
+The problem with that second approach is that then the graph fills in the other cards will spill out of the bottom left and right corners
