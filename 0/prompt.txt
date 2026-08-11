@@ -1,0 +1,1 @@
+Can we also make the highlight stat text color oklch(55.4% 0.121 66.4deg) in the light theme and oklch(90.5% 0.166 98.1deg) in the dark theme when it's above 65%?
