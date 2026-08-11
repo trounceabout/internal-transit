@@ -1,0 +1,1 @@
+Also, the prompt should have some sort of styling to separate it from your response, like it  does in this screenshot [Image #22]
