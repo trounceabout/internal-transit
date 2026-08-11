@@ -1,0 +1,4 @@
+It's close, but needs a few tweaks:
+- It feels like it drops off too early at the bottom. Can we add 40px of padding to the div that the images in are?
+- Let's make the lines dotted
+- The grid is on top of the other content. Should we move it to the :after, or change the z-index?
