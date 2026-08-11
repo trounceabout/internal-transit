@@ -1,0 +1,3 @@
+Can we add the linear gradient bg to the cpu card?
+Here are the dark theme values from Figma: background: linear-gradient(0deg, rgba(133, 77, 14, 0.25) 0%, rgba(38, 37, 35, 0.25) 100%)
+And here are the light theme ones: background: linear-gradient(0deg, rgba(254, 240, 138, 0.25) 0%, rgba(255, 255, 255, 0.25) 100%)
