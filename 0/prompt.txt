@@ -1,0 +1,1 @@
+So it still feels too slow. I think the problem is that normal coding would have auto complete blocks, and this doesn't Is there any way for us to simulate that accurately?
