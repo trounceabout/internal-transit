@@ -1,0 +1,1 @@
+I need the avg that's shown be default (no hovering) to be over the threshold
