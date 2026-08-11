@@ -1,0 +1,5 @@
+Okay, we have one last feature to throw in here for the third subsection of the solution. I want to replace the current sandbox with a new one that has a code editor inside (not interactive). The idea is similar to the existing documentation one, but with typing out code. It'll start with just the file name and breadcrumbs in the header, then start typing 1.5 secs after it scrolls into view. I want to pull code from one of the modules in the Wallaby radar work. This is a basic version of how it should look: [Image #15] We'll need to add syntax highlighting and elements like the vertical lines showing the tab depth. We only need enough code to go out of the frame. I want it to look like someone is typing using the animation availabe in motion.dev, including a cursor and the right cadence (meaning not linear, it needs to feel like a real person is typing the code).
+
+The reference for how the editor should look is this: [Image #14]
+
+Can you help me work up a plan for how best to do all this?
