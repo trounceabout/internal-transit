@@ -1,0 +1,1 @@
+The layered effect is gone. You need to undo everything you did after I brought up the top corner bug [Image #13]
