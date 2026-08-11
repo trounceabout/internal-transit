@@ -1,0 +1,7 @@
+<task-notification>
+<task-id>bnsvhvzfp</task-id>
+<tool-use-id>REDACTED</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-trounceabout-Documents-Repos-Personal-internal-transit/4b29f397-3398-4b24-be55-9b832d5b1909/tasks/bnsvhvzfp.output</output-file>
+<status>failed</status>
+<summary>Background command "Start Astro dev server" failed with exit code 143</summary>
+</task-notification>
