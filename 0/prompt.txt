@@ -1,0 +1,1 @@
+It takes a while for the info tooltip in the CPU card to show up. Could we have it show up after half a second of hover?
