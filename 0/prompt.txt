@@ -1,0 +1,1 @@
+I want to see if we can make the light/dark mode swap work like the pixel effect on this site (between the built for every niche and a magic link sections). Instead of the plain, simple line we currently have, making the edge a pixelated effect just like this one would be amazing. Can you help me figure out if that's possible? https://www.alike.page/
