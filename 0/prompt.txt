@@ -1,0 +1,1 @@
+I tried to fix the bug where the red shows in the top left and right corners of the disk usage card in the modules sandbox, but it didn't work. Can you tell me why?
