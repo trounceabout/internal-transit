@@ -1,0 +1,2 @@
+We're missing the horizontal grid lines from Figma [Image #7]
+Also, I think the sizes aren't quite right. The top row should be 200px and the bottom should be 285
