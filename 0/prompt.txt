@@ -1,0 +1,1 @@
+That doesn't seem to have worked. Should we just use span instead of p for these? I'd prefer if they look just like your real responses anyways (but using the mono typeface built into the site) [Image #25]
