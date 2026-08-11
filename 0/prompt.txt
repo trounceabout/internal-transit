@@ -1,0 +1,1 @@
+So there is a fade in, but no fade out when it closes. That's the issue
