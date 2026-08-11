@@ -1,0 +1,1 @@
+That doesn't quite work. Since The Problem and the Solution use that as their internal padding, it makes them too spacious inside. Their margin needs to change instead
