@@ -1,0 +1,1 @@
+It looks like the input and the diff are using mono, but the rest of the response and the prompt once entered are using sans [Image #24]
