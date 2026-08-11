@@ -1,0 +1,10 @@
+There's definitely some refinement needed [Image #3]
+- The time tooltips aren't showing up on hover
+- The RAM and Network graphs don't reach the bottom of their respective cards
+- The bar for disk usage is just supposed to use highlight colors
+- The footer on the disk usage card is a layered one
+- The bandwidth graph isn't showing near as many data points as it's supposed to (should be each day within a full month)
+- To make more room for the highlight stats, let's reduce the size of the main number to 32px and center the main number with the other content in each highlight
+
+Here's a screenshot of the Figma for reference again: [Image #4]
+Make sure to compare the two shots closely
