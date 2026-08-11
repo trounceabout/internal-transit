@@ -1,0 +1,1 @@
+Also, here's the syntax highlighting theme I want to use /Users/trounceabout/.config/zed/themes/linear-dark.json
