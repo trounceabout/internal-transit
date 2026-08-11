@@ -1,0 +1,1 @@
+I guess that's closer, but it's still not right. The dither comes from the opposite direction of the sweep, and the sweep is still a straight line [Image #3]
