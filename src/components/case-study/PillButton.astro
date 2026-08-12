@@ -81,4 +81,18 @@ const sizeClasses =
     outline: 2px solid var(--pill-icon-color, currentColor);
     outline-offset: 2px;
   }
+
+  /* Press feedback on click — scoped to this component rather than a
+     global `button` rule, since not every <button> on the site is a
+     pill-shaped clickable object (e.g. Footer.astro's theme toggle is a
+     <button> styled as inline text, and scaling it read as broken rather
+     than intentional). transition lives on the resting selector, not
+     :active, so it applies symmetrically on press AND release. */
+  .pill-button {
+    transition: transform 0.15s ease-out;
+  }
+
+  .pill-button:active {
+    transform: scale(0.97);
+  }
 </style>
