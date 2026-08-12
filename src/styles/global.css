@@ -339,3 +339,16 @@
     clip-path: inset(0 0 0 0);
   }
 }
+
+/* Approach section's scroll-triggered grid background (see
+   .ping-section--approach::before in ProjectLayout.astro) — a plain
+   opacity fade, played once when the section's .grid-active class is
+   added by observeGridReveal() in src/lib/animations.ts. */
+@keyframes gridSequence {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
