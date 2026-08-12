@@ -225,6 +225,11 @@ const Icon = icon;
   <Lightbox />
 </BaseLayout>
 
+<script>
+  import { observeGridReveal } from "@/lib/animations";
+  observeGridReveal();
+</script>
+
 <style>
   /* MDX content comes from a separately-compiled component tree (rendered via
      <Content /> in [slug].astro), so Astro's default *scoped* styles never
@@ -312,12 +317,113 @@ const Icon = icon;
 
   /* "The approach" gets the same left/right inset, matching "The problem"
      above — vertical padding stays on the fixed --ping-section-gap for
-     the same reason. */
+     the same reason. position: relative gives the ::after grid layer
+     below a containing block to size itself against. Unlike "The problem",
+     this section stays borderless/full-bleed on purpose — the border is
+     what marks Problem as the one "card" section, and adding one here
+     would blur that distinction. No overflow: hidden here (unlike the
+     original version of this rule) — the ::after grid layer below is
+     deliberately wider than this section's own box (it bleeds 40px past
+     the left/right edges), and clipping at the section boundary would
+     hide exactly that bleed. The page-level overflow-x-hidden on <body>
+     (BaseLayout.astro) is what stops that bleed from ever causing a
+     horizontal scrollbar on narrow viewports. */
   .article-body :global(.ping-section--approach) {
+    position: relative;
     padding-top: var(--ping-section-gap);
     padding-bottom: var(--ping-section-gap);
     padding-left: var(--ping-card-padding);
     padding-right: var(--ping-card-padding);
+  }
+
+  /* Decorative dot-grid background for "The approach". A single tiled
+     radial-gradient draws a 1px dot every 24px using the same weak
+     --section-border-color hairline already used for "The problem"'s
+     outline, so it reads as part of this design system rather than a
+     borrowed effect. (An earlier version of this used a two-axis
+     repeating-linear-gradient line grid, matching aphera.co's reference;
+     swapped to dots after finding a closer reference. A per-project
+     accent-color tint was also tried and reverted — read as too loud/
+     colorful for this background texture even at 25% strength; the
+     neutral hairline color works better.)
+     Deliberately ::after, not ::before: generated content always paints
+     after an element's real children by spec, so ::after guarantees this
+     stays behind the section's images/copy without depending on z-index
+     stacking order against the LightboxImage markup (which has its own
+     position: relative wrapper). The negative z-index below is
+     belt-and-suspenders on top of that. Also inert to pointer/click
+     interaction. Starts fully transparent — observeGridReveal()
+     (src/lib/animations.ts) adds .grid-active via IntersectionObserver
+     once the section scrolls into view, which is what actually plays the
+     gridSequence fade (defined in global.css). */
+  .article-body :global(.ping-section--approach::after) {
+    content: "";
+    position: absolute;
+    /* Bleeds the grid 40px past the section's own left/right edges (top/bottom
+       stay flush) so it reads as wider than the text column above it, similar
+       to aphera.co's reference. This section has no overflow: hidden of its
+       own (unlike "The problem"/"The solution") specifically so this bleed
+       isn't clipped — the page-level overflow-x-hidden on <body>
+       (BaseLayout.astro) is what stops it from ever causing a horizontal
+       scrollbar on narrow viewports instead. */
+    inset: 0 -40px;
+    /* "1px, transparent 1px" (not "0, transparent 1px") is what makes a
+       crisp dot instead of a soft blurred blob — the color stays solid from
+       center out to the 1px radius, then cuts hard to transparent at that
+       same radius. */
+    background-image: radial-gradient(
+      circle,
+      var(--section-border-color) 1px,
+      transparent 1px
+    );
+    background-size: 24px 24px;
+    /* Fades the grid out near all four edges instead of cutting off hard
+       — two gradients (one per axis) multiplied together via
+       mask-composite: intersect, so a point only stays fully opaque where
+       BOTH the horizontal and vertical fade are opaque (i.e. away from
+       every edge at once). -webkit- variants are Safari's still-required
+       prefixed equivalents (mask-composite ergo is broadly supported
+       unprefixed now, but -webkit-mask-composite uses different keyword
+       values, hence "source-in" there vs "intersect" above). */
+    mask-image:
+      linear-gradient(
+        to right,
+        transparent 0%,
+        rgba(0, 0, 0, 1) 10%,
+        rgba(0, 0, 0, 1) 90%,
+        transparent 100%
+      ),
+      linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(0, 0, 0, 1) 10%,
+        rgba(0, 0, 0, 1) 90%,
+        transparent 100%
+      );
+    mask-composite: intersect;
+    -webkit-mask-image:
+      linear-gradient(
+        to right,
+        transparent 0%,
+        rgba(0, 0, 0, 1) 10%,
+        rgba(0, 0, 0, 1) 90%,
+        transparent 100%
+      ),
+      linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(0, 0, 0, 1) 10%,
+        rgba(0, 0, 0, 1) 90%,
+        transparent 100%
+      );
+    -webkit-mask-composite: source-in;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0;
+  }
+
+  .article-body :global(.ping-section--approach.grid-active::after) {
+    animation: gridSequence 1.4s ease-out forwards;
   }
 
   /* "The solution" gets a translucent border and a subtle vertical-fade
