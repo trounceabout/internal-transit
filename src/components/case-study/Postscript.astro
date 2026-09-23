@@ -20,7 +20,7 @@ const { iconColor, iconColorDark } = Astro.props;
 <section class="flex flex-col gap-6 py-15">
   <div class="flex w-full items-center gap-6">
     <span
-      class="postscript-heading text-portfolio-ink m-0 font-mono text-[32px] leading-[0.94] font-normal tracking-[-0.96px] italic"
+      class="postscript-heading text-portfolio-text m-0 font-mono text-[32px] leading-[0.94] font-normal tracking-[-0.96px] italic"
     >
       The postscript
     </span>
@@ -45,7 +45,7 @@ const { iconColor, iconColorDark } = Astro.props;
         Why it worked
       </p>
       <div
-        class="font-plex-sans text-portfolio-ink min-w-0 flex-1 leading-8 font-light [&_p]:mb-4 [&_p:last-child]:mb-0"
+        class="font-plex-sans text-portfolio-text min-w-0 flex-1 leading-8 font-light [&_p]:mb-4 [&_p:last-child]:mb-0"
       >
         <slot name="why-it-worked" />
       </div>
@@ -59,7 +59,7 @@ const { iconColor, iconColorDark } = Astro.props;
         Key takeaway
       </p>
       <div
-        class="font-plex-sans text-portfolio-ink min-w-0 flex-1 leading-8 font-light [&_p]:mb-4 [&_p:last-child]:mb-0"
+        class="font-plex-sans text-portfolio-text min-w-0 flex-1 leading-8 font-light [&_p]:mb-4 [&_p:last-child]:mb-0"
       >
         <slot name="key-takeaway" />
       </div>
@@ -73,7 +73,7 @@ const { iconColor, iconColorDark } = Astro.props;
         Project status
       </p>
       <div
-        class="font-plex-sans text-portfolio-ink min-w-0 flex-1 leading-8 font-light"
+        class="font-plex-sans text-portfolio-text min-w-0 flex-1 leading-8 font-light"
       >
         <slot name="project-status" />
       </div>
