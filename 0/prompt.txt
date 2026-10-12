@@ -1,0 +1,13 @@
+what's the best way for me to save the licence key for pixelarticons so that I can use a variable in the npx upgrade command for them when an update comes out?
+
+---
+
+why do we have an example env file in here? we're the  only ones working on this repo
+
+---
+
+I tried running the bun command to upgrade the icons, and it errored out, showing that the licence key variable isn't actually in there. It's still the default YOUR_LICENCE_KEY
+
+---
+
+[Image #1]
