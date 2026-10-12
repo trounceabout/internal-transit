@@ -50,7 +50,7 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "icons:upgrade": "pixelarticons upgrade --key=$PIXELARTICONS_LICENSE_KEY"
+    "icons:upgrade": "bun run scripts/upgrade-icons.ts"
   },
   "type": "module",
   "devDependencies": {
