@@ -72,7 +72,8 @@ import { Linkedin2 } from "pixelarticons/react/Linkedin2";
   // browser handles showing the correct theme on each side of the sweep —
   // no manual curtain/probe elements needed. The data attribute tells the
   // global CSS (in global.css) which of the two sweep-direction keyframes
-  // to play against the new-theme screenshot.
+  // to play against the new-theme screenshot, which a mask dissolves in as
+  // a band of pixelated cells.
   button?.addEventListener("click", () => {
     const goingDark = !document.documentElement.classList.contains("dark");
     document.documentElement.dataset.themeSweepDirection = goingDark
@@ -83,6 +84,14 @@ import { Linkedin2 } from "pixelarticons/react/Linkedin2";
       toggleTheme();
       return;
     }
-    document.startViewTransition(() => toggleTheme());
+
+    // Clear the attribute once the sweep ends. The mask/background rules in
+    // global.css are keyed off its presence, so leaving it set would keep
+    // them matching against a pseudo-element that no longer exists — and it
+    // would otherwise just accumulate on <html> for the rest of the session.
+    const transition = document.startViewTransition(() => toggleTheme());
+    transition.finished.finally(() => {
+      delete document.documentElement.dataset.themeSweepDirection;
+    });
   });
 </script>
