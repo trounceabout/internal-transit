@@ -65,11 +65,11 @@ const titleAfter =
                 icon={Calendar04Icon}
                 size={16}
                 color="currentColor"
-                className="text-portfolio-ink"
+                className="text-portfolio-text"
               />
               <time
                 datetime={publishDate.toISOString()}
-                class="text-portfolio-ink font-mono text-sm"
+                class="text-portfolio-text font-mono text-sm"
               >
                 {formattedDate}
               </time>
@@ -87,7 +87,7 @@ const titleAfter =
                         height={16}
                         className={config.text}
                       />
-                      <span class="text-portfolio-ink font-mono text-sm">
+                      <span class="text-portfolio-text font-mono text-sm">
                         {tag}
                       </span>
                     </div>
@@ -117,7 +117,7 @@ const titleAfter =
         </h1>
 
         {/* Dek */}
-        <p class="font-plex-sans text-portfolio-ink text-2xl leading-10">
+        <p class="font-plex-sans text-portfolio-text text-2xl leading-10">
           {description}
         </p>
       </header>
@@ -130,7 +130,7 @@ const titleAfter =
       }
       <div
         data-animate
-        class="article-body font-plex-sans text-portfolio-ink max-w-[800px] text-base leading-8"
+        class="article-body font-plex-sans text-portfolio-text max-w-[800px] text-base leading-8"
       >
         <slot />
       </div>
@@ -147,7 +147,7 @@ const titleAfter =
     font-weight: 500;
     font-size: 1.5rem; /* 24px */
     line-height: 2.5rem; /* 40px */
-    color: var(--portfolio-ink);
+    color: var(--portfolio-text);
     margin-bottom: 1rem; /* 16px, space after a heading before its paragraph */
   }
 
