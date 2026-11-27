@@ -1,0 +1,90 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "01M8FDX3A2V4HC59Z1SM1HWMX4",
+  "session_id": "7a6bd7c8-49cd-47d8-b18c-aba588dd2643",
+  "strategy": "manual-commit",
+  "created_at": "2026-11-27T21:17:15.450823Z",
+  "branch": "feat/remove-articles",
+  "checkpoints_count": 2,
+  "save_step_count": 2,
+  "files_touched": [
+    "src/components/ActionButton.astro",
+    "src/components/Lightbox.astro",
+    "src/layouts/BaseLayout.astro",
+    "src/layouts/Footer.astro",
+    "src/layouts/ProjectLayout.astro",
+    "src/styles/global.css"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-sonnet-5-5",
+  "turn_id": "88b5e5a52e7e",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 90,
+    "cache_creation_tokens": 157178,
+    "cache_read_tokens": 6158121,
+    "output_tokens": 35158,
+    "api_call_count": 42,
+    "subagent_tokens": {
+      "input_tokens": 20,
+      "cache_creation_tokens": 125027,
+      "cache_read_tokens": 795041,
+      "output_tokens": 13332,
+      "api_call_count": 10
+    }
+  },
+  "session_metrics": {
+    "turn_count": 2
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-11-27T21:17:14.205545Z",
+    "agent_lines": 111,
+    "agent_removed": 22,
+    "human_added": 268,
+    "human_modified": 95,
+    "human_removed": 0,
+    "total_committed": 474,
+    "total_lines_changed": 496,
+    "agent_percentage": 26.814516129032256,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 131,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.json": 90,
+        ".claude/settings.local.json": 19,
+        ".conductor/settings.local.toml": 20,
+        "cody-pixel-portrait-transparent.svg": 1
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 484,
+      "user_lines_removed": 95,
+      "agent_lines_added": 160,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.json": 90,
+        ".claude/settings.local.json": 19,
+        ".conductor/settings.local.toml": 20,
+        "src/data/links.ts": 12,
+        "src/layouts/BaseLayout.astro": 38,
+        "src/layouts/BottomNav.astro": 56,
+        "src/layouts/TopNav.astro": 162,
+        "src/lib/shortcuts.ts": 58,
+        "src/lib/theme.ts": 28
+      },
+      "user_removed_per_file": {
+        "src/layouts/BaseLayout.astro": 7,
+        "src/layouts/Footer.astro": 88
+      }
+    }
+  ]
+}
