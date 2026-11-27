@@ -4,11 +4,19 @@
 import "@/styles/global.css";
 import SpeedInsights from "@vercel/speed-insights/astro";
 import Analytics from "@vercel/analytics/astro";
-import Footer from "@/layouts/Footer.astro";
+import { ClientRouter } from "astro:transitions";
+import TopNav from "@/layouts/TopNav.astro";
+import BottomNav from "@/layouts/BottomNav.astro";
+import type { NavAction } from "@/layouts/BottomNav.astro";
 
 interface Props {
   title: string;
   description?: string;
+  // Hide the top nav (the start page has its own full-screen layout).
+  hideTopNav?: boolean;
+  // Actions for the persistent bottom bar. Omit (or pass none) for pages
+  // that shouldn't show it, like the start and about pages.
+  actions?: NavAction[];
 }
 
 // Default description used when a page doesn't supply its own.
@@ -16,7 +24,10 @@ interface Props {
 const {
   title,
   description = "Cody Keisler — product designer and design engineer in Rock Hill, SC.",
+  hideTopNav = false,
+  actions = [],
 } = Astro.props;
+const hasBottomNav = actions.length > 0;
 ---
 
 <!doctype html>
@@ -29,11 +40,21 @@ const {
          has explicitly chosen light before. -->
     <script is:inline>
       (function () {
-        var stored = localStorage.getItem("theme");
-        var isDark = stored !== "light";
-        document.documentElement.classList.toggle("dark", isDark);
+        function applyTheme() {
+          var stored = localStorage.getItem("theme");
+          var isDark = stored !== "light";
+          document.documentElement.classList.toggle("dark", isDark);
+        }
+        applyTheme();
+        // With client-side navigation, Astro swaps <html> attributes from the
+        // incoming page (which has no .dark class), so re-apply the theme
+        // after every swap or the page would flash light.
+        document.addEventListener("astro:after-swap", applyTheme);
       })();
     </script>
+    <!-- Client-side navigation (view transitions): page changes swap the DOM
+         instead of reloading, so the persistent nav doesn't flash. -->
+    <ClientRouter />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
     <!-- Format: "Page Title — Cody Keisler" for inner pages.
@@ -52,15 +73,25 @@ const {
     <slot name="head" />
   </head>
   <body
-    class="bg-portfolio-page flex min-h-screen flex-col overflow-x-hidden pt-16 font-mono"
+    class:list={[
+      "bg-portfolio-page flex min-h-screen flex-col overflow-x-hidden font-mono",
+      // Leave room so the fixed bottom bar never covers the end of the page.
+      hasBottomNav && "pb-24",
+    ]}
   >
+    {hideTopNav ? null : <TopNav />}
     <div class="flex-1">
       <slot />
     </div>
-    <Footer />
+    {hasBottomNav ? <BottomNav actions={actions} /> : null}
     <script>
       import { runFadeUpStagger } from "@/lib/animations";
-      runFadeUpStagger();
+      import { initShortcuts } from "@/lib/shortcuts";
+
+      initShortcuts();
+      // Runs on first load and again after every client-side navigation, so
+      // each new page's [data-animate] elements fade in.
+      document.addEventListener("astro:page-load", () => runFadeUpStagger());
     </script>
     <!-- Vercel Speed Insights — tracks real user performance data -->
     <SpeedInsights />

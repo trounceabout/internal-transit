@@ -65,7 +65,11 @@ const embedSrc = loomUrl?.replace("/share/", "/embed/");
 const Icon = icon;
 ---
 
-<BaseLayout title={name} description={tagline}>
+<BaseLayout
+  title={name}
+  description={tagline}
+  actions={[{ label: "Back", shortcut: "esc", href: "/" }]}
+>
   {
     /* Warms up the connection to Loom's domains as soon as the page loads,
       instead of paying full DNS+TLS+redirect latency at the moment the
@@ -223,7 +227,9 @@ const Icon = icon;
 
 <script>
   import { observeGridReveal } from "@/lib/animations";
-  observeGridReveal();
+  // Re-run after every client-side navigation so the "Approach" dot grid
+  // animates on each case study you open, not just the first page load.
+  document.addEventListener("astro:page-load", () => observeGridReveal());
 </script>
 
 <style>

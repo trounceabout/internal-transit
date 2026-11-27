@@ -1,0 +1,166 @@
+---
+// TopNav.astro — site-wide header, shown on every page except the start page.
+//
+// Left:  Projects / About. The current section is bold + ink-colored and gets
+//        aria-current="page".
+// Right: theme toggle (moon in dark mode, sun in light mode), a live local
+//        date + time, and links to GitHub, Discord and LinkedIn.
+//
+// The <header> below has `transition:persist`, so its DOM survives
+// client-side navigations (no flicker, the clock keeps ticking). Because the
+// server-rendered "current" state would then go stale, a small script below
+// re-computes aria-current on every navigation.
+import { GitBranch } from "pixelarticons/react/GitBranch";
+import { User } from "pixelarticons/react/User";
+import { Moon } from "pixelarticons/react/Moon";
+import { Sun } from "pixelarticons/react/Sun";
+import { Github } from "pixelarticons/react/Github";
+import { Discord } from "pixelarticons/react/Discord";
+import { Linkedin2 } from "pixelarticons/react/Linkedin2";
+import {
+  ABOUT_HREF,
+  DISCORD_URL,
+  GITHUB_URL,
+  LINKEDIN_URL,
+  PROJECTS_HREF,
+} from "@/data/links";
+
+const pathname = Astro.url.pathname;
+const section = pathname.startsWith(ABOUT_HREF) ? "about" : "projects";
+
+const navItems = [
+  { id: "projects", label: "Projects", href: PROJECTS_HREF, Icon: GitBranch },
+  { id: "about", label: "About", href: ABOUT_HREF, Icon: User },
+];
+
+// Brand colors match the ones the old footer used for these three services.
+const socials = [
+  { label: "GitHub", href: GITHUB_URL, Icon: Github, color: "#4183C4" },
+  { label: "Discord", href: DISCORD_URL, Icon: Discord, color: "#5865F2" },
+  { label: "LinkedIn", href: LINKEDIN_URL, Icon: Linkedin2, color: "#0077B5" },
+];
+---
+
+<header
+  transition:persist="top-nav"
+  class="mx-auto flex w-full max-w-[1200px] items-center justify-between gap-4 px-6 pt-10 pb-4"
+>
+  <nav aria-label="Primary" class="flex items-center gap-6">
+    {
+      navItems.map(({ id, label, href, Icon }) => (
+        <a
+          href={href}
+          data-nav={id}
+          aria-current={section === id ? "page" : undefined}
+          class="top-nav-item text-portfolio-muted flex items-center gap-3 font-mono text-sm"
+        >
+          <Icon width={24} height={24} />
+          <span>{label}</span>
+        </a>
+      ))
+    }
+  </nav>
+
+  <div class="flex items-center gap-4">
+    <button
+      type="button"
+      data-theme-toggle
+      aria-label="Toggle light and dark theme"
+      class="text-portfolio-muted hover:text-portfolio-ink flex size-6 cursor-pointer items-center justify-center rounded-md transition-colors"
+    >
+      <Moon width={16} height={16} className="hidden dark:block" />
+      <Sun width={16} height={16} className="block dark:hidden" />
+    </button>
+    <!-- Filled in by the script below. min-w reserves the width so the
+         icons next to it don't shift when the text first appears. -->
+    <time
+      data-clock
+      class="font-plex-sans text-portfolio-muted min-w-[5.5rem] text-xs tabular-nums"
+    ></time>
+    <div class="flex items-center gap-1.5">
+      {
+        socials.map(({ label, href, Icon, color }) => (
+          <a
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={label}
+            class="flex size-4 items-center justify-center transition-opacity hover:opacity-70"
+            style={{ color }}
+          >
+            <Icon width={16} height={16} />
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</header>
+
+<style>
+  /* Current page: bold + full ink color. Everything else stays muted. */
+  .top-nav-item[aria-current="page"] {
+    color: var(--portfolio-ink);
+    font-weight: 600;
+  }
+  .top-nav-item:not([aria-current="page"]):hover {
+    color: var(--portfolio-ink);
+  }
+</style>
+
+<script>
+  import { toggleTheme } from "@/lib/theme";
+
+  // Event delegation: one listener on the document finds the toggle button,
+  // so it works however many times the header is re-rendered or persisted.
+  document.addEventListener("click", (event) => {
+    if ((event.target as Element).closest("[data-theme-toggle]")) {
+      toggleTheme();
+    }
+  });
+
+  // ─── Live clock ──────────────────────────────────────────────────────────
+  // Local date + 24-hour time, e.g. "Nov 24 11:37".
+  const dateFormat = new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+  });
+  const timeFormat = new Intl.DateTimeFormat("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+
+  function renderClock() {
+    const now = new Date();
+    const text = `${dateFormat.format(now)} ${timeFormat.format(now)}`;
+    document.querySelectorAll<HTMLElement>("[data-clock]").forEach((el) => {
+      el.textContent = text;
+    });
+  }
+
+  // Re-render exactly on each minute boundary instead of polling every
+  // second: the displayed text only changes once a minute.
+  function scheduleTick() {
+    renderClock();
+    setTimeout(scheduleTick, 60_000 - (Date.now() % 60_000));
+  }
+  scheduleTick();
+  // Also paint right after navigations, in case Astro swapped in a fresh
+  // (empty) <time> element instead of keeping the persisted one.
+  document.addEventListener("astro:page-load", renderClock);
+
+  // ─── Active nav item ─────────────────────────────────────────────────────
+  // Runs on first load and after every client-side navigation.
+  document.addEventListener("astro:page-load", () => {
+    const current = location.pathname.startsWith("/about")
+      ? "about"
+      : "projects";
+    document.querySelectorAll<HTMLElement>("[data-nav]").forEach((el) => {
+      if (el.dataset.nav === current) {
+        el.setAttribute("aria-current", "page");
+      } else {
+        el.removeAttribute("aria-current");
+      }
+    });
+  });
+</script>

@@ -1,0 +1,56 @@
+---
+// BottomNav.astro — persistent bar of context-aware actions along the bottom
+// of the viewport. Each page decides which actions it offers by passing an
+// `actions` list to BaseLayout; this component just renders them as
+// ActionButtons. The pages that shouldn't have it (start, about) pass none,
+// and BaseLayout skips rendering this component entirely.
+import ActionButton from "@/components/ActionButton.astro";
+
+export interface NavAction {
+  label: string;
+  // Keyboard key that triggers the action: "enter", "esc", or a single letter.
+  shortcut: string;
+  href: string;
+  // Dimmed text after the label (e.g. the next project's name).
+  detail?: string;
+}
+
+interface Props {
+  actions: NavAction[];
+}
+
+const { actions } = Astro.props;
+---
+
+<nav
+  aria-label="Page actions"
+  class="bottom-nav pointer-events-none fixed inset-x-0 bottom-0 z-40 pt-10 pb-5"
+>
+  <div
+    class="pointer-events-auto mx-auto flex w-full max-w-[1200px] flex-wrap items-center gap-x-6 gap-y-2 px-6"
+  >
+    {
+      actions.map((action) => (
+        <ActionButton
+          label={action.label}
+          detail={action.detail}
+          shortcut={action.shortcut}
+          href={action.href}
+        />
+      ))
+    }
+  </div>
+</nav>
+
+<style>
+  /* A soft fade behind the bar so page content scrolling underneath it
+     doesn't collide with the button labels. The gradient only paints the
+     bar's own padding area; the middle of the viewport stays untouched. */
+  .bottom-nav {
+    background-image: linear-gradient(
+      to top,
+      var(--portfolio-bg) 40%,
+      transparent
+    );
+  }
+</style>
