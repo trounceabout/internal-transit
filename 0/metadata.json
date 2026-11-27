@@ -1,0 +1,88 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "01M8FDX3A2V4HC59Z1SM1HWMX4",
+  "session_id": "182463fd-8598-4d70-91a2-16e97c6dcf17",
+  "strategy": "manual-commit",
+  "created_at": "2026-11-27T21:17:13.785984Z",
+  "branch": "feat/remove-articles",
+  "checkpoints_count": 2,
+  "save_step_count": 1,
+  "files_touched": [
+    "src/components/ActionButton.astro",
+    "src/components/Lightbox.astro",
+    "src/data/links.ts",
+    "src/layouts/BaseLayout.astro",
+    "src/layouts/BottomNav.astro",
+    "src/layouts/Footer.astro",
+    "src/layouts/ProjectLayout.astro",
+    "src/layouts/TopNav.astro",
+    "src/lib/shortcuts.ts",
+    "src/lib/theme.ts",
+    "src/styles/global.css"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-sonnet-5-5",
+  "turn_id": "59e370b3b5d5",
+  "checkpoint_transcript_start": 481,
+  "transcript_lines_at_start": 481,
+  "compact_transcript_start": 40,
+  "token_usage": {
+    "input_tokens": 64,
+    "cache_creation_tokens": 55190,
+    "cache_read_tokens": 6435771,
+    "output_tokens": 27835,
+    "api_call_count": 30,
+    "subagent_tokens": {
+      "input_tokens": 0,
+      "cache_creation_tokens": 0,
+      "cache_read_tokens": 0,
+      "output_tokens": 0,
+      "api_call_count": 0
+    }
+  },
+  "session_metrics": {
+    "turn_count": 4
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-11-27T21:17:12.1623Z",
+    "agent_lines": 569,
+    "agent_removed": 117,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 569,
+    "total_lines_changed": 686,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 131,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.json": 90,
+        ".claude/settings.local.json": 19,
+        ".conductor/settings.local.toml": 20,
+        "cody-pixel-portrait-transparent.svg": 1
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 141,
+      "user_lines_removed": 0,
+      "agent_lines_added": 570,
+      "agent_lines_removed": 117,
+      "user_added_per_file": {
+        ".claude/launch.json": 11,
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.json": 90,
+        ".claude/settings.local.json": 19,
+        ".conductor/settings.local.toml": 20
+      }
+    }
+  ]
+}
