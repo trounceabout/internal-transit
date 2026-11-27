@@ -1,6 +1,7 @@
 ---
 // Walkthrough.astro — the case study's video walkthrough: the project's Loom
-// recording embedded in a framed 16:9 player, centered in its section.
+// recording embedded in a framed 16:9 player (12px corners), top-aligned with the other sections
+// at the 160px content line.
 import { MEDIA_FRAME_SHADOW } from "@/lib/media";
 
 interface Props {
@@ -14,7 +15,7 @@ const embedSrc = loomUrl.replace("/share/", "/embed/");
 ---
 
 <div
-  class="relative aspect-video w-full overflow-hidden rounded-lg"
+  class="relative aspect-video w-full overflow-hidden rounded-xl"
   style={{ boxShadow: MEDIA_FRAME_SHADOW }}
 >
   <!-- loading="lazy": the video is a whole screen away on first load, so don't
