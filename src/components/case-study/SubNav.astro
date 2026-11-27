@@ -1,0 +1,174 @@
+---
+// SubNav.astro — the case study's side navigation (Figma "Sub-nav").
+//
+// Four top-level items: Overview, Deep dive, Walkthrough, Gallery. "Deep dive"
+// owns sub-items (Intro, The problem, ...) that only expand while the reader
+// is inside that section. The script in src/lib/caseStudy.ts keeps this in
+// sync with scrolling: it sets `data-active-section` on this <nav> (which the
+// CSS below uses to expand the sub-items) and `aria-current` on the links.
+interface Props {
+  hasWalkthrough?: boolean;
+  hasGallery?: boolean;
+}
+
+const { hasWalkthrough = true, hasGallery = true } = Astro.props;
+
+// The ids match the `id`s on the corresponding blocks in the MDX body.
+const deepDiveItems = [
+  { id: "intro", label: "Intro" },
+  { id: "problem", label: "The problem" },
+  { id: "solution", label: "The solution" },
+  { id: "approach", label: "The approach" },
+  { id: "examples", label: "Examples" },
+  { id: "postscript", label: "Postscript" },
+];
+---
+
+<nav
+  aria-label="Case study sections"
+  data-subnav
+  class="subnav font-mono text-sm"
+>
+  <a href="#overview" data-section-link="overview" class="subnav-link">
+    Overview
+  </a>
+
+  <a href="#deep-dive" data-section-link="deep-dive" class="subnav-link">
+    Deep dive
+  </a>
+  <!-- Sub-items. The grid-rows 0fr -> 1fr trick animates height without
+       knowing it: the inner wrapper has overflow hidden and min-height 0. -->
+  <div class="subnav-children">
+    <ul class="subnav-tree m-0 list-none p-0">
+      {
+        deepDiveItems.map((item) => (
+          <li>
+            <a
+              href={`#${item.id}`}
+              data-sub-link={item.id}
+              class="subnav-link subnav-sublink"
+            >
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+
+  {
+    hasWalkthrough && (
+      <a
+        href="#walkthrough"
+        data-section-link="walkthrough"
+        class="subnav-link"
+      >
+        Walkthrough
+      </a>
+    )
+  }
+  {
+    hasGallery && (
+      <a href="#gallery" data-section-link="gallery" class="subnav-link">
+        Gallery
+      </a>
+    )
+  }
+</nav>
+
+<style>
+  .subnav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 260px;
+  }
+
+  .subnav-link {
+    display: block;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    color: var(--portfolio-muted);
+    transition:
+      background-color 0.2s ease-out,
+      color 0.2s ease-out;
+  }
+  .subnav-link:hover {
+    color: var(--portfolio-ink);
+  }
+  .subnav-link:focus {
+    outline: none;
+  }
+  .subnav-link:focus-visible {
+    outline: 2px solid var(--portfolio-ink);
+    outline-offset: -2px;
+  }
+  /* Current top-level item: tinted pill, bold + full ink color. */
+  .subnav-link[aria-current="true"] {
+    background-color: var(--portfolio-nav-active);
+    color: var(--portfolio-ink);
+    font-weight: 600;
+  }
+
+  /* ─── Deep dive sub-items ───────────────────────────────────────────────── */
+  .subnav-children {
+    display: grid;
+    grid-template-rows: 0fr;
+    margin-top: -0.5rem; /* cancels the flex gap so a collapsed list adds no space */
+    transition: grid-template-rows 0.3s ease-out;
+  }
+  .subnav-tree {
+    min-height: 0;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    visibility: hidden;
+    transition: visibility 0.3s;
+  }
+  .subnav[data-active-section="deep-dive"] .subnav-children {
+    grid-template-rows: 1fr;
+    margin-top: 0;
+  }
+  .subnav[data-active-section="deep-dive"] .subnav-tree {
+    visibility: visible;
+  }
+
+  /* Tree connector: one vertical rule down the left, and a short horizontal
+     tick leading into each sub-item. */
+  .subnav-tree::before {
+    content: "";
+    position: absolute;
+    left: 1.1rem;
+    top: 0;
+    bottom: 1.25rem;
+    width: 1px;
+    background: var(--section-border-color);
+  }
+  .subnav-sublink {
+    position: relative;
+    padding-left: 2rem;
+  }
+  .subnav-sublink::before {
+    content: "";
+    position: absolute;
+    left: 1.1rem;
+    top: 50%;
+    width: 0.6rem;
+    height: 1px;
+    background: var(--section-border-color);
+  }
+  /* Current sub-item: bold ink, no pill (the pill belongs to "Deep dive"). */
+  .subnav-sublink[aria-current="true"] {
+    background-color: transparent;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .subnav-link,
+    .subnav-children,
+    .subnav-tree {
+      transition: none;
+    }
+  }
+</style>

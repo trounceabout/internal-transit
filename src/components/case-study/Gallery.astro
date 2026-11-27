@@ -1,0 +1,41 @@
+---
+// Gallery.astro — every still and loop from the case study in one grid, each
+// with a short label + caption (e.g. "BEFORE  Small, limited popover").
+// Stills open in the shared Lightbox, same as in the deep dive.
+import LightboxImage from "@/components/case-study/LightboxImage.astro";
+import LoopVideo from "@/components/case-study/LoopVideo.astro";
+
+interface GalleryItem {
+  kind: "image" | "video";
+  src?: string;
+  webm?: string;
+  mp4?: string;
+  alt: string;
+  label: string;
+  caption: string;
+}
+
+interface Props {
+  items: GalleryItem[];
+}
+
+const { items } = Astro.props;
+---
+
+<div class="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2">
+  {
+    items.map((item) => (
+      <figure class="m-0 flex min-w-0 flex-col gap-4">
+        {item.kind === "image" && item.src ? (
+          <LightboxImage src={item.src} alt={item.alt} />
+        ) : item.webm && item.mp4 ? (
+          <LoopVideo webm={item.webm} mp4={item.mp4} />
+        ) : null}
+        <figcaption class="font-mono text-sm tracking-[0.04em] uppercase">
+          <span class="text-portfolio-ink font-semibold">{item.label}</span>
+          <span class="text-portfolio-muted"> {item.caption}</span>
+        </figcaption>
+      </figure>
+    ))
+  }
+</div>

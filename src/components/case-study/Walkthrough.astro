@@ -1,0 +1,29 @@
+---
+// Walkthrough.astro — the case study's video walkthrough: the project's Loom
+// recording embedded in a framed 16:9 player, centered in its section.
+import { MEDIA_FRAME_SHADOW } from "@/lib/media";
+
+interface Props {
+  // Loom share URL (loom.com/share/<id>). The player needs /embed/<id>.
+  loomUrl: string;
+  name: string;
+}
+
+const { loomUrl, name } = Astro.props;
+const embedSrc = loomUrl.replace("/share/", "/embed/");
+---
+
+<div
+  class="relative aspect-video w-full overflow-hidden rounded-lg"
+  style={{ boxShadow: MEDIA_FRAME_SHADOW }}
+>
+  <!-- loading="lazy": the video is a whole screen away on first load, so don't
+       pay for Loom's player until the reader gets close to it. -->
+  <iframe
+    src={embedSrc}
+    title={`${name} video walkthrough`}
+    loading="lazy"
+    allow="fullscreen; picture-in-picture"
+    allowfullscreen
+    class="absolute inset-0 block size-full border-0"></iframe>
+</div>

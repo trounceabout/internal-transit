@@ -13,6 +13,12 @@ loomUrl: "https://www.loom.com/share/b5f62ab0fd034a04a184dae2ab9839c7"
 role: Design lead, Design engineer
 type: Design system
 scope: Design systems, component design, theming, documentation, design-to-dev workflow, engineering collaboration, system stewardship
+gallery:
+  - kind: image
+    src: /projects/undercurrent/solution-intro.png
+    alt: Undercurrent design system overview with color, type, spacing, and component previews
+    label: Overview
+    caption: Color, type, spacing, and components
 published: true
 ---
 
@@ -24,7 +30,7 @@ import UndercurrentSandbox from "@/components/undercurrent-demo/UndercurrentSand
 import ThemeRevealSandbox from "@/components/undercurrent-demo/ThemeRevealSandbox.tsx";
 import DocsViewerSandbox from "@/components/undercurrent-demo/DocsViewerSandbox.tsx";
 
-<section class="ping-section">
+<section id="intro" data-sub="intro" class="ping-section">
 
 Our product had grown through years of one-off decisions, uneven patterns, and design system false starts. The experience was functional, but it didn’t consistently feel like one product. Similar interface problems were being solved in different ways, foundations were incomplete, and the cost of maintaining consistency kept increasing as new work shipped.
 
@@ -36,7 +42,10 @@ I helped grow Undercurrent into a more dependable shared system — one that cou
 />
 
 </section>
-<section class="ping-section ping-section--problem">
+
+<div class="ps-card">
+
+<section id="problem" data-sub="problem" class="ping-section ping-section--problem">
 
 ## The problem
 
@@ -48,7 +57,19 @@ We did not just need a component library. We needed a system that could hold up 
 
 </section>
 
-<section class="ping-section ping-section--approach">
+<section id="solution" data-sub="solution" class="ping-section ping-section--solution">
+
+## The solution
+
+I helped shape Undercurrent as a shared system that could support immediate product needs while creating a stronger long-term foundation.
+
+That work happened in three overlapping layers.
+
+</section>
+
+</div>
+
+<section id="approach" data-sub="approach" class="ping-section ping-section--approach">
 
 ## The approach
 
@@ -60,17 +81,7 @@ It also meant contributing across design and implementation. From the start, I d
 
 </section>
 
-<section class="ping-section ping-section--solution" style="--icon-color-light: #0B7FA8; --icon-color-dark: #2DC7FF">
-
-## The solution
-
-I helped shape Undercurrent as a shared system that could support immediate product needs while creating a stronger long-term foundation.
-
-That work happened in three overlapping layers.
-
-</section>
-
-<section class="ping-section">
+<section id="examples" data-sub="examples" class="ping-section">
 
 <LabeledRow label="Strengthen the building blocks">
   As the only designer to work on Undercurrent, I was responsible for shaping
@@ -114,6 +125,8 @@ That work happened in three overlapping layers.
 
 </section>
 
+<div id="postscript" data-sub="postscript">
+
 <Postscript iconColor="#0B7FA8" iconColorDark="#2DC7FF">
   <Fragment slot="why-it-worked">
     <p>
@@ -149,3 +162,5 @@ That work happened in three overlapping layers.
     </p>
   </Fragment>
 </Postscript>
+
+</div>

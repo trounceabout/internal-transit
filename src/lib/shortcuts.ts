@@ -52,9 +52,14 @@ export function initShortcuts() {
     // handler too would trigger the action twice.
     if (key === "enter" && isInteractiveTarget(event.target)) return;
 
-    const target = document.querySelector<HTMLElement>(
-      `[data-shortcut="${CSS.escape(key)}"]`,
-    );
+    // Several buttons can share a key across a page's different states (e.g.
+    // case-study actions that swap per section), so take the first one that
+    // isn't hidden.
+    const target = [
+      ...document.querySelectorAll<HTMLElement>(
+        `[data-shortcut="${CSS.escape(key)}"]`,
+      ),
+    ].find((el) => !el.closest("[hidden]"));
     if (!target) return;
 
     event.preventDefault();

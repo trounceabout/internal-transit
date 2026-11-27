@@ -28,7 +28,7 @@ const navItems = [
 
 <header
   transition:persist="top-nav"
-  class="mx-auto flex w-full max-w-[1200px] items-center justify-between gap-4 px-6 pt-10 pb-4"
+  class="top-nav sticky top-0 z-50 mx-auto flex h-20 w-full max-w-[1200px] items-center justify-between gap-4 px-6 pt-10 pb-4"
 >
   <nav aria-label="Primary" class="flex items-center gap-6">
     {
@@ -68,6 +68,30 @@ const navItems = [
 </header>
 
 <style>
+  /* Sticky header that slides away while reading down the page and returns as
+     soon as you scroll back up (script below toggles data-hidden). The soft
+     fade behind it keeps page content from colliding with the nav items. */
+  .top-nav {
+    transition: transform 0.3s ease-out;
+  }
+  /* Only painted once the page has scrolled, so at the very top the header
+     sits directly on the page's own background with no visible band. */
+  .top-nav[data-scrolled] {
+    background-image: linear-gradient(
+      to bottom,
+      var(--portfolio-bg) 55%,
+      transparent
+    );
+  }
+  .top-nav[data-hidden] {
+    transform: translateY(-100%);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .top-nav {
+      transition: none;
+    }
+  }
+
   /* Current page: bold + full ink color. Everything else stays muted. */
   .top-nav-item[aria-current="page"] {
     color: var(--portfolio-ink);
@@ -119,6 +143,25 @@ const navItems = [
   // Also paint right after navigations, in case Astro swapped in a fresh
   // (empty) <time> element instead of keeping the persisted one.
   document.addEventListener("astro:page-load", renderClock);
+
+  // ─── Hide on scroll down, show on scroll up ──────────────────────────────
+  // Only starts hiding once you're past the top of the page, and ignores tiny
+  // scroll jitters (< 6px) so it doesn't flicker.
+  let lastY = window.scrollY;
+  window.addEventListener(
+    "scroll",
+    () => {
+      const header = document.querySelector<HTMLElement>(".top-nav");
+      if (!header) return;
+      const y = window.scrollY;
+      header.toggleAttribute("data-scrolled", y > 8);
+      if (Math.abs(y - lastY) < 6) return;
+      if (y > lastY && y > 120) header.setAttribute("data-hidden", "");
+      else header.removeAttribute("data-hidden");
+      lastY = y;
+    },
+    { passive: true },
+  );
 
   // ─── Active nav item ─────────────────────────────────────────────────────
   // Runs on first load and after every client-side navigation.

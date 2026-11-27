@@ -46,6 +46,22 @@ const projects = defineCollection({
     // Kind of project, shown as the "Type" badge on the home preview
     // (e.g. "Redesign", "Design system").
     type: z.string().optional(),
+    // Items for the case study's Gallery section: still images and looping
+    // videos, each with a short label (e.g. "Before") and caption.
+    gallery: z
+      .array(
+        z.object({
+          kind: z.enum(["image", "video"]),
+          // image: `src`; video: `webm` + `mp4`.
+          src: z.string().optional(),
+          webm: z.string().optional(),
+          mp4: z.string().optional(),
+          alt: z.string(),
+          label: z.string(),
+          caption: z.string().default(""),
+        }),
+      )
+      .default([]),
     // Whether the case-study page is finished and should be linked to from
     // the home page list. Stub projects stay `false` until written.
     published: z.boolean().default(false),
