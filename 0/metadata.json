@@ -1,0 +1,81 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "01M8FF4ZJMKRAXHRJYFKFQBK6P",
+  "session_id": "182463fd-8598-4d70-91a2-16e97c6dcf17",
+  "strategy": "manual-commit",
+  "created_at": "2026-11-27T21:39:01.169575Z",
+  "branch": "feat/about",
+  "checkpoints_count": 2,
+  "save_step_count": 1,
+  "files_touched": [
+    "src/components/ProjectRow.astro",
+    "src/components/about/SectionNav.astro",
+    "src/data/about.ts",
+    "src/pages/about.astro"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-sonnet-5-5",
+  "turn_id": "54cfaec763d6",
+  "checkpoint_transcript_start": 2007,
+  "transcript_lines_at_start": 2007,
+  "compact_transcript_start": 189,
+  "token_usage": {
+    "input_tokens": 48,
+    "cache_creation_tokens": 47032,
+    "cache_read_tokens": 9550618,
+    "output_tokens": 20723,
+    "api_call_count": 22,
+    "subagent_tokens": {
+      "input_tokens": 0,
+      "cache_creation_tokens": 0,
+      "cache_read_tokens": 0,
+      "output_tokens": 0,
+      "api_call_count": 0
+    }
+  },
+  "session_metrics": {
+    "turn_count": 12
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-11-27T21:38:59.179329Z",
+    "agent_lines": 723,
+    "agent_removed": 0,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 723,
+    "total_lines_changed": 723,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 141,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/launch.json": 11,
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.json": 90,
+        ".claude/settings.local.json": 19,
+        ".conductor/settings.local.toml": 20
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 141,
+      "user_lines_removed": 0,
+      "agent_lines_added": 723,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/launch.json": 11,
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.json": 90,
+        ".claude/settings.local.json": 19,
+        ".conductor/settings.local.toml": 20
+      }
+    }
+  ]
+}
