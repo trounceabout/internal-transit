@@ -68,7 +68,7 @@ const Icon = icon;
 <BaseLayout
   title={name}
   description={tagline}
-  actions={[{ label: "Back", shortcut: "esc", href: "/" }]}
+  actions={[{ label: "Back", shortcut: "esc", href: "/home" }]}
 >
   {
     /* Warms up the connection to Loom's domains as soon as the page loads,
@@ -94,7 +94,7 @@ const Icon = icon;
             (that project badge/label markup matches the home page's Work list rows) */
         }
         <div class="flex items-center gap-4">
-          <a href="/" class="flex items-center gap-2">
+          <a href="/home" class="flex items-center gap-2">
             <span
               class="bg-portfolio-muted/15 flex size-7 items-center justify-center rounded-md"
             >
