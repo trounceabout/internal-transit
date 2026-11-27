@@ -1,0 +1,49 @@
+---
+// HomeLayout.astro — page shell for the home preview, shared by /home (first
+// project) and /home/<slug>. Works out the selected project and gives the
+// bottom nav its actions:
+//   Open project (Enter)      → the case study
+//   Watch walkthrough (W)     → the case study's walkthrough section
+//   Back (Esc)                → the start page
+import { getCollection } from "astro:content";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import ProjectShowcase from "@/components/home/ProjectShowcase.astro";
+import type { NavAction } from "@/layouts/BottomNav.astro";
+
+interface Props {
+  slug?: string;
+}
+
+const projects = (
+  await getCollection("projects", ({ data }) => data.published)
+).sort((a, b) => a.data.order - b.data.order);
+const current = projects.find((p) => p.id === Astro.props.slug) ?? projects[0];
+
+const actions: NavAction[] = [
+  {
+    label: "Open project",
+    shortcut: "enter",
+    href: `/projects/${current.id}`,
+    featured: true,
+  },
+  // Only projects with a video get the walkthrough action.
+  ...(current.data.loomUrl
+    ? [
+        {
+          label: "Watch walkthrough",
+          shortcut: "w",
+          href: `/projects/${current.id}#walkthrough`,
+        },
+      ]
+    : []),
+  { label: "Back", shortcut: "esc", href: "/" },
+];
+---
+
+<BaseLayout
+  title="Projects"
+  description={current.data.tagline}
+  actions={actions}
+>
+  <ProjectShowcase slug={current.id} />
+</BaseLayout>

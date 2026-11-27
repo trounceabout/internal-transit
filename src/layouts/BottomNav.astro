@@ -13,6 +13,8 @@ export interface NavAction {
   href: string;
   // Dimmed text after the label (e.g. the next project's name).
   detail?: string;
+  // Render filled at rest (the page's primary action).
+  featured?: boolean;
 }
 
 interface Props {
@@ -36,6 +38,8 @@ const { actions } = Astro.props;
           detail={action.detail}
           shortcut={action.shortcut}
           href={action.href}
+          featured={action.featured}
+          shape={action.featured ? "pill" : "rounded"}
         />
       ))
     }

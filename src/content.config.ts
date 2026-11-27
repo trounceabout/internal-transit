@@ -43,6 +43,9 @@ const projects = defineCollection({
     // matches the fixed Role/Scope fields every finished case study carries.
     role: z.string().optional(),
     scope: z.string().optional(),
+    // Kind of project, shown as the "Type" badge on the home preview
+    // (e.g. "Redesign", "Design system").
+    type: z.string().optional(),
     // Whether the case-study page is finished and should be linked to from
     // the home page list. Stub projects stay `false` until written.
     published: z.boolean().default(false),
