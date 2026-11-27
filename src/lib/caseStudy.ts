@@ -46,6 +46,9 @@ export function initCaseStudy() {
   function setActiveSection(id: string) {
     if (id === activeSection) return;
     activeSection = id;
+    // Lets the CSS change the nav geometry per section (e.g. no side nav, and a
+    // full-width header, on the Overview).
+    document.body.dataset.section = id;
     if (subnav) subnav.dataset.activeSection = id;
     sectionLinks.forEach((link) => {
       const isCurrent = link.dataset.sectionLink === id;
@@ -123,12 +126,12 @@ function playOverviewEntrance(root: HTMLElement) {
   const q = (name: string) => [
     ...root.querySelectorAll<HTMLElement>(`[data-ov="${name}"]`),
   ];
-  const tile = q("tile");
+  const art = q("art");
   const name = q("name");
   const words = q("word");
   const rest = [...q("desc"), ...q("meta")];
 
-  const all = [...tile, ...name, ...words, ...rest];
+  const all = [...art, ...words, ...name, ...rest];
   if (all.length === 0) return;
 
   if (prefersReducedMotion()) {
@@ -138,15 +141,13 @@ function playOverviewEntrance(root: HTMLElement) {
     return;
   }
 
+  // The hero artwork springs in; the headline's words rise and de-blur one
+  // after another; then the project chip, description, and the menu + details
+  // fade up.
   animate(
-    tile,
-    { opacity: [0, 1], scale: [0.7, 1] },
-    { type: "spring", stiffness: 260, damping: 18 },
-  );
-  animate(
-    name,
-    { opacity: [0, 1], x: [-12, 0] },
-    { duration: 0.5, delay: 0.15 },
+    art,
+    { opacity: [0, 1], scale: [0.85, 1], y: [12, 0] },
+    { type: "spring", stiffness: 220, damping: 20 },
   );
   animate(
     words,
@@ -158,7 +159,7 @@ function playOverviewEntrance(root: HTMLElement) {
     },
   );
   animate(
-    rest,
+    [...name, ...rest],
     { opacity: [0, 1], y: [16, 0] },
     {
       duration: 0.6,

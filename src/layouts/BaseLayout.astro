@@ -15,6 +15,10 @@ interface Props {
   // Which page layout this is. Sets `data-page` on <body>, which global.css
   // uses to size the page column and gutter that the nav and content share.
   page?: "home" | "case-study" | "about";
+  // Which section of the page is showing at first (case study only): sets
+  // `data-section` on <body> so the nav geometry can differ per section. The
+  // case-study script keeps it up to date as the reader scrolls.
+  section?: string;
   // Hide the top nav (the start page has its own full-screen layout).
   hideTopNav?: boolean;
   // Actions for the persistent bottom bar. Omit (or pass none) for pages
@@ -28,6 +32,7 @@ const {
   title,
   description = "Cody Keisler — product designer and design engineer in Rock Hill, SC.",
   page,
+  section,
   hideTopNav = false,
   actions = [],
 } = Astro.props;
@@ -78,6 +83,7 @@ const hasBottomNav = actions.length > 0;
   </head>
   <body
     data-page={page}
+    data-section={section}
     class:list={[
       "bg-portfolio-page flex min-h-screen flex-col overflow-x-hidden font-mono",
       // Leave room so the fixed bottom bar never covers the end of the page.

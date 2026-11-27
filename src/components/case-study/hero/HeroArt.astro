@@ -1,0 +1,95 @@
+---
+// HeroArt.astro — picks the Overview's artwork for a project (see `heroArt` in
+// the projects collection) and sizes it. Each artwork has a fixed design size,
+// taken from Figma; below the lg breakpoint it's scaled down as a whole so it
+// fits narrow screens.
+import PingToasts from "@/components/case-study/hero/PingToasts.astro";
+import UndercurrentMark from "@/components/case-study/hero/UndercurrentMark.astro";
+import WatchtowerCpuCard from "@/components/case-study/hero/WatchtowerCpuCard.astro";
+
+interface Props {
+  art?: "toasts" | "mark" | "cpu-card";
+}
+
+const { art } = Astro.props;
+
+// width/height: the space the artwork takes in the layout (its design size).
+// innerHeight: the artwork's own height when it differs, e.g. the CPU card is
+// 275px tall but only 209px of that counts toward the layout, because the
+// headline overlaps the rest. `gap` is the space between the artwork and the
+// headline (0 for the CPU card, which is meant to sit behind it). `phone` is the
+// scale used on small screens.
+const specs = {
+  toasts: {
+    width: 465.772,
+    height: 181.192,
+    innerHeight: 181.192,
+    gap: 64,
+    phone: 0.68,
+  },
+  mark: {
+    width: 202.647,
+    height: 201.808,
+    innerHeight: 201.808,
+    gap: 64,
+    phone: 0.6,
+  },
+  "cpu-card": {
+    width: 597.927,
+    height: 208.987,
+    innerHeight: 274.987,
+    gap: 0,
+    phone: 0.5,
+  },
+} as const;
+
+const spec = art ? specs[art] : null;
+---
+
+{
+  spec && (
+    <div
+      class="hero-art"
+      data-ov="art"
+      style={`--w:${spec.width}px;--h:${spec.height}px;--ih:${spec.innerHeight}px;--gap:${spec.gap}px;--phone:${spec.phone};`}
+    >
+      <div class="hero-art-inner">
+        {art === "toasts" && <PingToasts />}
+        {art === "mark" && <UndercurrentMark />}
+        {art === "cpu-card" && <WatchtowerCpuCard />}
+      </div>
+    </div>
+  )
+}
+
+<style>
+  /* The wrapper reserves the scaled space; the inner box keeps the artwork's
+     design size and is scaled from its top-center. */
+  .hero-art {
+    --s: 1;
+    position: relative;
+    width: calc(var(--w) * var(--s));
+    height: calc(var(--h) * var(--s));
+    margin-bottom: calc(var(--gap) * var(--s));
+    flex: none;
+  }
+  .hero-art-inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--w);
+    height: var(--ih);
+    transform: scale(var(--s));
+    transform-origin: top left;
+  }
+  @media (max-width: 63.99rem) {
+    .hero-art {
+      --s: calc(var(--phone) + (1 - var(--phone)) * 0.5);
+    }
+  }
+  @media (max-width: 39.99rem) {
+    .hero-art {
+      --s: var(--phone);
+    }
+  }
+</style>

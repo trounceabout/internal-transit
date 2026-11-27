@@ -46,6 +46,7 @@ interface Props {
   role?: string;
   scope?: string;
   type?: string;
+  heroArt?: "toasts" | "mark" | "cpu-card";
   gallery?: GalleryItem[];
   // The project the "Next project" action leads to (wraps around to the first).
   next?: { slug: string; name: string };
@@ -66,6 +67,7 @@ const {
   role,
   scope,
   type,
+  heroArt,
   gallery = [],
   next,
 } = Astro.props;
@@ -96,40 +98,10 @@ const sectionChips = [
 // requires the /embed/<id> path. Only needed here for the preconnect hints.
 const embedSrc = loomUrl?.replace("/share/", "/embed/");
 
-// Bottom-nav actions. `sections` limits an action to certain sections (the
-// case-study script shows/hides them as you scroll):
-//   Overview:        Deep dive (Enter) · Walkthrough (W) · Gallery (G)
-//   Everything else: Next project (X)
-//   Always:          Back (Esc) → the project's home preview
+// Bottom-nav actions: Next project (X) and Back (Esc, to the project's home
+// preview), the same in every section. The Overview's own "Read deep dive /
+// Watch walkthrough / View gallery" actions are buttons inside that section.
 const actions: NavAction[] = [
-  {
-    label: "Deep dive",
-    shortcut: "enter",
-    href: "#deep-dive",
-    featured: true,
-    sections: ["overview"],
-  },
-  ...(hasWalkthrough
-    ? [
-        {
-          label: "Walkthrough",
-          shortLabel: "Video",
-          shortcut: "w",
-          href: "#walkthrough",
-          sections: ["overview"],
-        },
-      ]
-    : []),
-  ...(hasGallery
-    ? [
-        {
-          label: "Gallery",
-          shortcut: "g",
-          href: "#gallery",
-          sections: ["overview"],
-        },
-      ]
-    : []),
   ...(next
     ? [
         {
@@ -137,7 +109,6 @@ const actions: NavAction[] = [
           detail: next.name.replace(/^Project\s+/, ""),
           shortcut: "x",
           href: `/projects/${next.slug}`,
-          sections: ["deep-dive", "walkthrough", "gallery"],
         },
       ]
     : []),
@@ -145,7 +116,13 @@ const actions: NavAction[] = [
 ];
 ---
 
-<BaseLayout title={name} description={tagline} actions={actions}>
+<BaseLayout
+  page="case-study"
+  section="overview"
+  title={name}
+  description={tagline}
+  actions={actions}
+>
   {
     /* Warms up the connection to Loom's domains as soon as the page loads,
       instead of paying full DNS+TLS+redirect latency when the reader scrolls
@@ -165,14 +142,15 @@ const actions: NavAction[] = [
   <div
     data-case-study
     style={colorVars}
-    class="mx-auto -mt-20 w-full max-w-[1200px] px-6 lg:grid lg:grid-cols-[260px_minmax(0,900px)] lg:gap-10"
+    class="mx-auto -mt-20 w-full max-w-[1248px] px-6 lg:grid lg:grid-cols-[260px_minmax(0,900px)] lg:gap-10"
   >
     <!-- The -mt-20 pulls this up by the sticky header's height (h-20), so the
          Overview starts at the very top of the page and its snap point is
          scroll position 0, with the header floating over it. -->
     <!-- Side nav: sticky so it stays put while the sections scroll past.
          Hidden on narrow screens for now (small-screen pass comes later). -->
-    <aside class="hidden lg:block">
+    <!-- It fades away on the Overview, which is a full-width presentation. -->
+    <aside data-subnav-aside class="hidden lg:block">
       <div class="sticky top-32">
         <SubNav hasWalkthrough={hasWalkthrough} hasGallery={hasGallery} />
       </div>
@@ -183,7 +161,7 @@ const actions: NavAction[] = [
       <section
         id="overview"
         data-section="overview"
-        class="case-section case-section--overview flex items-center"
+        class="case-section case-section--overview"
       >
         <Overview
           name={name}
@@ -191,10 +169,12 @@ const actions: NavAction[] = [
           accentPhrase={accentPhrase}
           description={description ?? tagline}
           icon={icon}
+          heroArt={heroArt}
           type={type}
           role={role}
           scope={scope}
           hasWalkthrough={hasWalkthrough}
+          hasGallery={hasGallery}
         />
       </section>
 
@@ -552,23 +532,40 @@ const actions: NavAction[] = [
     }
   }
 
-  /* The overview is a one-screen title slide, so it gets slimmer padding to keep
-     its content on a single screen on shorter windows. */
+  /* The Overview is a full-width title slide, not part of the 900px reading
+     column: from lg it stretches back across the side-nav gutter (the 300px
+     margin cancels the grid's first column + gap) and centers its content in
+     the full 1200px. Its content starts 160px down, as in Figma (56px page
+     padding + 104px under the header row). */
   .case-section--overview {
     padding-top: 8rem;
-    padding-bottom: 6rem;
+    padding-bottom: 8rem;
   }
   @media (min-width: 64rem) {
     .case-section--overview {
-      padding-top: 6rem;
+      width: 1200px;
+      margin-left: -300px;
+      padding-top: 160px;
     }
   }
-  /* Short laptop windows: tighten further so the whole slide still fits. */
-  @media (min-width: 64rem) and (max-height: 820px) {
+  /* Short laptop windows: pull the content up so the whole slide still fits. */
+  @media (min-width: 64rem) and (max-height: 900px) {
     .case-section--overview {
-      padding-top: 5rem;
-      padding-bottom: 5rem;
+      padding-top: 112px;
     }
+  }
+
+  /* The side nav only belongs to the sections after the Overview: fade it out
+     (and make it inert) while the Overview is showing. */
+  [data-subnav-aside] {
+    transition:
+      opacity 0.3s ease-out,
+      visibility 0.3s;
+  }
+  :global(body[data-section="overview"]) [data-subnav-aside] {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
   }
 
   /* Jumping to a sub-item (e.g. #approach) shouldn't tuck it under the header. */
