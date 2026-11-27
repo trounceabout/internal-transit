@@ -1,15 +1,37 @@
 ---
 // ProjectLayout.astro — wraps an individual project's case-study page.
-// Renders an icon+eyebrow badge, a Role/Scope properties row, and a Loom
-// embed (hidden until the reader opts in via "Watch the overview").
-import BaseLayout from "./BaseLayout.astro";
+//
+// A case study is one page made of four full-screen sections the reader
+// scrolls through, with CSS scroll-snap aligning each to the top of the
+// screen:
+//   Overview     — an oversized title-slide presentation (Overview.astro)
+//   Deep dive    — the write-up: the MDX body passed in through <slot />
+//   Walkthrough  — the Loom recording (Walkthrough.astro)
+//   Gallery      — every still and loop in one grid (Gallery.astro)
+// A side nav (SubNav.astro) tracks the current section, and the bottom nav
+// swaps its actions per section. The scroll-tracking lives in
+// src/lib/caseStudy.ts.
+import BaseLayout from "@/layouts/BaseLayout.astro";
 import Lightbox from "@/components/Lightbox.astro";
-import PillButton from "@/components/case-study/PillButton.astro";
-import { Home } from "pixelarticons/react/Home";
-import { Play } from "pixelarticons/react/Play";
+import SubNav from "@/components/case-study/SubNav.astro";
+import Overview from "@/components/case-study/Overview.astro";
+import Walkthrough from "@/components/case-study/Walkthrough.astro";
+import Gallery from "@/components/case-study/Gallery.astro";
+import type { NavAction } from "@/layouts/BottomNav.astro";
 import type { ComponentType, SVGProps } from "react";
 
+interface GalleryItem {
+  kind: "image" | "video";
+  src?: string;
+  webm?: string;
+  mp4?: string;
+  alt: string;
+  label: string;
+  caption: string;
+}
+
 interface Props {
+  slug: string;
   name: string;
   tagline: string;
   icon: ComponentType<SVGProps<SVGSVGElement>>;
@@ -22,9 +44,14 @@ interface Props {
   loomUrl?: string;
   role?: string;
   scope?: string;
+  type?: string;
+  gallery?: GalleryItem[];
+  // The project the "Next project" action leads to (wraps around to the first).
+  next?: { slug: string; name: string };
 }
 
 const {
+  slug,
   name,
   tagline,
   icon,
@@ -37,46 +64,83 @@ const {
   loomUrl,
   role,
   scope,
+  type,
+  gallery = [],
+  next,
 } = Astro.props;
 
-// Dek paragraph (the 24px intro copy under the headline) prefers the longer
-// `description`, falling back to the shorter home-page-list `tagline` when a
-// case study hasn't set one yet.
-const dek = description ?? tagline;
+const hasWalkthrough = Boolean(loomUrl);
+const hasGallery = gallery.length > 0;
 
-// Split-around-a-phrase technique, colored by the project's own iconColor.
-// Applied to `tagline` (the headline text), not `dek` — the
-// headline and the intro paragraph below it are two separate strings.
-const accentIndex = accentPhrase ? tagline.indexOf(accentPhrase) : -1;
-const taglineBefore =
-  accentIndex >= 0 ? tagline.slice(0, accentIndex) : tagline;
-const taglineAfter =
-  accentIndex >= 0
-    ? tagline.slice(accentIndex + (accentPhrase?.length ?? 0))
-    : "";
+// Per-project colors as inline custom properties on the page root; global.css
+// resolves them to --icon-color / --badge-color for the active theme, and every
+// section below inherits them.
+const colorVars = {
+  ...(iconColor ? { "--icon-color-light": iconColor } : {}),
+  ...(iconColorDark ? { "--icon-color-dark": iconColorDark } : {}),
+  ...(badgeColor ? { "--badge-color-light": badgeColor } : {}),
+  ...(badgeColorDark ? { "--badge-color-dark": badgeColorDark } : {}),
+};
 
 // Loom share URLs (loom.com/share/<id>) don't render embedded — the player
-// requires the /embed/<id> path.
+// requires the /embed/<id> path. Only needed here for the preconnect hints.
 const embedSrc = loomUrl?.replace("/share/", "/embed/");
 
-// JSX/Astro only renders a variable as a component if it starts with a
-// capital letter — `icon` comes in lowercase as a prop, so it needs a
-// capitalized alias before it can be used as `<Icon />` below.
-const Icon = icon;
+// Bottom-nav actions. `sections` limits an action to certain sections (the
+// case-study script shows/hides them as you scroll):
+//   Overview:        Deep dive (Enter) · Walkthrough (W) · Gallery (G)
+//   Everything else: Next project (X)
+//   Always:          Back (Esc) → the project's home preview
+const actions: NavAction[] = [
+  {
+    label: "Deep dive",
+    shortcut: "enter",
+    href: "#deep-dive",
+    featured: true,
+    sections: ["overview"],
+  },
+  ...(hasWalkthrough
+    ? [
+        {
+          label: "Walkthrough",
+          shortcut: "w",
+          href: "#walkthrough",
+          sections: ["overview"],
+        },
+      ]
+    : []),
+  ...(hasGallery
+    ? [
+        {
+          label: "Gallery",
+          shortcut: "g",
+          href: "#gallery",
+          sections: ["overview"],
+        },
+      ]
+    : []),
+  ...(next
+    ? [
+        {
+          label: "Next project",
+          detail: next.name.replace(/^Project\s+/, ""),
+          shortcut: "x",
+          href: `/projects/${next.slug}`,
+          sections: ["deep-dive", "walkthrough", "gallery"],
+        },
+      ]
+    : []),
+  { label: "Back", shortcut: "esc", href: `/home/${slug}` },
+];
 ---
 
-<BaseLayout
-  title={name}
-  description={tagline}
-  actions={[{ label: "Back", shortcut: "esc", href: "/home" }]}
->
+<BaseLayout title={name} description={tagline} actions={actions}>
   {
     /* Warms up the connection to Loom's domains as soon as the page loads,
-      instead of paying full DNS+TLS+redirect latency at the moment the
-      reader clicks "Watch the overview". Rendered into BaseLayout's named
-      "head" slot — a <link> in the default slot stays in <body> where
-      it's written, it isn't auto-hoisted to <head> the way <style>/<script>
-      tags are. */
+      instead of paying full DNS+TLS+redirect latency when the reader scrolls
+      to the walkthrough. Rendered into BaseLayout's named "head" slot — a
+      link in the default slot stays in the body where it's written, it isn't
+      auto-hoisted to the head the way style and script tags are. */
   }
   {
     embedSrc && (
@@ -86,150 +150,90 @@ const Icon = icon;
       </Fragment>
     )
   }
-  <main class="mx-auto max-w-[1120px] py-18">
-    <article class="px-6 sm:px-10 lg:px-[60px]">
-      <header data-animate class="mb-12 flex flex-col gap-8">
+
+  <div
+    data-case-study
+    style={colorVars}
+    class="mx-auto -mt-20 w-full max-w-[1200px] px-6 lg:grid lg:grid-cols-[260px_minmax(0,900px)] lg:gap-10"
+  >
+    <!-- The -mt-20 pulls this up by the sticky header's height (h-20), so the
+         Overview starts at the very top of the page and its snap point is
+         scroll position 0, with the header floating over it. -->
+    <!-- Side nav: sticky so it stays put while the sections scroll past.
+         Hidden on narrow screens for now (small-screen pass comes later). -->
+    <aside class="hidden lg:block">
+      <div class="sticky top-32">
+        <SubNav hasWalkthrough={hasWalkthrough} hasGallery={hasGallery} />
+      </div>
+    </aside>
+
+    <div class="min-w-0">
+      <section
+        id="overview"
+        data-section="overview"
+        class="case-section case-section--overview flex items-center"
+      >
+        <Overview
+          name={name}
+          tagline={tagline}
+          accentPhrase={accentPhrase}
+          description={description ?? tagline}
+          icon={icon}
+          type={type}
+          role={role}
+          scope={scope}
+          hasWalkthrough={hasWalkthrough}
+        />
+      </section>
+
+      <section id="deep-dive" data-section="deep-dive" class="case-section">
         {
-          /* Breadcrumb: Home badge, then the project's own icon badge + eyebrow label
-            (that project badge/label markup matches the home page's Work list rows) */
+          /* The write-up. `.article-body` carries the MDX typography and the
+          .ping-section* card styles below. */
         }
-        <div class="flex items-center gap-4">
-          <a href="/home" class="flex items-center gap-2">
-            <span
-              class="bg-portfolio-muted/15 flex size-7 items-center justify-center rounded-md"
-            >
-              <Home width={16} height={16} className="text-portfolio-muted" />
-            </span>
-            <span class="text-portfolio-muted font-mono text-base underline"
-              >Home</span
-            >
-          </a>
-          <span class="text-portfolio-muted">•</span>
-          <div class="flex items-center gap-2">
-            <span
-              class="flex size-7 shrink-0 items-center justify-center rounded-md"
-              style={{
-                backgroundColor: "var(--badge-color)",
-                ...(badgeColor ? { "--badge-color-light": badgeColor } : {}),
-                ...(badgeColorDark
-                  ? { "--badge-color-dark": badgeColorDark }
-                  : {}),
-              }}
-            >
-              <Icon
-                width={16}
-                height={16}
-                style={{
-                  color: "var(--icon-color)",
-                  ...(iconColor ? { "--icon-color-light": iconColor } : {}),
-                  ...(iconColorDark
-                    ? { "--icon-color-dark": iconColorDark }
-                    : {}),
-                }}
-              />
-            </span>
-            <p
-              class="text-portfolio-ink font-mono text-base tracking-[-0.18px]"
-            >
-              {name}
-            </p>
-          </div>
-        </div>
-
-        {
-          /* Headline — accentPhrase (if set) renders italicized in the project's own iconColor.
-            .portfolio-headline (global.css) is the shared big-title treatment
-            every headline on the site uses (home page, case studies), including its fluid clamp() font-size. */
-        }
-        <h1 class="portfolio-headline">
-          {taglineBefore}
-          {
-            accentIndex >= 0 && (
-              <span
-                class="italic"
-                style={{
-                  color: "var(--icon-color)",
-                  ...(iconColor ? { "--icon-color-light": iconColor } : {}),
-                  ...(iconColorDark
-                    ? { "--icon-color-dark": iconColorDark }
-                    : {}),
-                }}
-              >
-                {accentPhrase}
-              </span>
-            )
-          }
-          {taglineAfter}
-        </h1>
-      </header>
-
-      {
-        /* Body — same max-width and typography as the article template's body column */
-      }
-      <div data-animate class="flex flex-col gap-10">
-        <p class="font-plex-sans text-portfolio-ink text-2xl leading-10">
-          {dek}
-        </p>
-
-        {
-          (embedSrc || role || scope) && (
-            <div class="flex flex-col gap-10">
-              {/* Properties row: overview toggle + Role/Scope, all optional so
-                a case study can omit any of them. The toggle now opens the
-                shared Lightbox (rendered once below) instead of an inline
-                accordion — clicking it is just another lightbox trigger,
-                identified to Lightbox.astro's delegated listener the same
-                way a case-study image is (see LightboxImage.astro). */}
-              <div class="flex flex-wrap items-start gap-10">
-                {embedSrc && (
-                  <PillButton
-                    id="overview-toggle"
-                    icon={Play}
-                    label="Watch the overview"
-                    iconColor="oklch(54.6% 0.245 262.881)"
-                    background="color-mix(in oklch, oklch(54.6% 0.245 262.881) 15%, transparent)"
-                    data-lightbox-trigger
-                    data-lightbox-type="iframe"
-                    data-lightbox-src={embedSrc}
-                  />
-                )}
-
-                {role && (
-                  <div class="flex flex-col gap-1 font-mono text-sm tracking-[-0.14px]">
-                    <p class="text-portfolio-muted">Role</p>
-                    <p class="text-portfolio-ink whitespace-nowrap">{role}</p>
-                  </div>
-                )}
-
-                {scope && (
-                  <div class="flex min-w-[240px] flex-1 flex-col gap-1 font-mono text-sm tracking-[-0.14px]">
-                    <p class="text-portfolio-muted">Scope</p>
-                    <p class="text-portfolio-ink">{scope}</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          )
-        }
-
-        {/* Rest of the MDX body */}
         <div
           class="article-body font-plex-sans text-portfolio-ink text-base leading-8"
         >
           <slot />
         </div>
-      </div>
-    </article>
-  </main>
+      </section>
+
+      {
+        loomUrl && (
+          <section
+            id="walkthrough"
+            data-section="walkthrough"
+            class="case-section flex items-center"
+          >
+            <Walkthrough loomUrl={loomUrl} name={name} />
+          </section>
+        )
+      }
+
+      {
+        hasGallery && (
+          <section id="gallery" data-section="gallery" class="case-section">
+            <Gallery items={gallery} />
+          </section>
+        )
+      }
+    </div>
+  </div>
 
   <Lightbox />
 </BaseLayout>
 
 <script>
   import { observeGridReveal } from "@/lib/animations";
-  // Re-run after every client-side navigation so the "Approach" dot grid
-  // animates on each case study you open, not just the first page load.
-  document.addEventListener("astro:page-load", () => observeGridReveal());
+  import { initCaseStudy } from "@/lib/caseStudy";
+
+  // Runs on first load and after every client-side navigation, so each case
+  // study you open re-binds scroll tracking, replays the Overview entrance, and
+  // animates the "Approach" dot grid.
+  document.addEventListener("astro:page-load", () => {
+    initCaseStudy();
+    observeGridReveal();
+  });
 </script>
 
 <style>
@@ -499,5 +503,78 @@ const Icon = icon;
     text-decoration: underline;
     text-decoration-skip-ink: none;
     text-underline-position: from-font;
+  }
+
+  /* ─── Case-study page: snap sections ─────────────────────────────────────── */
+  /* Each section fills the screen and snaps to its top edge. `mandatory` makes
+     the browser always settle on a section start, but a section taller than
+     the screen (the deep dive) still scrolls freely inside; only once you
+     reach its end does it ask for roughly half a screen more of scroll before
+     it snaps forward to the next section — that's the "hump". Scoped with
+     :has() so it only applies on pages that contain a case study. */
+  :global(html:has([data-case-study])) {
+    scroll-snap-type: y mandatory;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html:has([data-case-study])) {
+      scroll-behavior: smooth;
+    }
+    /* Hidden until the Overview entrance animation (lib/caseStudy.ts) reveals
+       them, so they don't flash visible first. */
+    :global([data-ov]) {
+      opacity: 0;
+    }
+  }
+  .case-section {
+    scroll-snap-align: start;
+    min-height: 100dvh;
+    /* Top: room for the sticky header. Bottom: room for the fixed action bar. */
+    padding-top: 7rem;
+    padding-bottom: 8rem;
+  }
+
+  /* The overview is a one-screen title slide, so it gets slimmer padding to keep
+     its content on a single screen on shorter windows. */
+  .case-section--overview {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+  }
+
+  /* Jumping to a sub-item (e.g. #approach) shouldn't tuck it under the header. */
+  .article-body :global([id]) {
+    scroll-margin-top: 6rem;
+  }
+
+  /* ─── Deep dive: lead paragraph and combined Problem + Solution card ───── */
+  /* The opening paragraph of the intro is a larger lead-in, per the redesign. */
+  .article-body :global(#intro > p:first-child) {
+    font-size: 1.75rem; /* 28px */
+    line-height: 2.5rem; /* 40px */
+    font-weight: 400;
+    color: var(--portfolio-ink);
+  }
+
+  /* The problem and the solution now share one rounded card: the problem on a
+     faint ink tint, the solution on the project-colored gradient below it. The
+     two sections keep their own classes (and so their own styling); this wrapper
+     only supplies the shared outline and clips their corners. */
+  .article-body :global(.ps-card) {
+    border: 1px solid var(--section-border-color);
+    border-radius: 0.75rem; /* 12px */
+    overflow: hidden;
+    margin: var(--ping-card-padding) 0;
+  }
+  .article-body :global(.ps-card .ping-section--problem) {
+    border: 0;
+    border-radius: 0;
+    margin: 0;
+    background: color-mix(in oklch, var(--portfolio-ink) 4%, transparent);
+  }
+  .article-body :global(.ps-card .ping-section--solution) {
+    border: 0;
+    border-top: 1px solid
+      color-mix(in oklch, var(--icon-color) 50%, transparent);
+    border-radius: 0;
+    margin: 0;
   }
 </style>

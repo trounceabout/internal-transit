@@ -25,6 +25,7 @@ interface Props {
   shape?: "pill" | "rounded";
   // Always-filled look (the same as hover), for the page's primary action.
   featured?: boolean;
+  hidden?: boolean;
   class?: string;
   id?: string;
   [key: `data-${string}`]: string | boolean | undefined;

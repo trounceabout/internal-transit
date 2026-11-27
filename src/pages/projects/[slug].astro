@@ -6,19 +6,30 @@ import { projectIconMap } from "@/lib/projectIconMap";
 // getStaticPaths tells Astro which pages to build at compile time.
 // One page is generated per project.
 export async function getStaticPaths() {
-  const projects = await getCollection("projects");
-  return projects.map((project) => ({
-    // Entries are addressed by .id (the filename) rather than .slug.
-    params: { slug: project.id },
-    props: { project },
-  }));
+  const projects = (await getCollection("projects")).sort(
+    (a, b) => a.data.order - b.data.order,
+  );
+  return projects.map((project, index) => {
+    // "Next project" wraps around to the first after the last.
+    const nextProject = projects[(index + 1) % projects.length];
+    return {
+      // Entries are addressed by .id (the filename) rather than .slug.
+      params: { slug: project.id },
+      props: {
+        project,
+        next: { slug: nextProject.id, name: nextProject.data.name },
+      },
+    };
+  });
 }
 
-const { project } = Astro.props;
+const { project, next } = Astro.props;
 const { Content } = await render(project);
 ---
 
 <ProjectLayout
+  slug={project.id}
+  next={next}
   name={project.data.name}
   tagline={project.data.tagline}
   icon={projectIconMap[project.data.icon]}
@@ -31,6 +42,8 @@ const { Content } = await render(project);
   loomUrl={project.data.loomUrl}
   role={project.data.role}
   scope={project.data.scope}
+  type={project.data.type}
+  gallery={project.data.gallery}
 >
   <Content />
 </ProjectLayout>

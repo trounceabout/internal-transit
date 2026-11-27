@@ -13,6 +13,27 @@ loomUrl: "https://www.loom.com/share/713804fa07a949be85edef23a559d1c5"
 role: Design lead, Design engineer
 type: Redesign
 scope: Product design, dashboard UX, information design, data visualization, implementation
+gallery:
+  - kind: image
+    src: /projects/watchtower/WatchtowerOpener.png
+    alt: The redesigned Watchtower server monitoring experience
+    label: Overview
+  - kind: image
+    src: /projects/watchtower/solution-old.png
+    alt: The old monitoring tab, with fewer modules and a less detailed view
+    label: Before
+    caption: The previous monitoring tab
+  - kind: image
+    src: /projects/watchtower/solution-new.png
+    alt: The redesigned monitoring tab, with more modules and a more detailed view
+    label: After
+    caption: The new direction
+  - kind: video
+    webm: /projects/watchtower/Watchtower2.webm
+    mp4: /projects/watchtower/Watchtower2.mp4
+    alt: Watchtower adding context and actions to a monitoring module
+    label: Loop
+    caption: Context and actionability
 published: true
 ---
 
@@ -24,7 +45,7 @@ import WatchtowerModulesSandbox from "@/components/watchtower-demo/WatchtowerMod
 import ThemeRevealSandbox from "@/components/undercurrent-demo/ThemeRevealSandbox.tsx";
 import TerminalConversation from "@/components/watchtower-demo/TerminalConversation.tsx";
 
-<section class="ping-section">
+<section id="intro" data-sub="intro" class="ping-section">
 
 Our existing server monitoring experience exposed very little of what customers actually needed to understand server health. The data we did show lacked context, important metrics were missing entirely, and there was no simple way to understand whether a server was healthy without already knowing how to interpret the numbers.
 
@@ -32,11 +53,14 @@ I helped shape a new monitoring experience that made server health easier to und
 
 <LightboxImage
   src="/projects/watchtower/WatchtowerOpener.png"
-  alt="Undercurrent design system overview with color, type, spacing, and component previews"
+  alt="The redesigned Watchtower server monitoring experience"
 />
 
 </section>
-<section class="ping-section ping-section--problem">
+
+<div class="ps-card">
+
+<section id="problem" data-sub="problem" class="ping-section ping-section--problem">
 
 ## The problem
 
@@ -48,7 +72,19 @@ We didn’t just need to add more charts. We needed to make monitoring easier to
 
 </section>
 
-<section class="ping-section ping-section--approach">
+<section id="solution" data-sub="solution" class="ping-section ping-section--solution">
+
+## The solution
+
+Building on the product direction defined in the brief, I designed key modules and flows, then implemented them directly so the final product stayed closely aligned with the intended experience.
+
+The work focused on making monitoring easier to understand at a glance, more actionable when something needed attention, and more cohesive across the different views customers would rely on to assess server health.
+
+</section>
+
+</div>
+
+<section id="approach" data-sub="approach" class="ping-section ping-section--approach">
 
 ## The approach
 
@@ -79,17 +115,7 @@ It also meant contributing across design and implementation.
 
 </section>
 
-<section class="ping-section ping-section--solution" style="--icon-color-light: #E17100; --icon-color-dark: #FD9A00">
-
-## The solution
-
-Building on the product direction defined in the brief, I designed key modules and flows, then implemented them directly so the final product stayed closely aligned with the intended experience.
-
-The work focused on making monitoring easier to understand at a glance, more actionable when something needed attention, and more cohesive across the different views customers would rely on to assess server health.
-
-</section>
-
-<section class="ping-section">
+<section id="examples" data-sub="examples" class="ping-section">
 
 <LabeledRow label="Turning raw data into clear signals">
     The bulk of the work was redesigning the monitoring modules themselves so they communicated more than just data points.
@@ -125,6 +151,8 @@ The work focused on making monitoring easier to understand at a glance, more act
 
 </section>
 
+<div id="postscript" data-sub="postscript">
+
 <Postscript iconColor="#E17100" iconColorDark="#FD9A00">
   <Fragment slot="why-it-worked">
     <p>
@@ -148,3 +176,5 @@ The work focused on making monitoring easier to understand at a glance, more act
     </p>
   </Fragment>
 </Postscript>
+
+</div>
