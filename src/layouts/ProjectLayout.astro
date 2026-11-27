@@ -1,9 +1,7 @@
 ---
 // ProjectLayout.astro — wraps an individual project's case-study page.
-// Adapted from BlogLayout.astro: swaps the date+tags meta row for a single
-// icon+eyebrow badge, and adds a Role/Scope properties row plus a Loom embed
-// (hidden until the reader opts in via "Watch the overview") that articles
-// don't have.
+// Renders an icon+eyebrow badge, a Role/Scope properties row, and a Loom
+// embed (hidden until the reader opts in via "Watch the overview").
 import BaseLayout from "./BaseLayout.astro";
 import Lightbox from "@/components/Lightbox.astro";
 import PillButton from "@/components/case-study/PillButton.astro";
@@ -46,9 +44,8 @@ const {
 // case study hasn't set one yet.
 const dek = description ?? tagline;
 
-// Same split-around-a-phrase technique as BlogLayout's accentWord, but
-// colored by the project's own iconColor rather than a shared category
-// config. Applied to `tagline` (the headline text), not `dek` — the
+// Split-around-a-phrase technique, colored by the project's own iconColor.
+// Applied to `tagline` (the headline text), not `dek` — the
 // headline and the intro paragraph below it are two separate strings.
 const accentIndex = accentPhrase ? tagline.indexOf(accentPhrase) : -1;
 const taglineBefore =
@@ -138,8 +135,7 @@ const Icon = icon;
         {
           /* Headline — accentPhrase (if set) renders italicized in the project's own iconColor.
             .portfolio-headline (global.css) is the shared big-title treatment
-            every headline on the site uses (home page, blog posts, case
-            studies), including its fluid clamp() font-size. */
+            every headline on the site uses (home page, case studies), including its fluid clamp() font-size. */
         }
         <h1 class="portfolio-headline">
           {taglineBefore}
@@ -233,8 +229,7 @@ const Icon = icon;
 <style>
   /* MDX content comes from a separately-compiled component tree (rendered via
      <Content /> in [slug].astro), so Astro's default *scoped* styles never
-     attach to it — every rule here needs :global() or it silently does nothing.
-     Mirrors BlogLayout.astro's identical block. */
+     attach to it — every rule here needs :global() or it silently does nothing. */
   /* Two separate spacing tokens, easy to conflate but serving different
      jobs:
        --ping-section-gap   — vertical rhythm BETWEEN sections. Stays a
