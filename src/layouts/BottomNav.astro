@@ -87,6 +87,24 @@ const { actions } = Astro.props;
   /* A soft fade behind the bar so page content scrolling underneath it
      doesn't collide with the button labels. The gradient only paints the
      bar's own padding area; the middle of the viewport stays untouched. */
+  /* Slides down out of view while reading down the page; TopNav's scroll
+     script toggles data-hidden on both bars. The bar is inert while away, so
+     its (invisible) buttons can't be clicked or tabbed to; the keyboard
+     shortcuts still work. */
+  .bottom-nav {
+    transition:
+      transform 0.3s ease-out,
+      visibility 0.3s;
+  }
+  .bottom-nav[data-hidden] {
+    transform: translateY(100%);
+    visibility: hidden;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bottom-nav {
+      transition: none;
+    }
+  }
   .bottom-nav {
     background-image: linear-gradient(
       to top,

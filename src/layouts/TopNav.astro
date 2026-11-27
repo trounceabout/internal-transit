@@ -166,19 +166,26 @@ const navItems = [
   document.addEventListener("astro:page-load", renderClock);
 
   // ─── Hide on scroll down, show on scroll up ──────────────────────────────
-  // Only starts hiding once you're past the top of the page, and ignores tiny
-  // scroll jitters (< 6px) so it doesn't flicker.
+  // Both bars (this header and the fixed bottom action bar) are visible on
+  // load, slide away while reading down the page, and return as soon as you
+  // scroll back up (Figma: "Nav on initial load and on scroll up"). Only starts
+  // hiding once you're past the top of the page, and ignores tiny scroll
+  // jitters (< 6px) so it doesn't flicker.
   let lastY = window.scrollY;
   window.addEventListener(
     "scroll",
     () => {
       const header = document.querySelector<HTMLElement>(".top-nav");
       if (!header) return;
+      const bars = [
+        header,
+        ...document.querySelectorAll<HTMLElement>(".bottom-nav"),
+      ];
       const y = window.scrollY;
       header.toggleAttribute("data-scrolled", y > 8);
       if (Math.abs(y - lastY) < 6) return;
-      if (y > lastY && y > 120) header.setAttribute("data-hidden", "");
-      else header.removeAttribute("data-hidden");
+      const hide = y > lastY && y > 120;
+      bars.forEach((bar) => bar.toggleAttribute("data-hidden", hide));
       lastY = y;
     },
     { passive: true },
