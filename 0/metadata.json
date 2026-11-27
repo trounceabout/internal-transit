@@ -1,0 +1,92 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "01M8FEXKHHNJ856Z0AYQAF20QJ",
+  "session_id": "182463fd-8598-4d70-91a2-16e97c6dcf17",
+  "strategy": "manual-commit",
+  "created_at": "2026-11-27T21:34:59.208079Z",
+  "branch": "feat/case-study",
+  "checkpoints_count": 2,
+  "save_step_count": 1,
+  "files_touched": [
+    "src/components/ActionButton.astro",
+    "src/components/case-study/Gallery.astro",
+    "src/components/case-study/Overview.astro",
+    "src/components/case-study/SubNav.astro",
+    "src/components/case-study/Walkthrough.astro",
+    "src/content.config.ts",
+    "src/content/projects/ping.mdx",
+    "src/content/projects/undercurrent.mdx",
+    "src/content/projects/watchtower.mdx",
+    "src/layouts/BottomNav.astro",
+    "src/layouts/ProjectLayout.astro",
+    "src/layouts/TopNav.astro",
+    "src/lib/caseStudy.ts",
+    "src/lib/shortcuts.ts",
+    "src/pages/projects/[slug].astro"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-sonnet-5-5",
+  "turn_id": "a8c45b9a40b8",
+  "checkpoint_transcript_start": 1338,
+  "transcript_lines_at_start": 1338,
+  "compact_transcript_start": 133,
+  "token_usage": {
+    "input_tokens": 102,
+    "cache_creation_tokens": 107393,
+    "cache_read_tokens": 17629529,
+    "output_tokens": 67937,
+    "api_call_count": 49,
+    "subagent_tokens": {
+      "input_tokens": 0,
+      "cache_creation_tokens": 0,
+      "cache_read_tokens": 0,
+      "output_tokens": 0,
+      "api_call_count": 0
+    }
+  },
+  "session_metrics": {
+    "turn_count": 10
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-11-27T21:34:57.356146Z",
+    "agent_lines": 1047,
+    "agent_removed": 214,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 1047,
+    "total_lines_changed": 1261,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 141,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/launch.json": 11,
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.json": 90,
+        ".claude/settings.local.json": 19,
+        ".conductor/settings.local.toml": 20
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 141,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1047,
+      "agent_lines_removed": 214,
+      "user_added_per_file": {
+        ".claude/launch.json": 11,
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.json": 90,
+        ".claude/settings.local.json": 19,
+        ".conductor/settings.local.toml": 20
+      }
+    }
+  ]
+}

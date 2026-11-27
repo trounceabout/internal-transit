@@ -1,0 +1,47 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "01M8FEXKHHNJ856Z0AYQAF20QJ",
+  "strategy": "manual-commit",
+  "branch": "feat/case-study",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "src/components/ActionButton.astro",
+    "src/components/case-study/Gallery.astro",
+    "src/components/case-study/Overview.astro",
+    "src/components/case-study/SubNav.astro",
+    "src/components/case-study/Walkthrough.astro",
+    "src/content.config.ts",
+    "src/content/projects/ping.mdx",
+    "src/content/projects/undercurrent.mdx",
+    "src/content/projects/watchtower.mdx",
+    "src/layouts/BottomNav.astro",
+    "src/layouts/ProjectLayout.astro",
+    "src/layouts/TopNav.astro",
+    "src/lib/caseStudy.ts",
+    "src/lib/shortcuts.ts",
+    "src/pages/projects/[slug].astro"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 102,
+    "cache_creation_tokens": 107393,
+    "cache_read_tokens": 17629529,
+    "output_tokens": 67937,
+    "api_call_count": 49,
+    "subagent_tokens": {
+      "input_tokens": 0,
+      "cache_creation_tokens": 0,
+      "cache_read_tokens": 0,
+      "output_tokens": 0,
+      "api_call_count": 0
+    }
+  }
+}
