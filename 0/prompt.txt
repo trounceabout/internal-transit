@@ -1,0 +1,1 @@
+Nope, let's keep going in order. The idea with this one is the bottom nav should appear overlaid on initial load, then disappear on scroll down, reappear on scroll back up
