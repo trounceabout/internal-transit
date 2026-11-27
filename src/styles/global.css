@@ -81,37 +81,6 @@
   --color-portfolio-muted: var(--portfolio-muted);
   --color-portfolio-accent: var(--portfolio-accent);
 
-  /* Blog category tag colors — each a light/dark pair (see :root/.dark)
-       plus a hover variant, replacing categoryConfig.ts's old raw Tailwind
-       palette classes (which used the same shade in both themes and, per a
-       contrast audit, failed WCAG AA in at least one theme for all 8). */
-  --color-portfolio-category-design: var(--portfolio-category-design);
-  --color-portfolio-category-design-hover: var(
-    --portfolio-category-design-hover
-  );
-  --color-portfolio-category-philosophy: var(--portfolio-category-philosophy);
-  --color-portfolio-category-philosophy-hover: var(
-    --portfolio-category-philosophy-hover
-  );
-  --color-portfolio-category-craft: var(--portfolio-category-craft);
-  --color-portfolio-category-craft-hover: var(--portfolio-category-craft-hover);
-  --color-portfolio-category-creativity: var(--portfolio-category-creativity);
-  --color-portfolio-category-creativity-hover: var(
-    --portfolio-category-creativity-hover
-  );
-  --color-portfolio-category-culture: var(--portfolio-category-culture);
-  --color-portfolio-category-culture-hover: var(
-    --portfolio-category-culture-hover
-  );
-  --color-portfolio-category-games: var(--portfolio-category-games);
-  --color-portfolio-category-games-hover: var(--portfolio-category-games-hover);
-  --color-portfolio-category-art: var(--portfolio-category-art);
-  --color-portfolio-category-art-hover: var(--portfolio-category-art-hover);
-  --color-portfolio-category-outdoors: var(--portfolio-category-outdoors);
-  --color-portfolio-category-outdoors-hover: var(
-    --portfolio-category-outdoors-hover
-  );
-
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -141,26 +110,6 @@
   /* Deeper teal than the dark-mode accent — #40C6B0 only hits 2.02:1 on
        this light bg (fails badly); #0F7A6B computes to 5.0:1. */
   --portfolio-accent: #0f7a6b;
-
-  /* Blog category tag colors — each shifted to a shade weight from the
-       same hue family that clears 4.5:1 on this bg (the original single
-       Tailwind palette shade, shared with dark mode, failed here). */
-  --portfolio-category-design: #4338ca;
-  --portfolio-category-design-hover: #3730a3;
-  --portfolio-category-philosophy: #7e22ce;
-  --portfolio-category-philosophy-hover: #6b21a8;
-  --portfolio-category-craft: #c2410c;
-  --portfolio-category-craft-hover: #9a3412;
-  --portfolio-category-creativity: #854d0e;
-  --portfolio-category-creativity-hover: #713f12;
-  --portfolio-category-culture: #0f766e;
-  --portfolio-category-culture-hover: #115e59;
-  --portfolio-category-games: #15803d;
-  --portfolio-category-games-hover: #166534;
-  --portfolio-category-art: #a21caf;
-  --portfolio-category-art-hover: #86198f;
-  --portfolio-category-outdoors: #b45309;
-  --portfolio-category-outdoors-hover: #92400e;
 
   --radius: 0.625rem;
 
@@ -204,23 +153,6 @@
        footnote-only token already used, since it worked well here. */
   --portfolio-muted: #bbbbbb;
   --portfolio-accent: #40c6b0;
-
-  --portfolio-category-design: #818cf8;
-  --portfolio-category-design-hover: #a5b4fc;
-  --portfolio-category-philosophy: #c084fc;
-  --portfolio-category-philosophy-hover: #d8b4fe;
-  --portfolio-category-craft: #fb923c;
-  --portfolio-category-craft-hover: #fdba74;
-  --portfolio-category-creativity: #eab308;
-  --portfolio-category-creativity-hover: #facc15;
-  --portfolio-category-culture: #2dd4bf;
-  --portfolio-category-culture-hover: #5eead4;
-  --portfolio-category-games: #4ade80;
-  --portfolio-category-games-hover: #86efac;
-  --portfolio-category-art: #e879f9;
-  --portfolio-category-art-hover: #f0abfc;
-  --portfolio-category-outdoors: #fbbf24;
-  --portfolio-category-outdoors-hover: #fcd34d;
 }
 
 @layer base {
@@ -236,7 +168,7 @@
   }
 
   /* Shared headline treatment for every big Redaction-35 title on the site
-     (home page's "Hi, I'm Cody", blog post titles, case-study titles).
+     (home page's "Hi, I'm Cody", case-study titles).
      font-size is plain CSS, not a Tailwind arbitrary value — Tailwind v4's
      arbitrary-value parser can't handle the commas inside clamp(), even
      backslash-escaped, and silently drops the whole class instead of
@@ -253,10 +185,9 @@
     color: var(--portfolio-ink);
   }
 
-  /* Inline `code` spans (MDX backtick syntax, e.g. blog posts and case
-     studies referencing component/prop names like `Card`) — site-wide,
-     not scoped to any one layout's prose wrapper, since both BlogLayout
-     and ProjectLayout render MDX content that can contain inline code. */
+  /* Inline `code` spans (MDX backtick syntax, e.g. case studies referencing
+     component/prop names like `Card`) — site-wide, not scoped to any one
+     layout's prose wrapper. */
   code {
     font-family: var(--font-mono);
     border-radius: 4px;
