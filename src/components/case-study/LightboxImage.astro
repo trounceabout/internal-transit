@@ -11,9 +11,12 @@ interface Props {
   src: string;
   alt: string;
   class?: string;
+  // Figma's Before/After tiles: no frame shadow, 8px corners, a fixed 276px
+  // height with the screenshot cropped (from its top-left) to fill it.
+  flat?: boolean;
 }
 
-const { src, alt, class: className } = Astro.props;
+const { src, alt, class: className, flat = false } = Astro.props;
 ---
 
 <span
@@ -32,10 +35,20 @@ const { src, alt, class: className } = Astro.props;
       wrapping div. */
   }
   <div
-    class="relative overflow-hidden rounded-lg"
-    style={{ boxShadow: MEDIA_FRAME_SHADOW }}
+    class:list={[
+      "relative overflow-hidden",
+      flat ? "rounded-md" : "rounded-lg",
+    ]}
+    style={flat ? undefined : { boxShadow: MEDIA_FRAME_SHADOW }}
   >
-    <img src={src} alt={alt} class="block w-full" />
+    <img
+      src={src}
+      alt={alt}
+      class:list={[
+        "block w-full",
+        flat && "h-[276px] object-cover object-left-top",
+      ]}
+    />
   </div>
   <ArrowsScale width={32} height={32} className="lightbox-expand-icon" />
 </span>

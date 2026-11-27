@@ -151,7 +151,7 @@ const actions: NavAction[] = [
          Hidden on narrow screens for now (small-screen pass comes later). -->
     <!-- It fades away on the Overview, which is a full-width presentation. -->
     <aside data-subnav-aside class="hidden lg:block">
-      <div class="sticky top-32">
+      <div class="sticky top-40">
         <SubNav hasWalkthrough={hasWalkthrough} hasGallery={hasGallery} />
       </div>
     </aside>
@@ -288,7 +288,10 @@ const actions: NavAction[] = [
     padding-bottom: var(--ping-section-gap);
   }
 
-  .article-body :global(.ping-section:first-child) {
+  /* Only the intro drops its top padding (nothing above it to pad against). A
+     bare :first-child would also strip the Problem card's top padding, since
+     that card is the first child of its .ps-card wrapper. */
+  .article-body :global(#intro) {
     padding-top: 0;
   }
 
@@ -458,7 +461,7 @@ const actions: NavAction[] = [
 
   .article-body :global(h2) {
     font-family: var(--font-plex-sans);
-    font-weight: 500;
+    font-weight: 600; /* Figma "Article/Heading": SemiBold */
     font-size: 1.5rem; /* 24px */
     line-height: 2.5rem; /* 40px */
     color: var(--portfolio-ink);
@@ -526,9 +529,11 @@ const actions: NavAction[] = [
     padding-top: 8.5rem;
     padding-bottom: 8rem;
   }
+  /* From lg, content starts 160px down (Figma: 56px page padding + the 24px
+     header row + 80px gap); the side nav is pinned at the same line. */
   @media (min-width: 64rem) {
     .case-section {
-      padding-top: 7rem;
+      padding-top: 10rem;
     }
   }
 
@@ -573,36 +578,81 @@ const actions: NavAction[] = [
     scroll-margin-top: 6rem;
   }
 
-  /* ─── Deep dive: lead paragraph and combined Problem + Solution card ───── */
-  /* The opening paragraph of the intro is a larger lead-in, per the redesign. */
+  /* ─── Deep dive: intro ─────────────────────────────────────────────────── */
+  /* The opening paragraph is a larger lead-in (Figma "Article/Description":
+     Plex Sans Regular 24/40). The intro's blocks sit 28px apart. */
   .article-body :global(#intro > p:first-child) {
-    font-size: 1.75rem; /* 28px */
+    font-size: 1.5rem; /* 24px */
     line-height: 2.5rem; /* 40px */
     font-weight: 400;
     color: var(--portfolio-ink);
   }
+  /* Figma's hero screenshot is a fixed 1440:882 crop. */
+  .article-body :global(#intro .lightbox-hover-wrap img) {
+    aspect-ratio: 1440 / 882;
+    object-fit: cover;
+    object-position: top;
+  }
+  .article-body :global(#intro > * + *) {
+    margin-top: 1.75rem; /* 28px */
+  }
 
-  /* The problem and the solution now share one rounded card: the problem on a
-     faint ink tint, the solution on the project-colored gradient below it. The
-     two sections keep their own classes (and so their own styling); this wrapper
-     only supplies the shared outline and clips their corners. */
+  /* ─── Deep dive: Problem + Solution ────────────────────────────────────── */
+  /* Two stacked cards that overlap by 24px: the Problem card sits on top (an
+     opaque, faintly raised surface) and the Solution card tucks in beneath it,
+     so its outline peeks out around the Problem card's rounded bottom corners. */
   .article-body :global(.ps-card) {
-    border: 1px solid var(--section-border-color);
-    border-radius: 0.75rem; /* 12px */
-    overflow: hidden;
-    margin: var(--ping-card-padding) 0;
+    display: flow-root;
+  }
+  /* Figma draws these borders inside the box, so the 1px comes out of the 60px
+     padding (a 464px / 272px card, not 466 / 274). */
+  .article-body :global(.ps-card .ping-section) {
+    padding: calc(var(--ping-section-gap) - 1px)
+      calc(var(--ping-card-padding) - 1px);
   }
   .article-body :global(.ps-card .ping-section--problem) {
-    border: 0;
-    border-radius: 0;
-    margin: 0;
-    background: color-mix(in oklch, var(--portfolio-ink) 4%, transparent);
+    position: relative;
+    z-index: 2;
+    margin: 0 0 -24px;
+    background: color-mix(
+      in srgb,
+      var(--portfolio-ink) 4%,
+      var(--portfolio-bg)
+    );
   }
   .article-body :global(.ps-card .ping-section--solution) {
-    border: 0;
-    border-top: 1px solid
-      color-mix(in oklch, var(--icon-color) 50%, transparent);
-    border-radius: 0;
+    position: relative;
+    z-index: 1;
     margin: 0;
+    border: 1px solid var(--icon-color);
+    /* Brightest at the bottom, fading out toward the top (Figma: to-top,
+       13% to 0%). */
+    background: linear-gradient(
+      0deg,
+      color-mix(in oklch, var(--icon-color) 13%, transparent) 0%,
+      color-mix(in oklch, var(--icon-color) 0%, transparent) 100%
+    );
+  }
+
+  /* ─── Deep dive: Before / After ────────────────────────────────────────── */
+  .article-body :global(.before-after) {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  @media (min-width: 40rem) {
+    .article-body :global(.before-after) {
+      flex-direction: row;
+    }
+  }
+
+  /* ─── Deep dive: numbered feature blocks ───────────────────────────────── */
+  /* Each "From X to Y" block is a title row, its description, then the media
+     32px below; the numbers (01, 02, ...) come from a CSS counter. */
+  .article-body {
+    counter-reset: feature;
+  }
+  .article-body :global(.ping-section:has(> .labeled-row) > * + *) {
+    margin-top: 2rem; /* 32px */
   }
 </style>

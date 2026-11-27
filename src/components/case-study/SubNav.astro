@@ -78,6 +78,7 @@ const deepDiveItems = [
 
 <style>
   .subnav {
+    --subnav-line: color-mix(in srgb, var(--portfolio-ink) 85%, transparent);
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -108,6 +109,39 @@ const deepDiveItems = [
     background-color: var(--portfolio-nav-active);
     color: var(--portfolio-ink);
     font-weight: 600;
+    /* Figma's pill has stepped, pixel-style corners (6px deep, in 1.5 / 1.5 / 3px
+       bands) rather than a smooth radius. */
+    border-radius: 0;
+    clip-path: polygon(
+      6px 0,
+      calc(100% - 6px) 0,
+      calc(100% - 6px) 1.5px,
+      calc(100% - 4px) 1.5px,
+      calc(100% - 4px) 3px,
+      calc(100% - 2px) 3px,
+      calc(100% - 2px) 6px,
+      100% 6px,
+      100% calc(100% - 6px),
+      calc(100% - 2px) calc(100% - 6px),
+      calc(100% - 2px) calc(100% - 3px),
+      calc(100% - 4px) calc(100% - 3px),
+      calc(100% - 4px) calc(100% - 1.5px),
+      calc(100% - 6px) calc(100% - 1.5px),
+      calc(100% - 6px) 100%,
+      6px 100%,
+      6px calc(100% - 1.5px),
+      4px calc(100% - 1.5px),
+      4px calc(100% - 3px),
+      2px calc(100% - 3px),
+      2px calc(100% - 6px),
+      0 calc(100% - 6px),
+      0 6px,
+      2px 6px,
+      2px 3px,
+      4px 3px,
+      4px 1.5px,
+      6px 1.5px
+    );
   }
 
   /* ─── Deep dive sub-items ───────────────────────────────────────────────── */
@@ -135,16 +169,17 @@ const deepDiveItems = [
     visibility: visible;
   }
 
-  /* Tree connector: one vertical rule down the left, and a short horizontal
-     tick leading into each sub-item. */
+  /* Tree connector (Figma: a 1px line at x=13, with a rounded elbow leading into
+     each sub-item). The line runs from just inside the first item to where the
+     last elbow starts; each elbow is a 12px box with a left and bottom edge. */
   .subnav-tree::before {
     content: "";
     position: absolute;
-    left: 1.1rem;
-    top: 0;
-    bottom: 1.25rem;
+    left: 13px;
+    top: 2px;
+    bottom: 29px;
     width: 1px;
-    background: var(--section-border-color);
+    background: var(--subnav-line);
   }
   .subnav-sublink {
     position: relative;
@@ -153,11 +188,13 @@ const deepDiveItems = [
   .subnav-sublink::before {
     content: "";
     position: absolute;
-    left: 1.1rem;
-    top: 50%;
-    width: 0.6rem;
-    height: 1px;
-    background: var(--section-border-color);
+    left: 13px;
+    top: 5px;
+    width: 12px;
+    height: 12.5px;
+    border-left: 1px solid var(--subnav-line);
+    border-bottom: 1px solid var(--subnav-line);
+    border-bottom-left-radius: 4px;
   }
   /* Current sub-item: bold ink, no pill (the pill belongs to "Deep dive"). */
   .subnav-sublink[aria-current="true"] {

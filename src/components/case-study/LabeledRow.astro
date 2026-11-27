@@ -1,9 +1,13 @@
 ---
-// LabeledRow.astro — the "From X to Y" solution sub-section pattern: a bold
-// Plex Sans label in a fixed-width column next to the Plex Sans body copy.
-// Postscript.astro's rows look similar but use a different font/color/width
-// (mono, muted, narrower), so they're styled separately there rather than
-// forcing one component to cover both shapes.
+// LabeledRow.astro — the numbered "From X to Y" feature heading (Figma
+// "Feature title" + description): a small project-colored number, then the
+// title in Plex Mono, with the description in Plex Sans underneath.
+//
+// The number comes from a CSS counter (reset on `.article-body` in
+// ProjectLayout.astro), so rows count up 01, 02, 03 in reading order without
+// each MDX file having to number them by hand.
+// Postscript.astro's rows look similar but are laid out as label | text columns,
+// so they're styled separately there.
 interface Props {
   label: string;
 }
@@ -11,15 +15,35 @@ interface Props {
 const { label } = Astro.props;
 ---
 
-<div class="flex w-full flex-col items-start gap-4 sm:flex-row">
-  <span
-    class="font-plex-sans text-portfolio-ink w-full shrink-0 text-lg leading-8 font-semibold sm:w-[248px]"
-  >
-    {label}
-  </span>
+<div class="labeled-row flex w-full flex-col items-start gap-4">
   <div
-    class="font-plex-sans text-portfolio-ink min-w-0 flex-1 text-lg leading-8 font-light [&_p]:mb-4 [&_p:last-child]:mb-0"
+    class="feature-title text-portfolio-ink m-0 flex w-full items-baseline gap-3 font-mono text-xl leading-7 font-medium"
+  >
+    <span class="feature-number shrink-0 text-sm leading-5"></span>
+    <span class="min-w-0 flex-1">{label}</span>
+  </div>
+  <div
+    class="font-plex-sans text-portfolio-ink/85 min-w-0 text-lg leading-7 font-normal [&_p]:mb-4 [&_p:last-child]:mb-0"
   >
     <slot />
   </div>
 </div>
+
+<style>
+  .labeled-row {
+    counter-increment: feature;
+  }
+  /* The article's own paragraph rules (light 18/32) are for long-form copy; the
+     feature descriptions are Regular 18/28. */
+  .labeled-row :global(p) {
+    margin: 0;
+    font-weight: 400;
+    line-height: 28px;
+  }
+  .feature-number {
+    color: var(--icon-color);
+  }
+  .feature-number::before {
+    content: counter(feature, decimal-leading-zero);
+  }
+</style>

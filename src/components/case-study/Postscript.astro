@@ -1,93 +1,115 @@
 ---
-// Postscript.astro — closing section every case study ends with. The three
-// subheads (Why it worked / Key takeaway / Project status) are fixed across
-// every project; only the row content passed in via slots changes per case
-// study. Rows use their own mono/muted/narrower style here rather than
-// LabeledRow's bold-Plex-Sans solution-section look — same label+value
-// shape, different visual treatment per Figma.
-// The divider rule is colored per-project (like the headline's accent
-// phrase and icon badge) rather than a fixed site color, via the same
-// --icon-color-light/-dark custom-property pattern ProjectLayout.astro
-// already uses — see global.css's [style*="--icon-color-light"] rules.
+// Postscript.astro — closing section every case study ends with (Figma
+// "Takeaways"). Three rows (Why it worked / Key takeaway / Project status),
+// each a hairline divider, then a small icon + mono label on the left and the
+// copy on the right. The three labels are fixed across every project; only the
+// row content passed in via slots changes.
+// The icons pick up the project color through --icon-color, like the headline's
+// accent phrase; `iconColor`/`iconColorDark` let a caller override it.
+import { CircleQuestion } from "pixelarticons/react/CircleQuestion";
+import { Key } from "pixelarticons/react/Key";
+import { XpBar } from "pixelarticons/react/XpBar";
+
 interface Props {
   iconColor?: string;
   iconColorDark?: string;
 }
 
 const { iconColor, iconColorDark } = Astro.props;
+
+const colorVars = {
+  ...(iconColor ? { "--icon-color-light": iconColor } : {}),
+  ...(iconColorDark ? { "--icon-color-dark": iconColorDark } : {}),
+};
 ---
 
-<section class="flex flex-col gap-6 py-15">
-  <div class="flex w-full items-center gap-6">
-    <span
-      class="postscript-heading text-portfolio-ink m-0 font-mono text-[32px] leading-[0.94] font-normal tracking-[-0.96px] italic"
-    >
-      The postscript
-    </span>
-    <div
-      class="h-px flex-1"
-      style={{
-        backgroundColor: "var(--icon-color)",
-        ...(iconColor ? { "--icon-color-light": iconColor } : {}),
-        ...(iconColorDark ? { "--icon-color-dark": iconColorDark } : {}),
-      }}
-    >
+<section class="postscript" style={colorVars}>
+  <div class="row">
+    <div class="label">
+      <CircleQuestion width={16} height={16} />
+      <span>Why it worked</span>
     </div>
+    <div class="copy"><slot name="why-it-worked" /></div>
   </div>
-
-  <div class="flex w-full flex-col gap-8 text-lg">
-    <div
-      class="flex w-full flex-col gap-2 sm:flex-row sm:items-baseline sm:gap-6"
-    >
-      <p
-        class="text-portfolio-muted w-full shrink-0 font-mono leading-[1.4] tracking-[-0.18px] sm:w-[200px]"
-      >
-        Why it worked
-      </p>
-      <div
-        class="font-plex-sans text-portfolio-ink min-w-0 flex-1 leading-8 font-light [&_p]:mb-4 [&_p:last-child]:mb-0"
-      >
-        <slot name="why-it-worked" />
-      </div>
+  <div class="row">
+    <div class="label">
+      <Key width={16} height={16} />
+      <span>Key takeaway</span>
     </div>
-    <div
-      class="flex w-full flex-col items-start gap-2 sm:flex-row sm:items-baseline sm:gap-6"
-    >
-      <p
-        class="text-portfolio-muted w-full shrink-0 font-mono leading-[1.4] tracking-[-0.18px] sm:w-[200px]"
-      >
-        Key takeaway
-      </p>
-      <div
-        class="font-plex-sans text-portfolio-ink min-w-0 flex-1 leading-8 font-light [&_p]:mb-4 [&_p:last-child]:mb-0"
-      >
-        <slot name="key-takeaway" />
-      </div>
+    <div class="copy"><slot name="key-takeaway" /></div>
+  </div>
+  <div class="row">
+    <div class="label">
+      <XpBar width={16} height={16} />
+      <span>Project status</span>
     </div>
-    <div
-      class="flex w-full flex-col items-start gap-2 sm:flex-row sm:items-baseline sm:gap-6"
-    >
-      <p
-        class="text-portfolio-muted w-full shrink-0 font-mono leading-[1.4] tracking-[-0.18px] sm:w-[200px]"
-      >
-        Project status
-      </p>
-      <div
-        class="font-plex-sans text-portfolio-ink min-w-0 flex-1 leading-8 font-light"
-      >
-        <slot name="project-status" />
-      </div>
-    </div>
+    <div class="copy"><slot name="project-status" /></div>
   </div>
 </section>
 
 <style>
-  /* Figma calls out fontFeatureSettings "salt" 1 on this heading — IBM Plex
-     Mono's stylistic-alternates set, which swaps in the single-story italic
-     'a'/'g' etc. that make the italic read as a genuine alternate face
-     rather than just a slanted version of the upright glyphs. Plain
-     `italic` alone doesn't turn this feature on. */
-  .postscript-heading {
-    font-feature-settings: "salt" 1;
+  .postscript {
+    padding-top: 60px;
+  }
+  /* Divider above each row: ink at 14% (Figma: cream at 14%). */
+  .row {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 28px 0;
+    border-top: 1px solid
+      color-mix(in srgb, var(--portfolio-ink) 14%, transparent);
+  }
+  @media (min-width: 40rem) {
+    .row {
+      flex-direction: row;
+      gap: 40px;
+    }
+  }
+  /* 16px icon, 8px gap, then a 180px-wide label: a 204px column. */
+  .label {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 8px;
+    height: 20px;
+    color: var(--portfolio-muted);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: 20px;
+    text-transform: uppercase;
+  }
+  @media (min-width: 40rem) {
+    .label {
+      width: 204px;
+    }
+  }
+  .label :global(svg) {
+    flex: none;
+    color: var(--icon-color);
+  }
+  .copy {
+    display: flex;
+    flex: 1 1 0;
+    min-width: 0;
+    flex-direction: column;
+    gap: 16px;
+    font-family: var(--font-plex-sans);
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 28px;
+    color: var(--portfolio-ink);
+  }
+  /* The article's own paragraph rules (light 18/32, with extra margins) are
+     meant for the long-form copy above; the takeaways use their own rhythm. */
+  .postscript .copy :global(p),
+  .postscript .copy :global(p + p) {
+    margin: 0;
+    font-weight: 400;
+    line-height: 28px;
+  }
+  /* MDX wraps a slotted <Fragment> in an empty paragraph; it would add a gap. */
+  .postscript .copy :global(p:empty) {
+    display: none;
   }
 </style>
