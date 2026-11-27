@@ -1,0 +1,15 @@
+{
+  "tool_use_id": "toolu_01PdKB2NbxxhFFx2fj3hnBcq",
+  "agent_id": "a4d91aaaffed735dd",
+  "subagent_type": "Explore",
+  "task_description": "Explore site codebase structure",
+  "token_usage": {
+    "input_tokens": 20,
+    "cache_creation_tokens": 125027,
+    "cache_read_tokens": 795041,
+    "output_tokens": 13332,
+    "api_call_count": 10
+  },
+  "started_at": "2026-11-27T15:27:12.679973-05:00",
+  "completed_at": "2026-11-27T15:28:48.177882-05:00"
+}

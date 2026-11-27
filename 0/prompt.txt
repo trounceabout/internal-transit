@@ -1,0 +1,327 @@
+Okay, we have work to do. I want to redesign everything from top to bottom. Here’s everything we’ll need to do, in roughly this order (if you think it should go differently, say so):
+- Redesign home page
+- Add start page
+- Redesign case study format
+- Add about page
+- Remove articles (for now)
+
+Here’s the the breakdown of the changes themselves:
+- Home page now displays a preview of one case study at a time, with a row of large icons buttons across the top (below the top nav) for each
+- When the user clicks on one of those icons, the page shifts to the new case study preview and the icon bar moves left or right to that case study (scrolling horizontally if the screen is too small to accommodate it)
+- There’s also a pre-home page, the start page, that is what initially greets new visitors
+- We now have an about page that includes a short intro to me, some quick facts about me, a breakdown of how I work, and my work history
+- Articles are gone for now. I haven’t written anything new and the one that we currently have posted is in desperate need of a rewrite
+- Case studies are now a much more guided experience, with distinct sections. The idea is that each is self-contained, though we can keep them on the same page if that’s the smartest way to structure it. I want there to be a snap to scroll though, where when you reach the end of a section (like the deep dive) there’s a sort of “hump” you have to get over and then it snaps to the top of the next section (in this case, the walkthrough). The buttons in the overview take the user directly to the marked section
+- The overview of case studies is meant to be a presentation, larger than life. It should subtly animate in, utilizing motion.dev. We can start with something basic and then polish from there
+- The deep dive is the write-up. We should reuse most of what we have, with some slight changes in max width and layout. The Problem, the Solution, and the Approach have been reordered, and the problem and solution are now combined (though they still use the same styling for their sections overall). The approach should keep it’s existing dotgrid background.
+- I’ve used stand in still images in Figma, but the three detail sections should keep what they have in them for all three case studies, the text has just been restyled a bit
+- The theme can be switched via the moon (in dark mode) or sun (in light mode)
+- We’re displaying the user’s current date and time, live in the top right
+- The icons in the far right of the top nav link to my GitHub, discord, and LinkedIn respectively
+- We also have a new, persistent bottom nav with dynamic actions for the user depending on where they are. The start and about screens are the only places it doesn’t exist. These should be secondary buttons, with the styling laid out in a section within the Figma section I link to called New buttons. Make sure to pay close attention to what they do and their styling
+- As part of that bottom nav and the new actions related to case studies, we need to add keyboard shortcut support. You’ll see icons on each of the buttons that tell the user what button on their keyboard corresponds to that action. We need to implement those
+- There’s also a new side nav inside case studies and the about page that you should pay close attention to. It can have subsections within the nav that only expand when the user is in that section (like deep dive)
+- For the map on the about page, I have an SVG we can use, but it would be cool to explore a real map that is a lofi dot matrix style. Let me know when you get to that and I’ll provide the SVG
+- The list items in the work history use the same styling as the existing list on the home page and should link to their respective case studies 
+- Just reuse the shadows we already have, don’t copy what’s in Figma for those
+- All of this should use our existing design system, so modify tokens there as you need to. That way we get light and dark themes for free
+- Buttons should depress on click. That means adjusting the shadows and scaling them down just slightly to get the effect. It may be as simple as the instructions in the attached screenshot, but you can also use motion.dev if it has anything helpful on that front
+- Do your best on smaller screens and we can polish it after
+
+Here’s the section in Figma that includes all the work:
+https://www.figma.com/design/yQsyiiyNzkw04y8TR6UCcK/Examples?node-id=37-4587&t=XVgE2imuhGfLIvqq-11
+
+---
+
+<task-notification>
+<task-id>a4d91aaaffed735dd</task-id>
+<tool-use-id>toolu_01PdKB2NbxxhFFx2fj3hnBcq</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-trounceabout-Repos-Personal-internal-transit/182463fd-8598-4d70-91a2-16e97c6dcf17/tasks/a4d91aaaffed735dd.output</output-file>
+<status>completed</status>
+<summary>Agent "Explore site codebase structure" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result># Internal Transit: repo map for the redesign
+
+Repo root: `/Users/trounceabout/Repos/Personal/internal-transit` (branch `main`, clean apart from untracked `.claude/`, `.entire/` and `cody-pixel-portrait-transparent.svg`).
+
+## Surprises that change the plan
+
+1. **There is no top nav or header component.** The commit "drop old nav" (7171ec6) removed it. `BaseLayout.astro` still has `pt-16` on `&lt;body&gt;` and an unused `activeNav?: "work" | "blog"` prop. Each page carries its own "Home" breadcrumb. See §3.
+2. **There is no clock, date widget or moon/sun icon toggle.** The theme toggle is a text button in the footer. See §3.
+3. **"Undercurrent" is not this site's design system.** It is the name of one case study. It has a scoped, demo-only token set, `--uc-demo-*`, in `src/styles/undercurrent-demo.css`. The site's own tokens are `--portfolio-*` in `global.css`, plus shadcn's Button. There is no "Undercurrent" package. See §4.
+4. **There are no tests** (no vitest, playwright or stories) and **no CLAUDE.md**. The only conventions doc is `README.md`.
+5. **The dot-grid is CSS-only.** It is a `::after` pseudo-element in `ProjectLayout.astro`, not a component.
+6. `astro.config.mjs` has `site: "https://codykeisler.me"`, while the README says internaltransit.com.
+
+## 1. Framework, tooling, routing
+
+- **Astro 6** (`astro ^6.0.8`) with `@astrojs/react` (React 19 islands), `@astrojs/mdx` and `@astrojs/vercel` (adapter). `@sentry/astro` is also configured, and `@astrojs/rss` is installed.
+- **Tailwind v4** is used as a Vite plugin (`@tailwindcss/vite`). There is no `tailwind.config`. Config lives in `src/styles/global.css` via `@theme inline`.
+- **Package manager:** bun (`bun.lock`). The README says `bun install` and `bun run dev`. Node must be `&gt;=22.12.0`.
+- **Experimental flag:** `queuedRendering: { enabled: true }`.
+- **Routing is Astro file-based**, in `src/pages/`. Dynamic routes use `getStaticPaths()` over content collections:
+  - `src/pages/index.astro`: `/`
+  - `src/pages/projects/[slug].astro`: `/projects/&lt;id&gt;`
+  - `src/pages/blog/index.astro`: `/blog`
+  - `src/pages/blog/[slug].astro`: `/blog/&lt;id&gt;`
+  - `src/pages/rss.xml.js`: `/rss.xml`
+  - `src/pages/api/subscribe.ts`: `POST /api/subscribe`, a Buttondown proxy
+- **Alias:** `@/*` maps to `./src/*` (tsconfig).
+- **Content collections** are in `src/content.config.ts` (glob loaders):
+  - `blog`: `src/content/blog/*.md(x)`
+  - `projects`: `src/content/projects/*.mdx`
+- **Motion:** yes, `motion ^12.42.2` is installed.
+  - `src/lib/animations.ts` uses `animate, stagger` from `"motion"` (vanilla).
+  - Several React islands use `motion/react`: `UndercurrentSandbox`, `ThemeRevealSandbox`, `DocsViewerSandbox`, `TerminalConversation`, `useStreamingReveal`, `useTypewriter`.
+- **Other deps:**
+  - Icons: `pixelarticons` (primary), `@hugeicons/*` (blog and home Writing only), `lucide-react` (demo islands only).
+  - UI: `@base-ui/react`, `shadcn`, `class-variance-authority`, `tailwind-merge`, `clsx`, `tw-animate-css`, `recharts 2.15.4`.
+  - Fonts and hosting: `geist`, `@fontsource` IBM Plex, `@vercel/analytics`, `@vercel/speed-insights`.
+- **Fonts** are declared in `global.css`:
+  - `--font-sans`: Geist Sans, loaded from `/node_modules/geist/...`.
+  - `--font-mono`: IBM Plex Mono (body and UI).
+  - `--font-plex-sans`: IBM Plex Sans Variable (long-form and labels).
+  - `--font-redaction`: Redaction 35, self-hosted in `public/fonts/` (Regular, Italic and Bold woff2).
+  - Geist Mono is used only by the Undercurrent demo.
+
+## 2. Current pages
+
+### Home: `src/pages/index.astro` (193 lines)
+
+- It uses `BaseLayout title="Home"`.
+- **Hero:** `&lt;p class="portfolio-headline"&gt;` reads "Hi, I'm &lt;italic accent&gt;Cody&lt;/italic&gt; [avatar `/me-big-head-only.svg`] and I use design to make &lt;italic&gt;experiences better for people&lt;/italic&gt;". A subline reads "Product designer based in Rock Hill, SC".
+- **Work list:** the existing list component, inline in index.astro. It is not a separate component.
+  - `getCollection("projects", d =&gt; d.data.published)`, sorted by `order`.
+  - Each row is `&lt;a class="contents"&gt;&lt;div class="project-row ..."/&gt;&lt;/a&gt;`, with a badge square (`size-8 rounded-md`, `--badge-color`) holding an icon, a name in mono, and a right-aligned tagline.
+  - Rows have `border-b border-portfolio-muted/20`.
+  - **Hover:** a `::before` background fills in with a `scaleY(0)` to `scaleY(1)` transition (transform-origin bottom, 0.2s). The border color changes to `--icon-color`. Both are gated behind `prefers-reduced-motion: no-preference`.
+  - Per-project colors are passed as inline `--badge-color-light/-dark` and `--icon-color-light/-dark`. `global.css` resolves these via `[style*="--icon-color-light"]` and `.dark [style*=...]` rules.
+- **Writing section:** `latestPosts` (2 newest non-draft blog posts) with title link, description, a date with a Hugeicons `Calendar04Icon`, and category tags from `categoryConfig`. **This is articles content to remove.**
+- Every block carries `data-animate`, which is the fade-up stagger hook.
+
+### Case studies (3: Ping, Undercurrent, Watchtower)
+
+**Data source:** `src/content/projects/{ping,undercurrent,watchtower}.mdx`. Frontmatter schema (`content.config.ts`):
+
+```
+name, tagline, icon (key in projectIconMap), iconColor, iconColorDark, badgeColor, badgeColorDark,
+order, description, accentPhrase, loomUrl, role, scope, published
+```
+
+Current values:
+
+| Project | Icon | `order` | `iconColor` (dark) |
+|---|---|---|---|
+| Ping | `BellDotIcon` | 1 | `#E34F4F` (no dark override) |
+| Undercurrent | `SurfboardIcon` | 2 | `#0B7FA8` (`#2DC7FF`) |
+| Watchtower | `CastleTowerIcon` | 3 | `#E17100` (`#FD9A00`) |
+
+`src/lib/projectIconMap.ts` maps the icon strings to pixelarticons: Bell, Waves2, Key and CastleTower. It has a `KeyIcon` entry that no project uses.
+
+**Rendering:** `src/pages/projects/[slug].astro` calls `render(project)`. It passes the frontmatter and `&lt;Content/&gt;` into `src/layouts/ProjectLayout.astro` (502 lines).
+
+`ProjectLayout` renders, in order:
+- A breadcrumb: Home badge, "•", project icon badge and name.
+- An `h1.portfolio-headline` built from `tagline`, with `accentPhrase` italicized in the project color.
+- A dek paragraph (`description ?? tagline`).
+- A properties row: PillButton "Watch the overview" (opens the Loom embed in the Lightbox), then Role and Scope.
+- The MDX body, wrapped in `&lt;div class="article-body ..."&gt;`.
+- The shared `&lt;Lightbox/&gt;`.
+
+**Section structure (MDX):** each MDX body is a sequence of `&lt;section class="ping-section ..."&gt;` blocks (an older "Ping" naming that is still the class prefix). The order is the same in all three:
+
+1. `ping-section`: intro paragraphs plus a `LightboxImage`.
+2. `ping-section ping-section--problem`: "## The problem". It has a 1px `--section-border-color` border, a radius of 12px, and an inset of `--ping-card-padding`.
+3. `ping-section ping-section--approach`: "## The approach". It is borderless, has the dot-grid, and includes a side-by-side old/new image pair.
+4. `ping-section ping-section--solution`: "## The solution". It has a border and a gradient tinted by `--icon-color` via `color-mix`. The color is set inline: `style="--icon-color-light: #..."`.
+5. Several `ping-section` blocks, each a `&lt;LabeledRow label="From X to Y"&gt;` plus a `LoopVideo`, a sandbox island, or both.
+6. `&lt;Postscript iconColor=... iconColorDark=...&gt;` with slots `why-it-worked`, `key-takeaway` and `project-status`.
+
+"Details" is not a literal heading. The detail sections are the `LabeledRow` sub-sections.
+
+**Per-case-study islands** (all `client:visible`):
+- Undercurrent: `UndercurrentSandbox`, `ThemeRevealSandbox`, `DocsViewerSandbox`.
+- Watchtower: `WatchtowerModulesSandbox` and `TerminalConversation`. It also imports `ThemeRevealSandbox` without using it.
+- Ping: none (videos only).
+
+**Dot-grid in Approach:** `ProjectLayout.astro`, `&lt;style&gt;` block, rule `.article-body :global(.ping-section--approach::after)`.
+- It is a `radial-gradient(circle, var(--section-border-color) 1px, transparent 1px)` tiled at `24px 24px`.
+- `inset: 0 -40px` makes it bleed 40px past the left and right edges. The section has no `overflow:hidden`, and `&lt;body class="overflow-x-hidden"&gt;` stops a horizontal scrollbar.
+- A two-axis `mask-image` fade (10%/90%) is combined with `mask-composite: intersect` (plus the `-webkit-` variants).
+- It starts at `opacity: 0`, with `z-index: -1` and `pointer-events: none`.
+- `.grid-active::after` plays `animation: gridSequence 1.4s ease-out forwards`. The keyframe (a plain opacity 0 to 1) is in `global.css`.
+- The trigger is `observeGridReveal()` in `src/lib/animations.ts`: an `IntersectionObserver` with `threshold 0.2`, firing once, which adds `.grid-active`. Reduced motion adds the class immediately. It is called from a `&lt;script&gt;` at the bottom of `ProjectLayout.astro`.
+
+**Case-study components:** `src/components/case-study/`
+- `LabeledRow.astro`: label in a 248px column plus body.
+- `LightboxImage.astro`: image with a hover scrim and an expand icon, opening in the Lightbox.
+- `LoopVideo.astro`: autoplay muted looping video, webm and mp4.
+- `Postscript.astro`
+- `PillButton.astro`: sizes `default` and `sm`, with `background` and `iconColor` props.
+
+**Other case-study files:**
+- `src/components/Lightbox.astro` (275 lines): vanilla JS, one overlay per page.
+- `src/lib/media.ts`: `MEDIA_FRAME_SHADOW = "var(--media-frame-shadow)"`.
+
+### Articles: everything to remove or touch
+
+Delete or edit these:
+
+| Path | Action |
+|---|---|
+| `src/pages/blog/index.astro`, `src/pages/blog/[slug].astro` | delete |
+| `src/layouts/BlogLayout.astro` | delete |
+| `src/content/blog/never-the-artist.mdx` (only post) | delete |
+| `src/pages/rss.xml.js` | delete. Also remove the RSS `&lt;link rel="alternate"&gt;` in `BaseLayout.astro` (lines ~49-55). |
+| `src/lib/categoryConfig.ts` | delete (used only by blog and home Writing) |
+| `src/content.config.ts` | remove the `blog` collection (lines 7-21) and its export entry |
+| `src/pages/index.astro` | remove the `latestPosts` query, the `categoryConfig` and Hugeicons imports, and the whole "Writing" block |
+| `src/layouts/BaseLayout.astro` | drop `activeNav?: "work" \| "blog"` (it is unused anyway), the RSS link, and the default description ("writing about design...") |
+| `src/styles/global.css` | remove the 16 `--color-portfolio-category-*` `@theme` mappings and the `--portfolio-category-*` vars in `:root` and `.dark` (lines ~84-107, ~145-161, ~211-229) |
+| `package.json` | `@astrojs/rss` and `@hugeicons/core-free-icons` plus `@hugeicons/react` become unused (Hugeicons is used only in `BlogLayout`, `blog/index`, `index`) |
+
+Newsletter pieces tied to the blog:
+- `src/components/SubscribeForm.tsx` is not rendered anywhere (orphaned).
+- `src/pages/api/subscribe.ts` is a Buttondown POST proxy.
+- `BUTTONDOWN_API_KEY` is in `.env.example`.
+- `README.md` mentions the blog/newsletter, Buttondown, `rss`, and "MDX content collections (blog posts, work)" in several places.
+
+Shared CSS to keep: `global.css` `code {}` and `.article-body` are shared with the case studies. `ProjectLayout` has its own copy of the `.article-body` rules, so removing `BlogLayout` is safe. Comments in `ProjectLayout.astro` and `global.css` reference `BlogLayout`, and are worth a tidy.
+
+Build artifacts that still contain blog pages: `dist/blog/`, `.vercel/output/static/blog/`, and `.astro/collections/blog.schema.json`. These are gitignored and will regenerate.
+
+## 3. Header / footer / theme / clock / socials
+
+- **Header and nav:** none. The only navigation is a "Home" breadcrumb inside the `ProjectLayout` header and the `BlogLayout` header (a `pixelarticons/Home` badge plus underlined "Home" text). `BaseLayout` gives `&lt;body&gt;` `pt-16` as leftover top spacing. A new header will slot in above `&lt;slot /&gt;` in `BaseLayout.astro`.
+- **Layout shell:** `src/layouts/BaseLayout.astro`.
+  - `&lt;body class="bg-portfolio-page flex min-h-screen flex-col overflow-x-hidden pt-16 font-mono"&gt;` wraps `&lt;div class="flex-1"&gt;&lt;slot/&gt;&lt;/div&gt;` and `&lt;Footer/&gt;`.
+  - A bundled script runs `runFadeUpStagger()` on `[data-animate]`.
+  - It also mounts `&lt;SpeedInsights/&gt;` and `&lt;Analytics/&gt;`, and has a named `&lt;slot name="head" /&gt;`.
+  - The `&lt;title&gt;` format is `{title} — Cody Keisler`.
+- **Footer:** `src/layouts/Footer.astro` (88 lines), rendered by BaseLayout with `data-animate`.
+  - Left: "Looking for me around the web? Find me on [GitHub], [Figma], and [LinkedIn]." The icons are pixelarticons `Github`, `Figma` and `Linkedin2`, with hardcoded brand colors inline (`#4183C4`, `#FF3737`, `#0077B5`).
+  - URLs: `github.com/trounceabout`, `figma.com/@trounceabout`, `linkedin.com/in/codykeisler/`.
+  - Right: `&lt;button id="theme-toggle"&gt;` showing text only, either "Prefer the light? **Switch it up**" or "Prefer the dark? ...", toggled with `hidden dark:inline` and `inline dark:hidden`.
+- **Theme mechanism:**
+  - Tailwind `@custom-variant dark (&amp;:is(.dark *))`: dark is a `.dark` class on `&lt;html&gt;`.
+  - **FOUC guard:** an `is:inline` script in `&lt;head&gt;` reads `localStorage.theme`. **Dark is the default**, and light only applies when the stored value is exactly `"light"`.
+  - **Toggle** (Footer script): sets `document.documentElement.dataset.themeSweepDirection` to `dark` or `light`, then calls `document.startViewTransition(() =&gt; toggle .dark + write localStorage)`. If the API is missing or reduced-motion is set, it toggles immediately. `global.css` styles `::view-transition-old/new(root)` with a `clip-path` sweep (`theme-sweep-up/down`, 500ms). It is a vertical wipe.
+  - There is no system `prefers-color-scheme` handling.
+- **Clock/date:** none on the site. The only date code is blog post dates and the demo islands' fake data. `graphMeasurements.ts` has `Intl.DateTimeFormat` for fake chart axes.
+- **Social icons:** only in the Footer (above). The `pixelarticons` free tier has no pro-only icons without `icons:upgrade`.
+
+## 4. Design system
+
+**Site tokens** live in `src/styles/global.css`. They are CSS custom properties exposed to Tailwind through `@theme inline`.
+
+Colors are a light/dark swap of `--portfolio-*` vars in `:root` and `.dark`. Tailwind utilities: `bg-portfolio-bg`, `text-portfolio-ink`, `text-portfolio-muted`, `text-portfolio-accent` (via `--color-portfolio-*`).
+
+| Token | Light | Dark |
+|---|---|---|
+| `--portfolio-bg` | `#fff9f2` (`--portfolio-bg-light`) | `#18181b` (`--portfolio-bg-dark`) |
+| `--portfolio-bg-gradient` | `none` | `linear-gradient(#242429, #18181b)` |
+| `--portfolio-ink` | `#18181b` | `#fff9f2` |
+| `--portfolio-muted` | `#6b6b6b` | `#bbbbbb` |
+| `--portfolio-accent` | `#0f7a6b` | `#40c6b0` |
+
+- The page background uses the `.bg-portfolio-page` class (color plus gradient image).
+- Case-study tokens:
+  - `--section-border-color`: `rgba(24,24,27,.15)` light, `#3c3c44` dark.
+  - `--lightbox-backdrop`: `oklch(98.8% .00852 67.7deg / 70%)` light, `rgba(24,24,27,.7)` dark.
+  - `--icon-color`, `--badge-color`: resolved from inline `-light`/`-dark` pairs.
+  - `--pill-icon-color`: set by PillButton.
+- **Shadow token** (the only one): `--media-frame-shadow`, with different values for light and dark.
+  - Light: `0 3px 6px rgba(0,0,0,.2), 0 0 .5px rgba(0,0,0,.15)`.
+  - Dark: `0 4px 7px rgba(0,0,0,.85), 0 1px 2px rgba(0,0,0,.5), inset 0 .5px 0 rgba(255,255,255,.1), inset 0 0 .5px rgba(255,255,255,.3)`.
+- **Radii:** `--radius: 0.625rem`. `@theme` derives `--radius-sm` (0.6x), `-md` (0.8x), `-lg` (1x), `-xl` (1.4x), `-2xl` (1.8x), `-3xl` (2.2x) and `-4xl` (2.6x).
+- **Spacing:** no custom tokens. The case-study layout uses `--ping-section-gap` (3.75rem fixed) and `--ping-card-padding` (1.5, 2.5 and 3.75rem at the breakpoints), both defined on `.article-body` in `ProjectLayout`.
+- **Typography:**
+  - `.portfolio-headline`: Redaction 35, `clamp(4rem, 3rem + 3vw, 5rem)`, line-height 0.94, letter-spacing -2.4px.
+  - Fonts as in §1.
+  - A global `code {}` style (oklch background, 4px radius, 4px padding, with a dark variant).
+- **Motion/animation:**
+  - `[data-animate]` starts at `opacity:0` (when motion is allowed), and `runFadeUpStagger` animates `opacity 0 to 1` and `y 16 to 0` (0.5s, stagger 0.06, ease `[0.22, 1, 0.36, 1]`).
+  - Theme sweep.
+  - `gridSequence`.
+- **shadcn setup:** `components.json` has style `base-maia`, base color neutral, cssVariables true, iconLibrary pixelarticons, and aliases `@/components`, `@/components/ui` and `@/lib/utils`.
+  - **The shadcn semantic tokens (`--primary`, `--secondary`, `--muted`, `--destructive`, `--border`, `--input`, `--ring` etc.) are referenced by `ui/button.tsx` but not defined in `global.css`.** Only `@import "shadcn/tailwind.css"` supplies them, and `--background`/`--foreground` are unused. I did not confirm what `shadcn/tailwind.css` defines. Check before reusing.
+
+**Components:**
+
+- **`src/components/ui/button.tsx`** is the only shadcn component. It wraps `@base-ui/react/button` with cva and the `cn` helper from `src/lib/utils.ts`.
+  - Variants: `default | outline | secondary | ghost | destructive | link`.
+  - Sizes: `default | xs | sm | lg | icon | icon-xs | icon-sm | icon-lg`.
+  - It is `rounded-4xl` (pill-like). No page currently imports it (grep shows no consumers), so it is effectively unused.
+- **`PillButton.astro`** is the button the site actually uses (see §2).
+- **Footer theme toggle:** a plain `&lt;button&gt;` styled as inline text.
+- **The "Undercurrent" case-study demo kit** is `src/styles/undercurrent-demo.css`, scoped to `.uc-demo`. It is a clone of an external system, with tokens such as `--uc-demo-neutral-{bg,text,border,icon}-*`, `--uc-demo-{highlight,success,warning,danger}-*`, `--uc-demo-active-*` redirected by `data-uc-variant`, `--uc-demo-space-{50,100,150,200,300}`, `--uc-demo-radius-{xs,sm,md,full}` and `--uc-demo-size-{xs..lg}`.
+  - Components in `src/components/undercurrent-demo/`:
+    - `UcAlert`
+    - `UcButton` (primary and secondary only)
+    - `UcCard`
+    - `UcChip`
+    - `UcDynamicBadge`
+    - `UcNote`
+    - `UcProgressTracker`
+    - `UcErrorCard`
+    - `UcFieldRow`
+    - `UcRetryBanner`
+    - `UcTimeline`
+    - `UcProgressTracker`
+  - Sandboxes: `UndercurrentSandbox`, `ThemeRevealSandbox`, `DocsViewerSandbox` (plus `docsContent.tsx`).
+- The Watchtower demo uses `src/styles/watchtower-demo.css` and `watchtower-demo-editor.css`, scoped to `.wt-demo`. It has about 17 TSX files in `watchtower-demo/` (`WtCard`, `Bars`, the cards, `MeasureBar`, the tooltips, the typewriter hooks, `mockData`, `conversationContent`).
+- **Gotcha** (documented in `docsContent.tsx`): `.article-body :global(p)` and `:global(h2)` in `ProjectLayout` force fonts and margins onto bare `&lt;p&gt;`/`&lt;h2&gt;` inside MDX islands. The islands avoid real `p`/`h2` tags.
+
+## 5. Tests, lint, scripts, conventions
+
+- **Scripts:**
+  - `dev` (`astro dev`)
+  - `build` (`astro build`)
+  - `preview`
+  - `astro`
+  - `check` (`astro check`)
+  - `lint` (`eslint .`)
+  - `format` (`prettier --write .`)
+  - `format:check`
+  - `icons:upgrade` (`pixelarticons upgrade --key=$PIXELARTICONS_LICENSE_KEY`)
+- **Tests:** none, and no test runner in deps.
+- **ESLint:** flat config `eslint.config.js`.
+  - It combines `eslint-plugin-astro` recommended rules, `@typescript-eslint` recommended rules, `react-hooks` recommended-latest rules, and `eslint-config-prettier` (last).
+  - It ignores `dist`, `.astro` and `node_modules`.
+- **Prettier:** `.prettierrc` uses `prettier-plugin-astro` and `prettier-plugin-tailwindcss`, with an astro parser override. `.prettierignore` lists `build` and `coverage`. There is no `format:check` CI workflow: `.github/` has only issue templates.
+- **TypeScript:** extends `astro/tsconfigs/strict`, with `jsx: react-jsx`. The root has TypeScript 6.
+- **Docs and agent config:**
+  - `README.md`: stack rationale, local setup, env vars (`BUTTONDOWN_API_KEY`, `SENTRY_DSN`, `SENTRY_AUTH_TOKEN`), and structure. Its structure table includes a `src/assets/` entry, but that directory doesn't exist.
+  - `.env.example` also lists `PUBLIC_SENTRY_DSN` and `PIXELARTICONS_LICENSE_KEY`.
+  - No CLAUDE.md anywhere. `.claude/` has `settings.json` (Entire CLI hooks only) and empty `commands/` and `skills/`. `.vscode/` has `extensions.json` and a `launch.json` that runs `astro dev`.
+- **Code conventions** are in the inline comments, which are verbose rationale blocks, plus a fixed pattern: fade-in via `data-animate`, per-project colors via inline `--x-light/--x-dark` custom properties resolved in `global.css`, shared media styling via `MEDIA_FRAME_SHADOW`, and `.ping-section*` class names for case-study sections.
+- **Deploy:** Vercel (`.vercel/`, adapter), with the Sentry source-map upload configured in `astro.config.mjs`.
+
+## 6. Assets
+
+`public/` also holds `favicon.{svg,ico}`, `favicon-16x16.png` and `favicon-32x32.png`. The files below are referenced by the site, apart from the last two.
+
+- `public/me-big-head-only.svg`: avatar in the home hero.
+- `public/me-big-head.svg`: referenced nowhere in `src`.
+- `public/fonts/Redaction_35-{Regular,Italic,Bold}.woff2`: Bold is unreferenced in `global.css`.
+- `cody-pixel-portrait-transparent.svg` at the repo root: untracked and unreferenced.
+- **Ping** (4.3M), in `public/projects/ping/`:
+  - `solution-intro.png`, `solution-old.png` and `solution-new.png`
+  - `Ping1`, `Ping2` and `Ping3`, each as `.mp4` and `.webm`
+- **Undercurrent** (184K), in `public/projects/undercurrent/`:
+  - `solution-intro.png`
+- **Watchtower** (3.2M), in `public/projects/watchtower/`:
+  - `WatchtowerOpener.png`, `solution-old.png` and `solution-new.png`
+  - `Watchtower2.mp4` and `Watchtower2.webm`
+
+Notes on these:
+- Watchtower's opener `alt` text says "Undercurrent design system overview...". It looks like a copy-paste leftover.
+- The only `Watchtower2` video exists, with no `Watchtower1` or `Watchtower3`.
+- Icons are inline SVG components from pixelarticons, with no icon files.
+- The `dist/` and `.vercel/output/` directories hold "name 2.*" duplicate files, which are macOS copy artifacts.</result>
+<usage><subagent_tokens>135025</subagent_tokens><tool_uses>16</tool_uses><duration_ms>95628</duration_ms></usage>
+</task-notification>
+
+---
+
+Yes, start Phase 0

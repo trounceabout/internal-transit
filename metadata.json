@@ -1,0 +1,49 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "01M8FDJNJ6SV1BNAPX039A1217",
+  "strategy": "manual-commit",
+  "branch": "feat/remove-articles",
+  "checkpoints_count": 2,
+  "files_touched": [
+    ".env.example",
+    "README.md",
+    "bun.lock",
+    "package.json",
+    "src/components/SubscribeForm.tsx",
+    "src/content.config.ts",
+    "src/content/blog/never-the-artist.mdx",
+    "src/layouts/BaseLayout.astro",
+    "src/layouts/BlogLayout.astro",
+    "src/layouts/ProjectLayout.astro",
+    "src/lib/categoryConfig.ts",
+    "src/pages/api/subscribe.ts",
+    "src/pages/blog/[slug].astro",
+    "src/pages/blog/index.astro",
+    "src/pages/index.astro",
+    "src/pages/rss.xml.js",
+    "src/styles/global.css"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 68,
+    "cache_creation_tokens": 125543,
+    "cache_read_tokens": 4234539,
+    "output_tokens": 25301,
+    "api_call_count": 31,
+    "subagent_tokens": {
+      "input_tokens": 20,
+      "cache_creation_tokens": 125027,
+      "cache_read_tokens": 795041,
+      "output_tokens": 13332,
+      "api_call_count": 10
+    }
+  }
+}
