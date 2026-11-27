@@ -8,6 +8,8 @@ import ActionButton from "@/components/ActionButton.astro";
 
 export interface NavAction {
   label: string;
+  // Shorter label for narrow screens.
+  shortLabel?: string;
   // Keyboard key that triggers the action: "enter", "esc", or a single letter.
   shortcut: string;
   href: string;
@@ -33,12 +35,13 @@ const { actions } = Astro.props;
   class="bottom-nav pointer-events-none fixed inset-x-0 bottom-0 z-40 pt-10 pb-5"
 >
   <div
-    class="pointer-events-auto mx-auto flex w-full max-w-[1200px] flex-wrap items-center gap-x-6 gap-y-2 px-6"
+    class="bottom-actions pointer-events-auto mx-auto flex w-full max-w-[1200px] items-center gap-x-2 overflow-x-auto px-6 sm:gap-x-6"
   >
     {
       actions.map((action) => (
         <ActionButton
           label={action.label}
+          shortLabel={action.shortLabel}
           detail={action.detail}
           shortcut={action.shortcut}
           href={action.href}
@@ -55,6 +58,25 @@ const { actions } = Astro.props;
 </nav>
 
 <style>
+  /* One row, never wrapping: on phones with several actions it scrolls
+     sideways instead of stacking up over the page content. */
+  .bottom-actions {
+    scrollbar-width: none;
+  }
+  /* If a row is still wider than the screen, fade its right edge as a hint
+     that it scrolls. (When everything fits, the fade lands on empty padding.) */
+  @media (max-width: 39.99rem) {
+    .bottom-actions {
+      mask-image: linear-gradient(
+        to right,
+        black calc(100% - 2rem),
+        transparent
+      );
+    }
+  }
+  .bottom-actions::-webkit-scrollbar {
+    display: none;
+  }
   /* A soft fade behind the bar so page content scrolling underneath it
      doesn't collide with the button labels. The gradient only paints the
      bar's own padding area; the middle of the viewport stays untouched. */

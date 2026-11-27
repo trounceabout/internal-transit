@@ -26,9 +26,13 @@ export function initCaseStudy() {
   const sections = [...root.querySelectorAll<HTMLElement>("[data-section]")];
   const subItems = [...root.querySelectorAll<HTMLElement>("[data-sub]")];
   const subnav = document.querySelector<HTMLElement>("[data-subnav]");
-  const sectionLinks = subnav
-    ? [...subnav.querySelectorAll<HTMLElement>("[data-section-link]")]
-    : [];
+  // Top-level links appear twice: in the desktop side nav and in the mobile
+  // chip bar (only one is visible at a time). Keep both in sync.
+  const sectionLinks = [
+    ...document.querySelectorAll<HTMLElement>(
+      "[data-subnav] [data-section-link], [data-subnav-mobile] [data-section-link]",
+    ),
+  ];
   const subLinks = subnav
     ? [...subnav.querySelectorAll<HTMLElement>("[data-sub-link]")]
     : [];
@@ -44,10 +48,17 @@ export function initCaseStudy() {
     activeSection = id;
     if (subnav) subnav.dataset.activeSection = id;
     sectionLinks.forEach((link) => {
-      link.setAttribute(
-        "aria-current",
-        String(link.dataset.sectionLink === id),
-      );
+      const isCurrent = link.dataset.sectionLink === id;
+      link.setAttribute("aria-current", String(isCurrent));
+      // In the mobile chip bar, slide the row so the current chip stays in
+      // view (scrolling the bar itself, never the page).
+      const bar = link.closest<HTMLElement>("[data-subnav-mobile]");
+      if (isCurrent && bar) {
+        bar.scrollTo({
+          left: link.offsetLeft - (bar.clientWidth - link.offsetWidth) / 2,
+          behavior: "smooth",
+        });
+      }
     });
     // Bottom-nav actions that only apply to certain sections.
     bottomActions.forEach((el) => {
