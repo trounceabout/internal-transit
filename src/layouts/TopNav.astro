@@ -14,16 +14,8 @@ import { GitBranch } from "pixelarticons/react/GitBranch";
 import { User } from "pixelarticons/react/User";
 import { Moon } from "pixelarticons/react/Moon";
 import { Sun } from "pixelarticons/react/Sun";
-import { Github } from "pixelarticons/react/Github";
-import { Discord } from "pixelarticons/react/Discord";
-import { Linkedin2 } from "pixelarticons/react/Linkedin2";
-import {
-  ABOUT_HREF,
-  DISCORD_URL,
-  GITHUB_URL,
-  LINKEDIN_URL,
-  PROJECTS_HREF,
-} from "@/data/links";
+import SocialLinks from "@/components/SocialLinks.astro";
+import { ABOUT_HREF, PROJECTS_HREF } from "@/data/links";
 
 const pathname = Astro.url.pathname;
 const section = pathname.startsWith(ABOUT_HREF) ? "about" : "projects";
@@ -31,13 +23,6 @@ const section = pathname.startsWith(ABOUT_HREF) ? "about" : "projects";
 const navItems = [
   { id: "projects", label: "Projects", href: PROJECTS_HREF, Icon: GitBranch },
   { id: "about", label: "About", href: ABOUT_HREF, Icon: User },
-];
-
-// Brand colors match the ones the old footer used for these three services.
-const socials = [
-  { label: "GitHub", href: GITHUB_URL, Icon: Github, color: "#4183C4" },
-  { label: "Discord", href: DISCORD_URL, Icon: Discord, color: "#5865F2" },
-  { label: "LinkedIn", href: LINKEDIN_URL, Icon: Linkedin2, color: "#0077B5" },
 ];
 ---
 
@@ -77,22 +62,7 @@ const socials = [
       data-clock
       class="font-plex-sans text-portfolio-muted min-w-[5.5rem] text-xs tabular-nums"
     ></time>
-    <div class="flex items-center gap-1.5">
-      {
-        socials.map(({ label, href, Icon, color }) => (
-          <a
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={label}
-            class="flex size-4 items-center justify-center transition-opacity hover:opacity-70"
-            style={{ color }}
-          >
-            <Icon width={16} height={16} />
-          </a>
-        ))
-      }
-    </div>
+    <SocialLinks class="gap-1.5" />
   </div>
 </header>
 

@@ -1,0 +1,40 @@
+---
+// SocialLinks.astro — the GitHub / Discord / LinkedIn icon row shared by the
+// top nav and the start page (and reusable on About). Icons use each
+// service's brand color, as the old footer links did.
+import { Github } from "pixelarticons/react/Github";
+import { Discord } from "pixelarticons/react/Discord";
+import { Linkedin2 } from "pixelarticons/react/Linkedin2";
+import { DISCORD_URL, GITHUB_URL, LINKEDIN_URL } from "@/data/links";
+
+interface Props {
+  class?: string;
+  // Icon size in px. Both current uses are 16.
+  size?: number;
+}
+
+const { class: className, size = 16 } = Astro.props;
+
+const socials = [
+  { label: "GitHub", href: GITHUB_URL, Icon: Github, color: "#4183C4" },
+  { label: "Discord", href: DISCORD_URL, Icon: Discord, color: "#5865F2" },
+  { label: "LinkedIn", href: LINKEDIN_URL, Icon: Linkedin2, color: "#0077B5" },
+];
+---
+
+<div class:list={["flex items-center", className]}>
+  {
+    socials.map(({ label, href, Icon, color }) => (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={label}
+        class="flex items-center justify-center transition-opacity hover:opacity-70"
+        style={{ color, width: `${size}px`, height: `${size}px` }}
+      >
+        <Icon width={size} height={size} />
+      </a>
+    ))
+  }
+</div>
