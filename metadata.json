@@ -1,0 +1,44 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "01M8FE9NXM6K9SZBXA02EGQKHF",
+  "strategy": "manual-commit",
+  "branch": "feat/home-preview",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "src/components/ActionButton.astro",
+    "src/components/home/ProjectShowcase.astro",
+    "src/content.config.ts",
+    "src/content/projects/ping.mdx",
+    "src/content/projects/undercurrent.mdx",
+    "src/content/projects/watchtower.mdx",
+    "src/layouts/BottomNav.astro",
+    "src/layouts/HomeLayout.astro",
+    "src/layouts/TopNav.astro",
+    "src/pages/home.astro",
+    "src/pages/home/[slug].astro",
+    "src/pages/home/index.astro"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 50,
+    "cache_creation_tokens": 33001,
+    "cache_read_tokens": 6392692,
+    "output_tokens": 21042,
+    "api_call_count": 23,
+    "subagent_tokens": {
+      "input_tokens": 0,
+      "cache_creation_tokens": 0,
+      "cache_read_tokens": 0,
+      "output_tokens": 0,
+      "api_call_count": 0
+    }
+  }
+}
