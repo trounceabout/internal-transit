@@ -202,6 +202,10 @@
      41px down on the Projects page and 56px down on the other pages. */
   --nav-top: 41px;
 }
+/* About: a plain 1200px column with the nav 56px down, as in Figma. */
+body[data-page="about"] {
+  --nav-top: 56px;
+}
 @media (min-width: 64rem) {
   /* Home / Projects: 990px column, 176px gutter (152px label column + 24px gap). */
   body[data-page="home"] {

@@ -29,16 +29,17 @@ const elsewhere = [
 ---
 
 <BaseLayout
+  page="about"
   title="About"
   description="Cody Keisler is a design engineer in Rock Hill, SC who designs directly in code."
 >
   <div
-    class="mx-auto flex w-full max-w-[1200px] flex-col gap-16 px-6 pb-32 lg:gap-20"
+    class="mx-auto flex w-full max-w-[1248px] flex-col gap-16 px-6 pb-32 lg:gap-20"
   >
     <!-- Hero -->
     <h1
       data-animate
-      class="about-hero font-redaction text-portfolio-ink m-0 flex flex-nowrap items-center justify-center gap-x-[0.12em] pt-4 text-center font-normal"
+      class="about-hero font-redaction text-portfolio-ink m-0 mt-20 flex flex-nowrap items-start font-normal"
     >
       <span>Hi, I’m</span>
       <span class="about-hero-name italic">Cody</span>
@@ -86,8 +87,8 @@ const elsewhere = [
               <dt class="fact-label">Based in</dt>
               <dd class="m-0 flex min-w-0 flex-col gap-3">
                 <span class="fact-value">{facts.basedIn}</span>
-                <!-- Map. Stand-in dot-matrix pattern until the real map graphic
-                     is added; swap the contents of .map-frame for it. -->
+                <!-- Map: the dot-matrix graphic from Figma (public/about/map-dots.svg),
+                     centered in a dark framed panel. -->
                 <div
                   class="map-frame"
                   role="img"
@@ -113,7 +114,7 @@ const elsewhere = [
                   {String(index + 1).padStart(2, "0")}
                 </p>
                 <div class="flex min-w-0 flex-col gap-2">
-                  <p class="text-portfolio-ink m-0 font-mono text-lg font-medium">
+                  <p class="text-portfolio-ink m-0 font-mono text-lg leading-[normal] font-medium">
                     {item.title}
                   </p>
                   <p class="font-plex-sans text-portfolio-ink/85 m-0 text-lg leading-7">
@@ -128,40 +129,54 @@ const elsewhere = [
         <!-- Work history -->
         <section id="work-history" class="flex scroll-mt-28 flex-col gap-6">
           <h2 class="section-eyebrow">Work history</h2>
-          <div class="flex flex-col">
+          <div class="flex flex-col gap-6">
             {
-              workHistory.map((company) => (
+              workHistory.map((company, companyIndex) => (
                 <div class="company">
                   <div class="history-grid items-center">
                     <p class="text-portfolio-accent m-0 font-mono text-sm uppercase">
                       {company.tenure}
                     </p>
                     <div class="flex items-center gap-[14px]">
-                      <span class="logo-tile" aria-hidden="true">
+                      <span
+                        class="logo-tile"
+                        aria-hidden="true"
+                        style={
+                          company.tile
+                            ? `background-image: url(${company.tile});`
+                            : undefined
+                        }
+                      >
                         {company.logo ? (
-                          <img
-                            src={company.logo}
-                            alt=""
-                            class="size-full object-cover"
-                          />
+                          <img src={company.logo} alt="" class="size-[22px]" />
                         ) : (
                           company.name.charAt(0)
                         )}
                       </span>
-                      <h3 class="font-plex-sans text-portfolio-ink m-0 text-xl font-normal">
+                      <h3 class="font-plex-sans text-portfolio-ink m-0 text-xl leading-[normal] font-normal">
                         {company.name}
                       </h3>
                     </div>
                   </div>
 
-                  <div class="flex flex-col gap-6">
+                  <div
+                    class:list={[
+                      "flex flex-col",
+                      companyIndex === 0 ? "gap-6" : "gap-7",
+                    ]}
+                  >
                     {company.roles.map((role) => (
                       <div class="history-grid items-baseline">
                         <p class="fact-label m-0 leading-[22px]">
                           {role.dates}
                         </p>
                         <div class="flex min-w-0 flex-col gap-3">
-                          <div class="flex flex-col gap-1.5">
+                          <div
+                            class:list={[
+                              "flex flex-col",
+                              role.projects ? "gap-2" : "gap-1.5",
+                            ]}
+                          >
                             <p class="font-plex-sans text-portfolio-ink m-0 text-base leading-[22px] font-medium">
                               {role.title}
                             </p>
@@ -212,7 +227,7 @@ const elsewhere = [
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="elsewhere-pill text-portfolio-ink flex items-center gap-2 rounded-full py-2 pr-3.5 pl-3 font-mono text-sm font-medium"
+                  class="elsewhere-pill text-portfolio-ink flex items-center gap-2 rounded-full py-2 pr-3.5 pl-3 font-mono text-sm leading-[normal] font-medium"
                 >
                   <span style={{ color }} class="flex">
                     <Icon width={16} height={16} />
@@ -230,12 +245,18 @@ const elsewhere = [
 
 <style>
   /* ─── Hero ─────────────────────────────────────────────────────────────── */
-  /* 156px at desktop widths, scaling down with the viewport; every child is
-     sized in em so the portrait stays in proportion to the lettering. */
+  /* 156px at 1440px wide (Figma), scaling with the viewport on smaller screens.
+     Everything inside is sized in em so the lettering, gap and portrait keep
+     their proportions. The block is only as wide as "Hi, I'm Cody" and is
+     centered; the portrait is positioned on top of it (it overhangs the end of
+     the name rather than adding to the width), as in Figma. */
   .about-hero {
-    font-size: clamp(2.5rem, 1rem + 9.5vw, 9.75rem);
-    line-height: 1;
-    letter-spacing: -0.02em;
+    position: relative;
+    width: fit-content;
+    margin-inline: auto;
+    gap: 0.1154em; /* 18px at 156px */
+    font-size: clamp(2.5rem, 10.833vw, 9.75rem);
+    line-height: normal;
   }
   /* "Cody" is filled with a teal -> blue -> purple gradient. The text itself
      is made transparent and the gradient is clipped to its letterforms. */
@@ -251,15 +272,17 @@ const elsewhere = [
     color: transparent;
     /* Room for the italic's overhang so the gradient doesn't clip the "y". */
     padding-right: 0.08em;
+    margin-right: -0.08em; /* keeps the padding from adding to the layout width */
   }
   /* The pixel portrait is a single-color SVG, so it's drawn as a mask over an
      ink-colored box to follow the theme (same technique as the start page).
-     The negative margin tucks it against the end of "Cody", as in Figma. */
+     168px at 156px, starting 794px from the left edge of the name. */
   .about-portrait {
-    width: 1.08em;
-    height: 1.08em;
-    margin-left: -0.28em;
-    margin-top: -0.12em;
+    position: absolute;
+    top: 0;
+    left: 5.09em;
+    width: 1.077em;
+    height: 1.077em;
     -webkit-mask: url("/cody-pixel-portrait-transparent.svg") center / contain
       no-repeat;
     mask: url("/cody-pixel-portrait-transparent.svg") center / contain no-repeat;
@@ -292,24 +315,23 @@ const elsewhere = [
     color: var(--portfolio-ink);
   }
 
-  /* Stand-in for the map: a dark framed panel with a dot grid, using the same
-     media-frame shadow as the rest of the site's inset panels. */
+  /* The map: a dark panel with the dot-matrix graphic centered in it (680 x 591,
+     cropped to the 204px-tall frame), using the shared media-frame shadow. */
   .map-frame {
     height: 204px;
     border-radius: 0.5rem;
     background-color: #0c0c0e;
-    background-image: radial-gradient(
-      circle,
-      rgba(255, 249, 242, 0.35) 1px,
-      transparent 1px
-    );
-    background-size: 8px 8px;
+    background-image: url("/about/map-dots.svg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 680px 591px;
     box-shadow: var(--media-frame-shadow);
   }
 
   /* ─── Section eyebrows and rows ────────────────────────────────────────── */
   .section-eyebrow {
     margin: 0;
+    line-height: normal;
     font-family: var(--font-mono);
     font-size: 0.875rem;
     font-weight: 400;
@@ -353,6 +375,9 @@ const elsewhere = [
       grid-template-columns: 180px minmax(0, 1fr);
     }
   }
+  /* A 40px tile with stepped pixel corners (the tile shape is an SVG supplied per
+     company); the logo sits centered on it. Falls back to a plain tinted square
+     with the company's initial. */
   .logo-tile {
     display: flex;
     width: 40px;
@@ -360,22 +385,29 @@ const elsewhere = [
     flex-shrink: 0;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
     border-radius: 0.5rem;
     background-color: var(--portfolio-nav-active);
+    background-size: 100% 100%;
     color: var(--portfolio-ink);
     font-family: var(--font-mono);
     font-weight: 600;
   }
+  .logo-tile[style] {
+    border-radius: 0;
+    background-color: transparent;
+  }
   .project-list {
     display: flex;
+    max-width: 662px; /* 660px rows plus the 1px borders, as in Figma */
     flex-direction: column;
     overflow: hidden;
     border-radius: 0.5rem;
     border: 1px solid color-mix(in srgb, var(--portfolio-ink) 12%, transparent);
   }
+  /* Row dividers are drawn inside the rows (an inset shadow) so they don't add
+     height: Figma's two-project box is exactly 98px. */
   .project-list > :global(* + *) {
-    border-top: 1px solid
+    box-shadow: inset 0 1px 0
       color-mix(in srgb, var(--portfolio-ink) 12%, transparent);
   }
 
