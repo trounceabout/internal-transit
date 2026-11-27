@@ -1,0 +1,41 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "01M8FH2DV37S7PSN0Z5T5NS6JB",
+  "strategy": "manual-commit",
+  "branch": "fix/figma-projects-page",
+  "checkpoints_count": 3,
+  "files_touched": [
+    "src/components/ActionButton.astro",
+    "src/components/home/ProjectShowcase.astro",
+    "src/content.config.ts",
+    "src/content/projects/ping.mdx",
+    "src/layouts/BaseLayout.astro",
+    "src/layouts/BottomNav.astro",
+    "src/layouts/HomeLayout.astro",
+    "src/layouts/TopNav.astro",
+    "src/styles/global.css"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 148,
+    "cache_creation_tokens": 166367,
+    "cache_read_tokens": 40694871,
+    "output_tokens": 73885,
+    "api_call_count": 69,
+    "subagent_tokens": {
+      "input_tokens": 0,
+      "cache_creation_tokens": 0,
+      "cache_read_tokens": 0,
+      "output_tokens": 0,
+      "api_call_count": 0
+    }
+  }
+}

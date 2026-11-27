@@ -1,0 +1,16 @@
+Shouldn't we open PRs on all of them? Did you use Github stacked PRs?
+
+---
+
+<pasted_content id="b669">
+This is a good start, but some of it is pretty off from what’s in Figma. Here are each of the frames for each page:
+- Projects page: https://www.figma.com/design/yQsyiiyNzkw04y8TR6UCcK/Examples?node-id=56-11907&t=XVgE2imuhGfLIvqq-11
+- Case study, overview: https://www.figma.com/design/yQsyiiyNzkw04y8TR6UCcK/Examples?node-id=64-4769&t=XVgE2imuhGfLIvqq-11
+- Case study, Deep dive: https://www.figma.com/design/yQsyiiyNzkw04y8TR6UCcK/Examples?node-id=59-4620&t=XVgE2imuhGfLIvqq-11
+- Case study, deep dive (window sized): https://www.figma.com/design/yQsyiiyNzkw04y8TR6UCcK/Examples?node-id=56-12791&t=XVgE2imuhGfLIvqq-11
+- Case study, walkthrough: https://www.figma.com/design/yQsyiiyNzkw04y8TR6UCcK/Examples?node-id=56-13014&t=XVgE2imuhGfLIvqq-11
+- Case study, gallery: https://www.figma.com/design/yQsyiiyNzkw04y8TR6UCcK/Examples?node-id=56-13242&t=XVgE2imuhGfLIvqq-11
+- About: https://www.figma.com/design/yQsyiiyNzkw04y8TR6UCcK/Examples?node-id=64-5533&t=XVgE2imuhGfLIvqq-11
+
+Let’s start with the projects page. Take an extremely thorough, close look at it in Figma and fix what doesn’t match. Then we’ll do that with each of the other pages.
+</pasted_content id="b669">
