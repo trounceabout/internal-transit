@@ -1,0 +1,87 @@
+---
+// ProjectRow.astro — one linked project row: a small tinted icon badge and the
+// project name on the left, a short tagline on the right. It's the same look as
+// the old home-page project list (badge square, hover fill rising from the
+// bottom in the project's color), now used for the case-study links in the
+// About page's work history.
+//
+// Colors are passed as inline custom properties; global.css resolves them to
+// --icon-color / --badge-color for the active theme.
+import type { ComponentType, SVGProps } from "react";
+
+interface Props {
+  href: string;
+  name: string;
+  tagline: string;
+  icon: ComponentType<SVGProps<SVGSVGElement>>;
+  iconColor?: string;
+  iconColorDark?: string;
+  badgeColor?: string;
+  badgeColorDark?: string;
+}
+
+const {
+  href,
+  name,
+  tagline,
+  icon: Icon,
+  iconColor,
+  iconColorDark,
+  badgeColor,
+  badgeColorDark,
+} = Astro.props;
+
+const colorVars = {
+  ...(iconColor ? { "--icon-color-light": iconColor } : {}),
+  ...(iconColorDark ? { "--icon-color-dark": iconColorDark } : {}),
+  ...(badgeColor ? { "--badge-color-light": badgeColor } : {}),
+  ...(badgeColorDark ? { "--badge-color-dark": badgeColorDark } : {}),
+};
+---
+
+<a
+  href={href}
+  style={colorVars}
+  class="project-row relative flex flex-wrap items-center justify-between gap-x-4 gap-y-1 overflow-hidden p-3 font-mono text-sm tracking-[-0.14px]"
+>
+  <span class="relative z-10 flex items-center gap-3">
+    <span
+      class="flex size-6 shrink-0 items-center justify-center rounded-md"
+      style="background-color: var(--badge-color);"
+    >
+      <Icon width={15} height={15} style={{ color: "var(--icon-color)" }} />
+    </span>
+    <span class="text-portfolio-ink whitespace-nowrap">{name}</span>
+  </span>
+  <span class="text-portfolio-muted relative z-10">{tagline}</span>
+</a>
+
+<style>
+  /* Hover fill: a layer in the project's badge color grows up from the bottom
+     edge. Only animated when the visitor hasn't asked for reduced motion. */
+  .project-row::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--badge-color, transparent);
+    transform: scaleY(0);
+    transform-origin: bottom;
+    z-index: 0;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .project-row::before {
+      transition: transform 0.2s ease-out;
+    }
+  }
+  .project-row:hover::before,
+  .project-row:focus-visible::before {
+    transform: scaleY(1);
+  }
+  .project-row:focus {
+    outline: none;
+  }
+  .project-row:focus-visible {
+    outline: 2px solid var(--icon-color, currentColor);
+    outline-offset: -2px;
+  }
+</style>

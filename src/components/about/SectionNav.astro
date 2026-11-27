@@ -1,0 +1,122 @@
+---
+// SectionNav.astro — the About page's side nav: one link per section, with the
+// section currently in view highlighted. Same idea as the case study's SubNav
+// but flat (no sub-items) and a touch larger, per the Figma About frame.
+// The script at the bottom watches scrolling and sets aria-current.
+interface Props {
+  sections: { id: string; label: string }[];
+}
+
+const { sections } = Astro.props;
+---
+
+<nav
+  aria-label="About sections"
+  data-section-nav
+  class="flex w-[260px] flex-col gap-2 font-mono text-base"
+>
+  {
+    sections.map((section, index) => (
+      <a
+        href={`#${section.id}`}
+        data-section-link={section.id}
+        aria-current={index === 0 ? "true" : "false"}
+        class="section-link"
+      >
+        {section.label}
+      </a>
+    ))
+  }
+</nav>
+
+<style>
+  .section-link {
+    display: block;
+    padding: 0.6875rem 1.25rem; /* 11px / 20px: a 44px-tall row, as in Figma */
+    border-radius: 0.5rem;
+    color: var(--portfolio-muted);
+    transition:
+      background-color 0.2s ease-out,
+      color 0.2s ease-out;
+  }
+  .section-link:hover {
+    color: var(--portfolio-ink);
+  }
+  .section-link:focus {
+    outline: none;
+  }
+  .section-link:focus-visible {
+    outline: 2px solid var(--portfolio-ink);
+    outline-offset: -2px;
+  }
+  .section-link[aria-current="true"] {
+    background-color: var(--portfolio-nav-active);
+    color: var(--portfolio-ink);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .section-link {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  // Highlights the link for whichever section covers a line ~35% down the
+  // viewport. Runs on first load and after each client-side navigation; the
+  // scroll listener is removed through an AbortController so it can't stack.
+  let controller: AbortController | null = null;
+
+  document.addEventListener("astro:page-load", () => {
+    controller?.abort();
+    controller = null;
+
+    const links = [
+      ...document.querySelectorAll<HTMLElement>(
+        "[data-section-nav] [data-section-link]",
+      ),
+    ];
+    if (links.length === 0) return;
+
+    const sections = links
+      .map((link) => document.getElementById(link.dataset.sectionLink ?? ""))
+      .filter((el): el is HTMLElement => el !== null);
+
+    controller = new AbortController();
+    let queued = false;
+
+    function update() {
+      const line = window.innerHeight * 0.35;
+      // The last section whose top has crossed the line is "current".
+      let current = sections[0];
+      for (const section of sections) {
+        if (section.getBoundingClientRect().top <= line) current = section;
+      }
+      // At the very bottom of the page the last section should win even if
+      // it's too short to ever reach the line.
+      const atBottom =
+        window.innerHeight + window.scrollY >= document.body.scrollHeight - 4;
+      if (atBottom) current = sections[sections.length - 1];
+
+      links.forEach((link) => {
+        link.setAttribute(
+          "aria-current",
+          String(link.dataset.sectionLink === current?.id),
+        );
+      });
+    }
+
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (queued) return;
+        queued = true;
+        requestAnimationFrame(() => {
+          queued = false;
+          update();
+        });
+      },
+      { passive: true, signal: controller.signal },
+    );
+    update();
+  });
+</script>

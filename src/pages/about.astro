@@ -1,0 +1,391 @@
+---
+// about.astro — the About page: a big "Hi, I'm Cody" hero, a side nav that
+// follows the reader down the page, and four sections (About me, How I work,
+// Work history, Elsewhere). The copy lives in src/data/about.ts. This page has
+// no bottom nav, by design.
+import { getCollection } from "astro:content";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import ProjectRow from "@/components/ProjectRow.astro";
+import SectionNav from "@/components/about/SectionNav.astro";
+import { projectIconMap } from "@/lib/projectIconMap";
+import { Github } from "pixelarticons/react/Github";
+import { Discord } from "pixelarticons/react/Discord";
+import { Linkedin2 } from "pixelarticons/react/Linkedin2";
+import { DISCORD_URL, GITHUB_URL, LINKEDIN_URL } from "@/data/links";
+import { facts, howIWork, intro, sections, workHistory } from "@/data/about";
+
+// Look up each case study once so the work-history rows can use its name,
+// icon, and colors.
+const projects = new Map(
+  (await getCollection("projects")).map((p) => [p.id, p]),
+);
+
+const elsewhere = [
+  { label: "GitHub", href: GITHUB_URL, Icon: Github, color: "#4183C4" },
+  { label: "Discord", href: DISCORD_URL, Icon: Discord, color: "#5865F2" },
+  { label: "LinkedIn", href: LINKEDIN_URL, Icon: Linkedin2, color: "#0077B5" },
+];
+---
+
+<BaseLayout
+  title="About"
+  description="Cody Keisler is a design engineer in Rock Hill, SC who designs directly in code."
+>
+  <div
+    class="mx-auto flex w-full max-w-[1200px] flex-col gap-16 px-6 pb-32 lg:gap-20"
+  >
+    <!-- Hero -->
+    <h1
+      data-animate
+      class="about-hero font-redaction text-portfolio-ink m-0 flex flex-wrap items-center justify-center gap-x-[0.12em] pt-4 text-center font-normal"
+    >
+      <span>Hi, I’m</span>
+      <span class="about-hero-name italic">Cody</span>
+      <span
+        role="img"
+        aria-label="Pixel-art portrait of Cody"
+        class="about-portrait bg-portfolio-ink"></span>
+    </h1>
+
+    <div class="lg:grid lg:grid-cols-[260px_minmax(0,900px)] lg:gap-10">
+      <!-- Side nav: sticky, hidden on narrow screens for now. -->
+      <aside class="hidden lg:block">
+        <div class="sticky top-28">
+          <SectionNav sections={sections} />
+        </div>
+      </aside>
+
+      <div class="flex min-w-0 flex-col gap-24">
+        <!-- About me -->
+        <section
+          id="about-me"
+          data-animate
+          class="flex scroll-mt-28 flex-col gap-8"
+        >
+          <p
+            class="font-plex-sans text-portfolio-ink max-w-[45rem] text-xl leading-[30px]"
+          >
+            {intro.lead}
+          </p>
+          <p
+            class="font-plex-sans text-portfolio-ink/85 max-w-[45rem] text-lg leading-7"
+          >
+            {intro.body}
+          </p>
+
+          <dl class="m-0 flex flex-col gap-4 pt-4">
+            <div class="fact-row">
+              <dt class="fact-label">Role</dt>
+              <dd class="fact-value">{facts.role}</dd>
+            </div>
+            <div class="fact-row">
+              <dt class="fact-label">Based in</dt>
+              <dd class="m-0 flex min-w-0 flex-col gap-3">
+                <span class="fact-value">{facts.basedIn}</span>
+                <!-- Map. Stand-in dot-matrix pattern until the real map graphic
+                     is added; swap the contents of .map-frame for it. -->
+                <div
+                  class="map-frame"
+                  role="img"
+                  aria-label="Map of Rock Hill, SC"
+                >
+                </div>
+              </dd>
+            </div>
+            <div class="fact-row">
+              <dt class="fact-label">Focus</dt>
+              <dd class="fact-value">{facts.focus}</dd>
+            </div>
+          </dl>
+        </section>
+
+        <!-- How I work -->
+        <section id="how-i-work" class="flex scroll-mt-28 flex-col">
+          <h2 class="section-eyebrow pb-6">How I work</h2>
+          {
+            howIWork.map((item, index) => (
+              <div class="work-row">
+                <p class="text-portfolio-accent m-0 font-mono text-sm sm:w-10 sm:shrink-0">
+                  {String(index + 1).padStart(2, "0")}
+                </p>
+                <div class="flex min-w-0 flex-col gap-2">
+                  <p class="text-portfolio-ink m-0 font-mono text-lg font-medium">
+                    {item.title}
+                  </p>
+                  <p class="font-plex-sans text-portfolio-ink/85 m-0 text-lg leading-7">
+                    {item.body}
+                  </p>
+                </div>
+              </div>
+            ))
+          }
+        </section>
+
+        <!-- Work history -->
+        <section id="work-history" class="flex scroll-mt-28 flex-col gap-6">
+          <h2 class="section-eyebrow">Work history</h2>
+          <div class="flex flex-col">
+            {
+              workHistory.map((company) => (
+                <div class="company">
+                  <div class="history-grid items-center">
+                    <p class="text-portfolio-accent m-0 font-mono text-sm uppercase">
+                      {company.tenure}
+                    </p>
+                    <div class="flex items-center gap-[14px]">
+                      <span class="logo-tile" aria-hidden="true">
+                        {company.logo ? (
+                          <img
+                            src={company.logo}
+                            alt=""
+                            class="size-full object-cover"
+                          />
+                        ) : (
+                          company.name.charAt(0)
+                        )}
+                      </span>
+                      <h3 class="font-plex-sans text-portfolio-ink m-0 text-xl font-normal">
+                        {company.name}
+                      </h3>
+                    </div>
+                  </div>
+
+                  <div class="flex flex-col gap-6">
+                    {company.roles.map((role) => (
+                      <div class="history-grid items-baseline">
+                        <p class="fact-label m-0 leading-[22px]">
+                          {role.dates}
+                        </p>
+                        <div class="flex min-w-0 flex-col gap-3">
+                          <div class="flex flex-col gap-1.5">
+                            <p class="font-plex-sans text-portfolio-ink m-0 text-base leading-[22px] font-medium">
+                              {role.title}
+                            </p>
+                            {role.description && (
+                              <p class="font-plex-sans text-portfolio-ink/80 m-0 text-base leading-6">
+                                {role.description}
+                              </p>
+                            )}
+                          </div>
+                          {role.projects && (
+                            <div class="project-list">
+                              {role.projects.map((entry) => {
+                                const project = projects.get(entry.slug);
+                                if (!project) return null;
+                                const d = project.data;
+                                return (
+                                  <ProjectRow
+                                    href={`/projects/${project.id}`}
+                                    name={d.name}
+                                    tagline={entry.tagline}
+                                    icon={projectIconMap[d.icon]}
+                                    iconColor={d.iconColor}
+                                    iconColorDark={d.iconColorDark}
+                                    badgeColor={d.badgeColor}
+                                    badgeColorDark={d.badgeColorDark}
+                                  />
+                                );
+                              })}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))
+            }
+          </div>
+        </section>
+
+        <!-- Elsewhere -->
+        <section id="elsewhere" class="flex scroll-mt-28 flex-col gap-6">
+          <h2 class="section-eyebrow">Elsewhere</h2>
+          <div class="flex flex-wrap gap-4">
+            {
+              elsewhere.map(({ label, href, Icon, color }) => (
+                <a
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="elsewhere-pill text-portfolio-ink flex items-center gap-2 rounded-full py-2 pr-3.5 pl-3 font-mono text-sm font-medium"
+                >
+                  <span style={{ color }} class="flex">
+                    <Icon width={16} height={16} />
+                  </span>
+                  {label}
+                </a>
+              ))
+            }
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  /* ─── Hero ─────────────────────────────────────────────────────────────── */
+  /* 156px at desktop widths, scaling down with the viewport; every child is
+     sized in em so the portrait stays in proportion to the lettering. */
+  .about-hero {
+    font-size: clamp(3.5rem, 2rem + 8vw, 9.75rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  /* "Cody" is filled with a teal -> blue -> purple gradient. The text itself
+     is made transparent and the gradient is clipped to its letterforms. */
+  .about-hero-name {
+    background-image: linear-gradient(
+      90deg,
+      #40c6b0 0%,
+      #4f9cf0 55%,
+      #8b6cf5 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    /* Room for the italic's overhang so the gradient doesn't clip the "y". */
+    padding-right: 0.08em;
+  }
+  /* The pixel portrait is a single-color SVG, so it's drawn as a mask over an
+     ink-colored box to follow the theme (same technique as the start page).
+     The negative margin tucks it against the end of "Cody", as in Figma. */
+  .about-portrait {
+    width: 1.08em;
+    height: 1.08em;
+    margin-left: -0.28em;
+    margin-top: -0.12em;
+    -webkit-mask: url("/cody-pixel-portrait-transparent.svg") center / contain
+      no-repeat;
+    mask: url("/cody-pixel-portrait-transparent.svg") center / contain no-repeat;
+  }
+
+  /* ─── Quick facts ──────────────────────────────────────────────────────── */
+  .fact-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.25rem 2.5rem;
+  }
+  @media (min-width: 40rem) {
+    .fact-row {
+      grid-template-columns: 180px minmax(0, 1fr);
+    }
+  }
+  .fact-label {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    color: var(--portfolio-muted);
+  }
+  .fact-value {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    line-height: 22px;
+    text-transform: uppercase;
+    color: var(--portfolio-ink);
+  }
+
+  /* Stand-in for the map: a dark framed panel with a dot grid, using the same
+     media-frame shadow as the rest of the site's inset panels. */
+  .map-frame {
+    height: 204px;
+    border-radius: 0.5rem;
+    background-color: #0c0c0e;
+    background-image: radial-gradient(
+      circle,
+      rgba(255, 249, 242, 0.35) 1px,
+      transparent 1px
+    );
+    background-size: 8px 8px;
+    box-shadow: var(--media-frame-shadow);
+  }
+
+  /* ─── Section eyebrows and rows ────────────────────────────────────────── */
+  .section-eyebrow {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    font-weight: 400;
+    text-transform: uppercase;
+    color: var(--portfolio-muted);
+  }
+
+  /* One numbered "How I work" principle: hairline on top, number + text. */
+  .work-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1.5rem 0;
+    border-top: 1px solid
+      color-mix(in srgb, var(--portfolio-ink) 12%, transparent);
+  }
+  @media (min-width: 40rem) {
+    .work-row {
+      flex-direction: row;
+      gap: 2.5rem;
+    }
+  }
+
+  /* ─── Work history ─────────────────────────────────────────────────────── */
+  .company {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1.5rem 0;
+    border-top: 1px solid
+      color-mix(in srgb, var(--portfolio-ink) 12%, transparent);
+  }
+  /* Date / tenure on the left, details on the right (stacked on phones). */
+  .history-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.5rem 2.5rem;
+  }
+  @media (min-width: 40rem) {
+    .history-grid {
+      grid-template-columns: 180px minmax(0, 1fr);
+    }
+  }
+  .logo-tile {
+    display: flex;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    background-color: var(--portfolio-nav-active);
+    color: var(--portfolio-ink);
+    font-family: var(--font-mono);
+    font-weight: 600;
+  }
+  .project-list {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    border: 1px solid color-mix(in srgb, var(--portfolio-ink) 12%, transparent);
+  }
+  .project-list > :global(* + *) {
+    border-top: 1px solid
+      color-mix(in srgb, var(--portfolio-ink) 12%, transparent);
+  }
+
+  /* ─── Elsewhere ────────────────────────────────────────────────────────── */
+  .elsewhere-pill {
+    background-color: color-mix(in srgb, var(--portfolio-ink) 6%, transparent);
+    transition: background-color 0.2s ease-out;
+  }
+  .elsewhere-pill:hover {
+    background-color: color-mix(in srgb, var(--portfolio-ink) 12%, transparent);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .elsewhere-pill {
+      transition: none;
+    }
+  }
+</style>
