@@ -1,0 +1,83 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "01M8FN9WGPF3W1N4EYQ60XEV38",
+  "session_id": "182463fd-8598-4d70-91a2-16e97c6dcf17",
+  "strategy": "manual-commit",
+  "created_at": "2026-11-27T23:26:35.48767Z",
+  "branch": "fix/figma-about",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "public/about/logo-nexcess.svg",
+    "public/about/logo-usc.svg",
+    "public/about/map-dots.svg",
+    "public/about/tile-nexcess.svg",
+    "public/about/tile-usc.svg",
+    "src/components/ProjectRow.astro",
+    "src/components/about/SectionNav.astro",
+    "src/data/about.ts",
+    "src/pages/about.astro",
+    "src/styles/global.css"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-sonnet-5-5",
+  "turn_id": "b8a5ab9d253d",
+  "checkpoint_transcript_start": 5079,
+  "transcript_lines_at_start": 5079,
+  "compact_transcript_start": 474,
+  "token_usage": {
+    "input_tokens": 34,
+    "cache_creation_tokens": 67518,
+    "cache_read_tokens": 5463744,
+    "output_tokens": 21054,
+    "api_call_count": 17
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "claude-skill-toolu_01BEuPuteMBhtyAQeiBaSS8C",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "gh-stack"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "51f4f1958ae0",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 2767,
+        "end": 2768,
+        "entry_ids": [
+          "4415bee8-24f2-448a-88b5-1624c04d6979"
+        ],
+        "tool_use_id": "toolu_01BEuPuteMBhtyAQeiBaSS8C"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_01BEuPuteMBhtyAQeiBaSS8C"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: gh-stack",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 23
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-11-27T23:26:33.388612Z",
+    "agent_lines": 168,
+    "agent_removed": 38,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 168,
+    "total_lines_changed": 206,
+    "agent_percentage": 100,
+    "metric_version": 2
+  }
+}

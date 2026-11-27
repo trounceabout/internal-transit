@@ -1,0 +1,35 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "01M8FN9WGPF3W1N4EYQ60XEV38",
+  "strategy": "manual-commit",
+  "branch": "fix/figma-about",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "public/about/logo-nexcess.svg",
+    "public/about/logo-usc.svg",
+    "public/about/map-dots.svg",
+    "public/about/tile-nexcess.svg",
+    "public/about/tile-usc.svg",
+    "src/components/ProjectRow.astro",
+    "src/components/about/SectionNav.astro",
+    "src/data/about.ts",
+    "src/pages/about.astro",
+    "src/styles/global.css"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": ""
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 34,
+    "cache_creation_tokens": 67518,
+    "cache_read_tokens": 5463744,
+    "output_tokens": 21054,
+    "api_call_count": 17
+  }
+}
