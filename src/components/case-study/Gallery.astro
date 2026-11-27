@@ -22,18 +22,22 @@ interface Props {
 const { items } = Astro.props;
 ---
 
-<div class="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2">
+<!-- Figma: two 442px columns with a 16px gutter; every tile is a 276px-tall crop
+     with a 12px mono caption 12px below it, and rows sit 16px apart. -->
+<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
   {
     items.map((item) => (
-      <figure class="m-0 flex min-w-0 flex-col gap-4">
+      <figure class="m-0 flex min-w-0 flex-col gap-3">
         {item.kind === "image" && item.src ? (
-          <LightboxImage src={item.src} alt={item.alt} />
+          <LightboxImage src={item.src} alt={item.alt} flat />
         ) : item.webm && item.mp4 ? (
-          <LoopVideo webm={item.webm} mp4={item.mp4} />
+          <LoopVideo webm={item.webm} mp4={item.mp4} flat />
         ) : null}
-        <figcaption class="font-mono text-sm tracking-[0.04em] uppercase">
+        <figcaption class="font-mono text-xs leading-4 uppercase">
           <span class="text-portfolio-ink font-semibold">{item.label}</span>
-          <span class="text-portfolio-muted"> {item.caption}</span>
+          {item.caption && (
+            <span class="text-portfolio-muted"> {item.caption}</span>
+          )}
         </figcaption>
       </figure>
     ))

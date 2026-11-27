@@ -9,18 +9,37 @@ interface Props {
   webm: string;
   mp4: string;
   caption?: string;
+  // Gallery tile: a 276px-tall, 8px-cornered crop with no loop tag.
+  flat?: boolean;
 }
 
-const { webm, mp4, caption } = Astro.props;
+const { webm, mp4, caption, flat = false } = Astro.props;
 ---
 
 <figure class="m-0 flex flex-col gap-4">
-  <div class="loop-video relative overflow-hidden rounded-[4px]">
-    <video class="block h-auto w-full" autoplay loop muted playsinline>
+  <div
+    class:list={[
+      "loop-video relative overflow-hidden",
+      flat ? "rounded-md" : "rounded-[4px]",
+    ]}
+  >
+    <video
+      class:list={["block w-full", flat ? "h-[276px] object-cover" : "h-auto"]}
+      autoplay
+      loop
+      muted
+      playsinline
+    >
       <source src={webm} type="video/webm" />
       <source src={mp4} type="video/mp4" />
     </video>
-    <span class="loop-tag" hidden>LOOP</span>
+    {
+      !flat && (
+        <span class="loop-tag" hidden>
+          LOOP
+        </span>
+      )
+    }
   </div>
   {
     caption && (
