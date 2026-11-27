@@ -1,0 +1,17 @@
+---
+// /home/<slug> — the home preview with a specific project selected.
+import { getCollection } from "astro:content";
+import HomeLayout from "@/layouts/HomeLayout.astro";
+
+export async function getStaticPaths() {
+  const projects = await getCollection(
+    "projects",
+    ({ data }) => data.published,
+  );
+  return projects.map((project) => ({ params: { slug: project.id } }));
+}
+
+const { slug } = Astro.params;
+---
+
+<HomeLayout slug={slug} />

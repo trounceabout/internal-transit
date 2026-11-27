@@ -23,6 +23,8 @@ interface Props {
   href?: string;
   // Pill shape (Start page) vs. the slightly squarer bottom-nav shape.
   shape?: "pill" | "rounded";
+  // Always-filled look (the same as hover), for the page's primary action.
+  featured?: boolean;
   class?: string;
   id?: string;
   [key: `data-${string}`]: string | boolean | undefined;
@@ -34,6 +36,7 @@ const {
   shortcut,
   href,
   shape = "rounded",
+  featured = false,
   class: className,
   id,
   ...rest
@@ -51,6 +54,7 @@ const keyName = shortcut?.toLowerCase();
   class:list={[
     "action-button text-portfolio-ink inline-flex shrink-0 cursor-pointer items-center gap-3 p-2 font-mono text-base font-medium whitespace-nowrap",
     shape === "pill" ? "rounded-full" : "rounded-lg",
+    featured && "is-featured",
     className,
   ]}
   {...rest}
@@ -102,7 +106,8 @@ const keyName = shortcut?.toLowerCase();
   }
 
   .action-button:hover,
-  .action-button:focus-visible {
+  .action-button:focus-visible,
+  .action-button.is-featured {
     background-color: var(--portfolio-ink);
     color: var(--portfolio-bg);
     box-shadow: var(--media-frame-shadow);
@@ -111,11 +116,13 @@ const keyName = shortcut?.toLowerCase();
   /* While the button is filled with ink, the key-cap and the dimmed detail
      text need to follow the inverted colors, or they'd vanish. */
   .action-button:hover :global(.bg-portfolio-keycap),
-  .action-button:focus-visible :global(.bg-portfolio-keycap) {
+  .action-button:focus-visible :global(.bg-portfolio-keycap),
+  .action-button.is-featured :global(.bg-portfolio-keycap) {
     background-color: color-mix(in srgb, var(--portfolio-bg) 18%, transparent);
   }
   .action-button:hover :global(.text-portfolio-muted),
-  .action-button:focus-visible :global(.text-portfolio-muted) {
+  .action-button:focus-visible :global(.text-portfolio-muted),
+  .action-button.is-featured :global(.text-portfolio-muted) {
     color: color-mix(in srgb, var(--portfolio-bg) 55%, transparent);
   }
 

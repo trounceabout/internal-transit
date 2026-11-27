@@ -57,10 +57,11 @@ const navItems = [
       <Sun width={16} height={16} className="block dark:hidden" />
     </button>
     <!-- Filled in by the script below. min-w reserves the width so the
-         icons next to it don't shift when the text first appears. -->
+         icons next to it don't shift when the text first appears. Hidden on
+         phones, where there isn't room for it beside the icons. -->
     <time
       data-clock
-      class="font-plex-sans text-portfolio-muted min-w-[5.5rem] text-xs tabular-nums"
+      class="font-plex-sans text-portfolio-muted hidden min-w-[5.5rem] text-xs tabular-nums sm:block"
     ></time>
     <SocialLinks class="gap-1.5" />
   </div>

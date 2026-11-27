@@ -1,0 +1,338 @@
+---
+// ProjectShowcase.astro — the home page: a row of large project icon buttons
+// across the top, and a preview of the selected project underneath.
+//
+// Each project has its own URL (/home/<slug>), and /home itself shows the
+// first project. Selecting an icon is an ordinary link click handled by
+// Astro's client-side router, which swaps the preview underneath while the
+// icon bar — marked `transition:persist` — stays in the DOM. Because the same
+// element survives, CSS transitions animate the new selection growing and the
+// old one shrinking, and a small script slides the bar so the selected icon
+// stays in view.
+import { getCollection } from "astro:content";
+import { Clock } from "pixelarticons/react/Clock";
+import { Play } from "pixelarticons/react/Play";
+import { Reload } from "pixelarticons/react/Reload";
+import { projectIconMap } from "@/lib/projectIconMap";
+
+interface Props {
+  // Which project to preview. Omit for the first one (the /home page).
+  slug?: string;
+}
+
+const projects = (
+  await getCollection("projects", ({ data }) => data.published)
+).sort((a, b) => a.data.order - b.data.order);
+
+const current = projects.find((p) => p.id === Astro.props.slug) ?? projects[0];
+const { data } = current;
+
+// Per-project colors are passed as inline custom properties; global.css
+// resolves them to --icon-color / --badge-color for the active theme.
+function colorVars(d: (typeof projects)[number]["data"]) {
+  return {
+    ...(d.iconColor ? { "--icon-color-light": d.iconColor } : {}),
+    ...(d.iconColorDark ? { "--icon-color-dark": d.iconColorDark } : {}),
+    ...(d.badgeColor ? { "--badge-color-light": d.badgeColor } : {}),
+    ...(d.badgeColorDark ? { "--badge-color-dark": d.badgeColorDark } : {}),
+  };
+}
+
+// "Project Ping" -> "Ping" for the small label under each icon.
+const shortName = (name: string) => name.replace(/^Project\s+/, "");
+
+// Split the headline around the accent phrase so it can be italicized and
+// tinted in the project's own color.
+const tagline = data.tagline;
+const accentIndex = data.accentPhrase ? tagline.indexOf(data.accentPhrase) : -1;
+const before = accentIndex >= 0 ? tagline.slice(0, accentIndex) : tagline;
+const after =
+  accentIndex >= 0
+    ? tagline.slice(accentIndex + (data.accentPhrase?.length ?? 0))
+    : "";
+
+const CurrentIcon = projectIconMap[data.icon];
+---
+
+<main class="mx-auto w-full max-w-[990px] px-6 pt-6 pb-8">
+  <!-- Icon bar. Persisted across navigations (see the header comment). The
+       left padding lines the first icon up with the text column below. -->
+  <nav
+    transition:persist="project-bar"
+    aria-label="Projects"
+    data-project-bar
+    class="project-bar -mx-6 flex items-center gap-6 overflow-x-auto px-6 py-8 sm:pl-[200px]"
+  >
+    {
+      projects.map((project, index) => {
+        const Icon = projectIconMap[project.data.icon];
+        return (
+          <a
+            href={`/home/${project.id}`}
+            data-project-tile
+            data-slug={project.id}
+            data-first={index === 0 ? "" : undefined}
+            aria-label={project.data.name}
+            aria-current={project.id === current.id ? "page" : undefined}
+            class="project-tile flex shrink-0 flex-col items-center gap-2"
+            style={colorVars(project.data)}
+          >
+            <span class="tile flex items-center justify-center rounded-xl">
+              <Icon />
+            </span>
+            <span class="tile-label text-portfolio-muted max-w-[70px] truncate font-mono text-xs">
+              {shortName(project.data.name)}
+            </span>
+          </a>
+        );
+      })
+    }
+    <!-- Placeholder for future projects; not a link. -->
+    <div class="project-tile flex shrink-0 flex-col items-center gap-2">
+      <span
+        class="tile bg-portfolio-keycap text-portfolio-muted flex items-center justify-center rounded-xl"
+      >
+        <Clock />
+      </span>
+      <span
+        class="text-portfolio-muted max-w-[70px] truncate font-mono text-xs"
+      >
+        Coming soon
+      </span>
+    </div>
+  </nav>
+
+  <!-- The preview. Everything marked data-animate fades up in sequence each
+       time a project is shown (see runFadeUpStagger in lib/animations.ts). -->
+  <section style={colorVars(data)} class="mt-6 flex flex-col gap-4 sm:pl-44">
+    <p data-animate class="text-portfolio-ink font-mono text-xl">
+      {data.name}
+    </p>
+
+    <h1 data-animate class="preview-headline">
+      {before}
+      {
+        accentIndex >= 0 && (
+          <span class="italic" style="color: var(--icon-color);">
+            {data.accentPhrase}
+          </span>
+        )
+      }
+      {after}
+    </h1>
+
+    <p
+      data-animate
+      class="font-plex-sans text-portfolio-ink mt-4 max-w-[34rem] text-lg leading-8"
+    >
+      {data.description}
+    </p>
+  </section>
+
+  <!-- Details: labels sit in the left gutter, values in the text column. -->
+  <dl
+    style={colorVars(data)}
+    class="mt-16 grid grid-cols-1 gap-x-0 gap-y-5 sm:grid-cols-[176px_1fr] sm:gap-y-6"
+  >
+    {
+      data.type && (
+        <>
+          <dt data-animate class="meta-label">
+            Type
+          </dt>
+          <dd data-animate class="m-0">
+            <span class="meta-badge">
+              <Reload width={16} height={16} />
+              {data.type}
+            </span>
+          </dd>
+        </>
+      )
+    }
+    {
+      data.loomUrl && (
+        <>
+          <dt data-animate class="meta-label">
+            Accessories
+          </dt>
+          <dd data-animate class="m-0">
+            <span class="meta-badge">
+              <Play width={16} height={16} />
+              Video walkthrough
+            </span>
+          </dd>
+        </>
+      )
+    }
+    {
+      data.role && (
+        <>
+          <dt data-animate class="meta-label">
+            Role
+          </dt>
+          <dd data-animate class="meta-value">
+            {data.role}
+          </dd>
+        </>
+      )
+    }
+    {
+      data.scope && (
+        <>
+          <dt data-animate class="meta-label">
+            Scope
+          </dt>
+          <dd data-animate class="meta-value">
+            {data.scope}
+          </dd>
+        </>
+      )
+    }
+  </dl>
+</main>
+
+<style>
+  .project-bar {
+    /* Hide the scrollbar but keep the bar scrollable on narrow screens. */
+    scrollbar-width: none;
+  }
+  .project-bar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* ─── Icon tiles ───────────────────────────────────────────────────────── */
+  .tile {
+    width: 70px;
+    height: 70px;
+    background-color: var(--badge-color, var(--portfolio-keycap));
+    color: var(--icon-color, var(--portfolio-muted));
+  }
+  .tile :global(svg) {
+    width: 40%;
+    height: 40%;
+  }
+  /* The selected tile grows, fills with the project color, and lifts with the
+     shared media-frame shadow. Its label hides (the name is in the preview). */
+  .project-tile[aria-current="page"] .tile {
+    width: 124px;
+    height: 124px;
+    background-color: var(--icon-color);
+    /* Cream icon on the project color, in both themes. */
+    color: #fff9f2;
+    box-shadow: var(--media-frame-shadow);
+  }
+  .project-tile[aria-current="page"] .tile-label {
+    opacity: 0;
+    height: 0;
+    margin-top: -0.5rem;
+  }
+  a.project-tile:not([aria-current="page"]):hover .tile {
+    transform: translateY(-2px);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .tile {
+      transition:
+        width 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+        height 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+        background-color 0.25s ease-out,
+        color 0.25s ease-out,
+        box-shadow 0.25s ease-out,
+        transform 0.2s ease-out;
+    }
+    .tile-label {
+      transition:
+        opacity 0.2s ease-out,
+        height 0.2s ease-out,
+        margin 0.2s ease-out;
+    }
+  }
+
+  a.project-tile:focus {
+    outline: none;
+  }
+  a.project-tile:focus-visible .tile {
+    outline: 2px solid var(--icon-color, currentColor);
+    outline-offset: 3px;
+  }
+
+  /* ─── Preview text ─────────────────────────────────────────────────────── */
+  /* Same Redaction headline treatment as .portfolio-headline, but a step
+     smaller since the home preview shares the screen with the icon bar. */
+  .preview-headline {
+    font-family: var(--font-redaction);
+    font-size: clamp(2.75rem, 1.6rem + 3.4vw, 3.9rem);
+    line-height: 0.98;
+    letter-spacing: -1.8px;
+    color: var(--portfolio-ink);
+    text-wrap: balance;
+  }
+
+  .meta-label {
+    font-family: var(--font-plex-sans);
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    color: var(--portfolio-muted);
+    letter-spacing: 0.02em;
+    padding-top: 0.15rem;
+  }
+  .meta-value {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    color: var(--portfolio-ink);
+    line-height: 1.65;
+  }
+  .meta-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    background-color: var(--badge-color, var(--portfolio-keycap));
+    color: var(--portfolio-ink);
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+  .meta-badge :global(svg) {
+    color: var(--icon-color);
+  }
+</style>
+
+<script>
+  // Keeps the persisted icon bar in sync with the page: marks the tile for the
+  // current URL as selected and slides the bar so it's in view. Runs on first
+  // load and after every client-side navigation.
+  document.addEventListener("astro:page-load", () => {
+    const bar = document.querySelector<HTMLElement>("[data-project-bar]");
+    if (!bar) return;
+
+    const tiles = [...bar.querySelectorAll<HTMLElement>("[data-project-tile]")];
+    // /home and /home/<slug>. /home alone means "the first project".
+    const slug = location.pathname.match(/^\/home\/([^/]+)/)?.[1];
+    const active = tiles.find((t) =>
+      slug ? t.dataset.slug === slug : t.hasAttribute("data-first"),
+    );
+    if (!active) return;
+
+    const alreadyActive = active.getAttribute("aria-current") === "page";
+    tiles.forEach((t) => {
+      if (t === active) t.setAttribute("aria-current", "page");
+      else t.removeAttribute("aria-current");
+    });
+
+    // Slide the bar (not the page) so the selected tile sits in the middle.
+    // 124 is the selected tile's final width (see the CSS above), so the
+    // math doesn't depend on where the width transition currently is.
+    const left = active.offsetLeft - (bar.clientWidth - 124) / 2;
+    const reduce = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    bar.scrollTo({
+      left: Math.max(0, left),
+      behavior: reduce || alreadyActive ? "auto" : "smooth",
+    });
+  });
+</script>
