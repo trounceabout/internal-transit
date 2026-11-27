@@ -1,0 +1,114 @@
+---
+// MobileSectionBar.astro — the small-screen replacement for the side nav on the
+// case-study and About pages: a sticky, horizontally scrolling row of section
+// chips that's shown below the `lg` breakpoint (where the side nav is hidden).
+//
+// The scroll-tracking scripts (src/lib/caseStudy.ts, SectionNav.astro) find the
+// chips through `data-section-link` and mark the current one with
+// aria-current; `navAttr` is the marker attribute that tells each script which
+// nav these chips belong to.
+interface Props {
+  items: { id: string; label: string }[];
+  // Marker attribute for the page's script, e.g. "data-subnav-mobile".
+  navAttr: string;
+  // Take up its own space in the flow (About). By default the bar floats over
+  // the top of the next section instead (case study, where sections snap).
+  inFlow?: boolean;
+}
+
+const { items, navAttr, inFlow = false } = Astro.props;
+const marker = { [navAttr]: "" };
+---
+
+<nav
+  aria-label="Sections"
+  {...marker}
+  class:list={["mobile-bar", inFlow && "mobile-bar--flow"]}
+>
+  {
+    items.map((item, index) => (
+      <a
+        href={`#${item.id}`}
+        data-section-link={item.id}
+        aria-current={index === 0 ? "true" : "false"}
+        class="mobile-chip"
+      >
+        {item.label}
+      </a>
+    ))
+  }
+</nav>
+
+<style>
+  .mobile-bar {
+    position: sticky;
+    /* Sits just under the sticky header (h-20 = 5rem)... */
+    top: 4.25rem;
+    z-index: 40;
+    display: flex;
+    gap: 0.5rem;
+    height: 2.75rem;
+    align-items: center;
+    overflow-x: auto;
+    scrollbar-width: none;
+    /* Not part of the flow: the next section starts where the bar starts, so
+       adding the bar doesn't push content (or snap points) down. */
+    margin: 0 -1.5rem -2.75rem;
+    padding: 0 1.5rem;
+    background-image: linear-gradient(
+      to bottom,
+      var(--portfolio-bg) 70%,
+      transparent
+    );
+    transition: top 0.3s ease-out;
+  }
+  /* From the lg breakpoint up the side nav takes over. This lives here, not in a
+     Tailwind `lg:hidden` class: this component's own unlayered `display: flex`
+     above would win over Tailwind's layered utility. */
+  @media (min-width: 64rem) {
+    .mobile-bar {
+      display: none;
+    }
+  }
+  .mobile-bar--flow {
+    margin-bottom: 1rem;
+  }
+  .mobile-bar::-webkit-scrollbar {
+    display: none;
+  }
+  /* ...and slides up to the top edge when the header hides on scroll down. */
+  :global(html:has(.top-nav[data-hidden])) .mobile-bar {
+    top: 0;
+  }
+
+  .mobile-chip {
+    flex-shrink: 0;
+    border-radius: 9999px;
+    padding: 0.375rem 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--portfolio-muted);
+    white-space: nowrap;
+    transition:
+      background-color 0.2s ease-out,
+      color 0.2s ease-out;
+  }
+  .mobile-chip[aria-current="true"] {
+    background-color: var(--portfolio-nav-active);
+    color: var(--portfolio-ink);
+    font-weight: 600;
+  }
+  .mobile-chip:focus {
+    outline: none;
+  }
+  .mobile-chip:focus-visible {
+    outline: 2px solid var(--portfolio-ink);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mobile-bar,
+    .mobile-chip {
+      transition: none;
+    }
+  }
+</style>

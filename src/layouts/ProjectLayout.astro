@@ -17,6 +17,7 @@ import SubNav from "@/components/case-study/SubNav.astro";
 import Overview from "@/components/case-study/Overview.astro";
 import Walkthrough from "@/components/case-study/Walkthrough.astro";
 import Gallery from "@/components/case-study/Gallery.astro";
+import MobileSectionBar from "@/components/MobileSectionBar.astro";
 import type { NavAction } from "@/layouts/BottomNav.astro";
 import type { ComponentType, SVGProps } from "react";
 
@@ -82,6 +83,15 @@ const colorVars = {
   ...(badgeColorDark ? { "--badge-color-dark": badgeColorDark } : {}),
 };
 
+// Chips for the small-screen section bar (top-level sections only; the side
+// nav's Deep dive sub-items are desktop-only).
+const sectionChips = [
+  { id: "overview", label: "Overview" },
+  { id: "deep-dive", label: "Deep dive" },
+  ...(hasWalkthrough ? [{ id: "walkthrough", label: "Walkthrough" }] : []),
+  ...(hasGallery ? [{ id: "gallery", label: "Gallery" }] : []),
+];
+
 // Loom share URLs (loom.com/share/<id>) don't render embedded — the player
 // requires the /embed/<id> path. Only needed here for the preconnect hints.
 const embedSrc = loomUrl?.replace("/share/", "/embed/");
@@ -103,6 +113,7 @@ const actions: NavAction[] = [
     ? [
         {
           label: "Walkthrough",
+          shortLabel: "Video",
           shortcut: "w",
           href: "#walkthrough",
           sections: ["overview"],
@@ -168,6 +179,7 @@ const actions: NavAction[] = [
     </aside>
 
     <div class="min-w-0">
+      <MobileSectionBar items={sectionChips} navAttr="data-subnav-mobile" />
       <section
         id="overview"
         data-section="overview"
@@ -528,16 +540,35 @@ const actions: NavAction[] = [
   .case-section {
     scroll-snap-align: start;
     min-height: 100dvh;
-    /* Top: room for the sticky header. Bottom: room for the fixed action bar. */
-    padding-top: 7rem;
+    /* Top: room for the sticky header, plus the section chip bar on small
+       screens (below lg, where the side nav is replaced by that bar). Bottom:
+       room for the fixed action bar. */
+    padding-top: 8.5rem;
     padding-bottom: 8rem;
+  }
+  @media (min-width: 64rem) {
+    .case-section {
+      padding-top: 7rem;
+    }
   }
 
   /* The overview is a one-screen title slide, so it gets slimmer padding to keep
      its content on a single screen on shorter windows. */
   .case-section--overview {
-    padding-top: 6rem;
+    padding-top: 8rem;
     padding-bottom: 6rem;
+  }
+  @media (min-width: 64rem) {
+    .case-section--overview {
+      padding-top: 6rem;
+    }
+  }
+  /* Short laptop windows: tighten further so the whole slide still fits. */
+  @media (min-width: 64rem) and (max-height: 820px) {
+    .case-section--overview {
+      padding-top: 5rem;
+      padding-bottom: 5rem;
+    }
   }
 
   /* Jumping to a sub-item (e.g. #approach) shouldn't tuck it under the header. */

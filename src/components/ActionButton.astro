@@ -15,6 +15,9 @@ import { ArrowReturnLeft } from "pixelarticons/react/ArrowReturnLeft";
 
 interface Props {
   label: string;
+  // Shorter text used instead of `label` below the sm breakpoint, where space
+  // is tight (e.g. "Walkthrough" for "Watch walkthrough").
+  shortLabel?: string;
   // Dimmed text after the label, e.g. the next project's name.
   detail?: string;
   // "enter" and "esc" get their special glyphs; anything else is shown as an
@@ -33,6 +36,7 @@ interface Props {
 
 const {
   label,
+  shortLabel,
   detail,
   shortcut,
   href,
@@ -65,7 +69,7 @@ const keyName = shortcut?.toLowerCase();
       <span
         aria-hidden="true"
         class:list={[
-          "bg-portfolio-keycap flex h-6 items-center justify-center rounded-sm",
+          "keycap bg-portfolio-keycap flex h-6 items-center justify-center rounded-sm",
           // ESC is three letters wide; every other key is a square tile.
           keyName === "esc" ? "px-1.5 text-xs tracking-wider" : "w-6",
         ]}
@@ -81,7 +85,16 @@ const keyName = shortcut?.toLowerCase();
     )
   }
   <span>
-    {label}
+    {
+      shortLabel ? (
+        <>
+          <span class="max-sm:hidden">{label}</span>
+          <span class="sm:hidden">{shortLabel}</span>
+        </>
+      ) : (
+        label
+      )
+    }
     {detail && <span class="text-portfolio-muted"> {detail}</span>}
   </span>
 </Tag>
@@ -132,6 +145,20 @@ const keyName = shortcut?.toLowerCase();
   .action-button:active {
     transform: scale(0.97);
     box-shadow: var(--button-shadow-pressed);
+  }
+
+  /* No keyboard to show shortcuts for: on touch devices and very narrow
+     screens the key-cap is dropped (the action still works by tapping), and
+     the button gets a little more side padding so the label doesn't crowd. */
+  @media (hover: none), (max-width: 39.99rem) {
+    .action-button :global(.keycap) {
+      display: none;
+    }
+    .action-button {
+      gap: 0;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.875rem;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {

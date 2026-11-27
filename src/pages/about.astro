@@ -7,6 +7,7 @@ import { getCollection } from "astro:content";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import ProjectRow from "@/components/ProjectRow.astro";
 import SectionNav from "@/components/about/SectionNav.astro";
+import MobileSectionBar from "@/components/MobileSectionBar.astro";
 import { projectIconMap } from "@/lib/projectIconMap";
 import { Github } from "pixelarticons/react/Github";
 import { Discord } from "pixelarticons/react/Discord";
@@ -37,7 +38,7 @@ const elsewhere = [
     <!-- Hero -->
     <h1
       data-animate
-      class="about-hero font-redaction text-portfolio-ink m-0 flex flex-wrap items-center justify-center gap-x-[0.12em] pt-4 text-center font-normal"
+      class="about-hero font-redaction text-portfolio-ink m-0 flex flex-nowrap items-center justify-center gap-x-[0.12em] pt-4 text-center font-normal"
     >
       <span>Hi, I’m</span>
       <span class="about-hero-name italic">Cody</span>
@@ -48,7 +49,10 @@ const elsewhere = [
     </h1>
 
     <div class="lg:grid lg:grid-cols-[260px_minmax(0,900px)] lg:gap-10">
-      <!-- Side nav: sticky, hidden on narrow screens for now. -->
+      <!-- Small screens: a row of chips instead of the side nav. -->
+      <MobileSectionBar items={sections} navAttr="data-section-nav" inFlow />
+
+      <!-- Side nav: sticky, shown from the lg breakpoint up. -->
       <aside class="hidden lg:block">
         <div class="sticky top-28">
           <SectionNav sections={sections} />
@@ -229,7 +233,7 @@ const elsewhere = [
   /* 156px at desktop widths, scaling down with the viewport; every child is
      sized in em so the portrait stays in proportion to the lettering. */
   .about-hero {
-    font-size: clamp(3.5rem, 2rem + 8vw, 9.75rem);
+    font-size: clamp(2.5rem, 1rem + 9.5vw, 9.75rem);
     line-height: 1;
     letter-spacing: -0.02em;
   }
