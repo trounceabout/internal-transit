@@ -100,10 +100,14 @@ import PillButton from "@/components/case-study/PillButton.astro";
   // element (an <img>-wrapping LightboxImage, or the Loom overview button)
   // opens this one shared instance — the script never needs to know how
   // many triggers exist or where they live in the DOM.
-  const backdrop = document.getElementById("lightbox");
-  const content = document.getElementById("lightbox-content");
-  const media = document.getElementById("lightbox-media");
-  const closeButton = document.getElementById("lightbox-close");
+  //
+  // The lightbox markup is re-created on every client-side navigation (the
+  // page body is swapped), so these references are re-read by bind() below on
+  // each "astro:page-load" rather than captured once at module load.
+  let backdrop: HTMLElement | null = null;
+  let content: HTMLElement | null = null;
+  let media: HTMLElement | null = null;
+  let closeButton: HTMLElement | null = null;
 
   let lastFocusedTrigger: HTMLElement | null = null;
 
@@ -180,37 +184,43 @@ import PillButton from "@/components/case-study/PillButton.astro";
   }
 
   function openLightbox(trigger: HTMLElement) {
-    if (!backdrop || !media) return;
+    // Copied to consts so TypeScript keeps the null check below valid inside
+    // the callbacks (it can't track reassignable `let`s across closures).
+    const dialog = backdrop;
+    const mediaBox = media;
+    if (!dialog || !mediaBox) return;
 
     const type = trigger.getAttribute("data-lightbox-type");
     const built =
       type === "iframe" ? buildIframeMedia(trigger) : buildImageMedia(trigger);
     if (!built) return;
 
-    media.replaceChildren(built.el);
-    media.style.width = `${built.width}px`;
-    media.style.height = `${built.height}px`;
-    media.style.boxShadow = MEDIA_FRAME_SHADOW;
+    mediaBox.replaceChildren(built.el);
+    mediaBox.style.width = `${built.width}px`;
+    mediaBox.style.height = `${built.height}px`;
+    mediaBox.style.boxShadow = MEDIA_FRAME_SHADOW;
     lastFocusedTrigger = trigger;
 
-    backdrop.setAttribute("aria-hidden", "false");
+    dialog.setAttribute("aria-hidden", "false");
     // Force layout before adding .is-open so the opacity/transform
     // transition actually runs instead of snapping straight to the open
     // state (toggling aria-hidden and adding the transition class in the
     // same tick would otherwise skip the transition on the first paint).
-    requestAnimationFrame(() => backdrop.classList.add("is-open"));
+    requestAnimationFrame(() => dialog.classList.add("is-open"));
 
     document.body.style.overflow = "hidden";
     closeButton?.focus();
   }
 
   function closeLightbox() {
-    if (!backdrop || !media) return;
+    const dialog = backdrop;
+    const mediaBox = media;
+    if (!dialog || !mediaBox) return;
 
-    backdrop.classList.remove("is-open");
+    dialog.classList.remove("is-open");
     const finish = () => {
-      backdrop.setAttribute("aria-hidden", "true");
-      media.replaceChildren();
+      dialog.setAttribute("aria-hidden", "true");
+      mediaBox.replaceChildren();
       document.body.style.overflow = "";
       lastFocusedTrigger?.focus();
       lastFocusedTrigger = null;
@@ -219,7 +229,7 @@ import PillButton from "@/components/case-study/PillButton.astro";
     if (prefersReducedMotion()) {
       finish();
     } else {
-      backdrop.addEventListener("transitionend", finish, { once: true });
+      dialog.addEventListener("transitionend", finish, { once: true });
     }
   }
 
@@ -253,11 +263,20 @@ import PillButton from "@/components/case-study/PillButton.astro";
     }
   });
 
-  closeButton?.addEventListener("click", closeLightbox);
+  // Per-page wiring: the close button and backdrop are brand-new elements
+  // after each navigation, so attaching listeners here can't stack up.
+  function bind() {
+    backdrop = document.getElementById("lightbox");
+    content = document.getElementById("lightbox-content");
+    media = document.getElementById("lightbox-media");
+    closeButton = document.getElementById("lightbox-close");
 
-  backdrop?.addEventListener("click", (e) => {
-    if (e.target === backdrop) closeLightbox();
-  });
+    closeButton?.addEventListener("click", closeLightbox);
+    backdrop?.addEventListener("click", (e) => {
+      if (e.target === backdrop) closeLightbox();
+    });
+  }
+  document.addEventListener("astro:page-load", bind);
 
   document.addEventListener("keydown", (e) => {
     if (e.key !== "Escape") return;

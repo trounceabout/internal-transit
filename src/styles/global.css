@@ -5,6 +5,7 @@
 
 /* IBM Plex Mono — portfolio body/UI font, via @fontsource */
 @import "@fontsource/ibm-plex-mono/400.css";
+@import "@fontsource/ibm-plex-mono/500.css";
 @import "@fontsource/ibm-plex-mono/600.css";
 
 /* IBM Plex Sans — portfolio long-form/label font (bio copy, section labels, footer).
@@ -80,6 +81,12 @@
        taglines, footer copy, the nav breadcrumb badge, and footnotes. */
   --color-portfolio-muted: var(--portfolio-muted);
   --color-portfolio-accent: var(--portfolio-accent);
+  /* Small tinted tile behind a keyboard-shortcut glyph (Enter / Esc / X / W)
+       on bottom-nav action buttons, and the active-row tint in the top nav
+       and side nav. Both are low-opacity ink tints, so they read on either
+       theme's background without needing hand-picked light/dark hex pairs. */
+  --color-portfolio-keycap: var(--portfolio-keycap);
+  --color-portfolio-nav-active: var(--portfolio-nav-active);
 
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
@@ -110,6 +117,8 @@
   /* Deeper teal than the dark-mode accent — #40C6B0 only hits 2.02:1 on
        this light bg (fails badly); #0F7A6B computes to 5.0:1. */
   --portfolio-accent: #0f7a6b;
+  --portfolio-keycap: rgba(24, 24, 27, 0.1);
+  --portfolio-nav-active: rgba(24, 24, 27, 0.08);
 
   --radius: 0.625rem;
 
@@ -122,6 +131,13 @@
        deeper shadow-plus-inner-highlight combination. */
   --media-frame-shadow:
     0px 3px 6px 0px rgba(0, 0, 0, 0.2), 0px 0px 0.5px 0px rgba(0, 0, 0, 0.15);
+
+  /* Pressed ("depressed") button elevation — the raised --media-frame-shadow
+       collapses to a tight, low shadow while a button is :active, which
+       together with the scale-down reads as the button sinking toward the
+       page. Used by ActionButton.astro. */
+  --button-shadow-pressed:
+    0px 1px 2px 0px rgba(0, 0, 0, 0.2), 0px 0px 0.5px 0px rgba(0, 0, 0, 0.15);
 
   /* Lightbox overlay backdrop — a warm near-white scrim in light mode so
        it reads against the light page behind it, vs. the dark theme's
@@ -153,6 +169,12 @@
        footnote-only token already used, since it worked well here. */
   --portfolio-muted: #bbbbbb;
   --portfolio-accent: #40c6b0;
+  --portfolio-keycap: rgba(255, 249, 242, 0.16);
+  --portfolio-nav-active: rgba(255, 249, 242, 0.12);
+  --button-shadow-pressed:
+    0px 1px 2px 0px rgba(0, 0, 0, 0.6),
+    inset 0px 0.5px 0px 0px rgba(255, 255, 255, 0.1),
+    inset 0px 0px 0.5px 0px rgba(255, 255, 255, 0.3);
 }
 
 @layer base {

@@ -1,0 +1,137 @@
+---
+// ActionButton.astro — the "secondary" button from Figma's "New buttons"
+// section: transparent at rest, and on hover/focus it fills with the theme's
+// ink color (text flips to the page color) and lifts with the shared
+// --media-frame-shadow. A small key-cap tile on the left tells the visitor
+// which keyboard key triggers the same action.
+//
+// Renders an <a> when `href` is given, otherwise a <button>.
+//
+// Keyboard shortcuts: pass `shortcut`. We stamp it on the element as
+// `data-shortcut`, and the single global listener in src/lib/shortcuts.ts
+// finds the element and clicks it. That means a page never wires up key
+// handlers itself — it only declares buttons.
+import { ArrowReturnLeft } from "pixelarticons/react/ArrowReturnLeft";
+
+interface Props {
+  label: string;
+  // Dimmed text after the label, e.g. the next project's name.
+  detail?: string;
+  // "enter" and "esc" get their special glyphs; anything else is shown as an
+  // uppercase single character (e.g. "x", "w").
+  shortcut?: "enter" | "esc" | (string & {});
+  href?: string;
+  // Pill shape (Start page) vs. the slightly squarer bottom-nav shape.
+  shape?: "pill" | "rounded";
+  class?: string;
+  id?: string;
+  [key: `data-${string}`]: string | boolean | undefined;
+}
+
+const {
+  label,
+  detail,
+  shortcut,
+  href,
+  shape = "rounded",
+  class: className,
+  id,
+  ...rest
+} = Astro.props;
+
+const Tag = href ? "a" : "button";
+const keyName = shortcut?.toLowerCase();
+---
+
+<Tag
+  id={id}
+  href={href}
+  type={href ? undefined : "button"}
+  data-shortcut={keyName}
+  class:list={[
+    "action-button text-portfolio-ink inline-flex shrink-0 cursor-pointer items-center gap-3 p-2 font-mono text-base font-medium whitespace-nowrap",
+    shape === "pill" ? "rounded-full" : "rounded-lg",
+    className,
+  ]}
+  {...rest}
+>
+  {
+    shortcut && (
+      <span
+        aria-hidden="true"
+        class:list={[
+          "bg-portfolio-keycap flex h-6 items-center justify-center rounded-sm",
+          // ESC is three letters wide; every other key is a square tile.
+          keyName === "esc" ? "px-1.5 text-xs tracking-wider" : "w-6",
+        ]}
+      >
+        {keyName === "enter" ? (
+          <ArrowReturnLeft width={18} height={18} />
+        ) : keyName === "esc" ? (
+          "ESC"
+        ) : (
+          <span class="text-sm">{keyName?.toUpperCase()}</span>
+        )}
+      </span>
+    )
+  }
+  <span>
+    {label}
+    {detail && <span class="text-portfolio-muted"> {detail}</span>}
+  </span>
+</Tag>
+
+<style>
+  .action-button {
+    background-color: transparent;
+    box-shadow: none;
+    /* The transition lives on the resting selector, not :active, so it plays
+       on press AND on release. */
+    transition:
+      transform 0.15s ease-out,
+      box-shadow 0.15s ease-out,
+      background-color 0.15s ease-out,
+      color 0.15s ease-out;
+  }
+
+  /* Browsers show the default focus ring on some mouse clicks (Safari); we
+     only want a ring for keyboard focus, and hover/focus-visible already
+     share the filled look below. */
+  .action-button:focus {
+    outline: none;
+  }
+
+  .action-button:hover,
+  .action-button:focus-visible {
+    background-color: var(--portfolio-ink);
+    color: var(--portfolio-bg);
+    box-shadow: var(--media-frame-shadow);
+  }
+
+  /* While the button is filled with ink, the key-cap and the dimmed detail
+     text need to follow the inverted colors, or they'd vanish. */
+  .action-button:hover :global(.bg-portfolio-keycap),
+  .action-button:focus-visible :global(.bg-portfolio-keycap) {
+    background-color: color-mix(in srgb, var(--portfolio-bg) 18%, transparent);
+  }
+  .action-button:hover :global(.text-portfolio-muted),
+  .action-button:focus-visible :global(.text-portfolio-muted) {
+    color: color-mix(in srgb, var(--portfolio-bg) 55%, transparent);
+  }
+
+  /* "Depress on click": shrink slightly and collapse the shadow so the
+     button sinks toward the page. */
+  .action-button:active {
+    transform: scale(0.97);
+    box-shadow: var(--button-shadow-pressed);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .action-button {
+      transition: none;
+    }
+    .action-button:active {
+      transform: none;
+    }
+  }
+</style>
