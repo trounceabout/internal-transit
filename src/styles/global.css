@@ -132,6 +132,13 @@
   --media-frame-shadow:
     0px 3px 6px 0px rgba(0, 0, 0, 0.2), 0px 0px 0.5px 0px rgba(0, 0, 0, 0.15);
 
+  /* The same drop-shadow recipe as --media-frame-shadow's outer layers, written
+       as a `filter` instead of a `box-shadow`. A box-shadow follows the element's
+       rectangular box, but the project "cartridge" tiles are clipped to a stepped
+       pixel shape; a drop-shadow filter on a wrapper follows that shape instead. */
+  --cartridge-shadow: drop-shadow(0px 3px 6px rgba(0, 0, 0, 0.2))
+    drop-shadow(0px 0px 0.5px rgba(0, 0, 0, 0.15));
+
   /* Pressed ("depressed") button elevation — the raised --media-frame-shadow
        collapses to a tight, low shadow while a button is :active, which
        together with the scale-down reads as the button sinking toward the
@@ -161,6 +168,8 @@
     0px 4px 7px 0px rgba(0, 0, 0, 0.85), 0px 1px 2px 0px rgba(0, 0, 0, 0.5),
     inset 0px 0.5px 0px 0px rgba(255, 255, 255, 0.1),
     inset 0px 0px 0.5px 0px rgba(255, 255, 255, 0.3);
+  --cartridge-shadow: drop-shadow(0px 4px 7px rgba(0, 0, 0, 0.85))
+    drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.5));
   --lightbox-backdrop: rgba(24, 24, 27, 0.7);
   --section-border-color: #3c3c44;
   --portfolio-bg-gradient: linear-gradient(to bottom, #242429, #18181b);
@@ -175,6 +184,27 @@
     0px 1px 2px 0px rgba(0, 0, 0, 0.6),
     inset 0px 0.5px 0px 0px rgba(255, 255, 255, 0.1),
     inset 0px 0px 0.5px 0px rgba(255, 255, 255, 0.3);
+}
+
+/* ─── Page grid ───────────────────────────────────────────────────────────────
+   Figma lays every page out as a fixed-width column with a left gutter: the
+   top nav, the page content and the bottom action bar all start at the same x,
+   to the right of the gutter (which holds labels or a side nav).
+     --page-max     width of the column, gutter included
+     --page-gutter  space on the column's left, before the content starts
+   Each page sets these through `<body data-page="...">` (see BaseLayout). The
+   gutter only exists from the lg breakpoint up; below that, pages are a single
+   column and the gutter is 0. */
+:root {
+  --page-max: 1200px;
+  --page-gutter: 0px;
+}
+@media (min-width: 64rem) {
+  /* Home / Projects: 990px column, 176px gutter (152px label column + 24px gap). */
+  body[data-page="home"] {
+    --page-max: 990px;
+    --page-gutter: 176px;
+  }
 }
 
 @layer base {

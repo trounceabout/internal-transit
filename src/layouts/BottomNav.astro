@@ -32,10 +32,11 @@ const { actions } = Astro.props;
 
 <nav
   aria-label="Page actions"
-  class="bottom-nav pointer-events-none fixed inset-x-0 bottom-0 z-40 pt-10 pb-5"
+  class="bottom-nav pointer-events-none fixed inset-x-0 bottom-0 z-40 pt-10 pb-5 sm:pb-[58px]"
 >
   <div
-    class="bottom-actions pointer-events-auto mx-auto flex w-full max-w-[1200px] items-center gap-x-2 overflow-x-auto px-6 sm:gap-x-6"
+    style="max-width: calc(var(--page-max) + 3rem);"
+    class="bottom-actions pointer-events-auto mx-auto flex w-full items-center gap-x-2 overflow-x-auto px-6 sm:gap-x-6 lg:pl-[calc(1.5rem+var(--page-gutter))]"
   >
     {
       actions.map((action) => (

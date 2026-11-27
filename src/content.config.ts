@@ -32,6 +32,9 @@ const projects = defineCollection({
     // `tagline` when omitted, since the home-page-list tagline is often too
     // short to work as full intro copy.
     description: z.string().optional(),
+    // Short first-person blurb shown under the headline on the Projects (home)
+    // preview. Falls back to `description` when a project doesn't have one yet.
+    summary: z.string().optional(),
     // Substring of `description` (or `tagline`, as a fallback) to render
     // italicized in the project's own `iconColor`.
     accentPhrase: z.string().optional(),

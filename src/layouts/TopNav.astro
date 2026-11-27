@@ -3,8 +3,8 @@
 //
 // Left:  Projects / About. The current section is bold + ink-colored and gets
 //        aria-current="page".
-// Right: theme toggle (moon in dark mode, sun in light mode), a live local
-//        date + time, and links to GitHub, Discord and LinkedIn.
+// Right: a live local date + time, links to GitHub, Discord and LinkedIn, and
+//        the theme toggle (moon in dark mode, sun in light mode) at the far end.
 //
 // The <header> below has `transition:persist`, so its DOM survives
 // client-side navigations (no flicker, the clock keeps ticking). Because the
@@ -12,7 +12,7 @@
 // re-computes aria-current on every navigation.
 import { GitBranch } from "pixelarticons/react/GitBranch";
 import { User } from "pixelarticons/react/User";
-import { Moon } from "pixelarticons/react/Moon";
+import { MoonStar } from "pixelarticons/react/MoonStar";
 import { Sun } from "pixelarticons/react/Sun";
 import SocialLinks from "@/components/SocialLinks.astro";
 import { ABOUT_HREF, PROJECTS_HREF } from "@/data/links";
@@ -28,42 +28,50 @@ const navItems = [
 
 <header
   transition:persist="top-nav"
-  class="top-nav sticky top-0 z-50 mx-auto flex h-20 w-full max-w-[1200px] items-center justify-between gap-4 px-6 pt-10 pb-4"
+  style="max-width: calc(var(--page-max) + 3rem);"
+  class="top-nav sticky top-0 z-50 mx-auto h-20 w-full px-6 pt-[41px] pb-[15px]"
 >
-  <nav aria-label="Primary" class="flex items-center gap-6">
-    {
-      navItems.map(({ id, label, href, Icon }) => (
-        <a
-          href={href}
-          data-nav={id}
-          aria-current={section === id ? "page" : undefined}
-          class="top-nav-item text-portfolio-muted flex items-center gap-3 font-mono text-sm"
-        >
-          <Icon width={24} height={24} />
-          <span>{label}</span>
-        </a>
-      ))
-    }
-  </nav>
+  <!-- The inner row is inset by the page gutter (see "Page grid" in global.css),
+       so the nav starts at the same x as the page content, as in Figma. -->
+  <div
+    class="flex h-6 items-center justify-between gap-4 lg:pl-[var(--page-gutter)]"
+  >
+    <nav aria-label="Primary" class="flex items-center gap-6">
+      {
+        navItems.map(({ id, label, href, Icon }) => (
+          <a
+            href={href}
+            data-nav={id}
+            aria-current={section === id ? "page" : undefined}
+            class="top-nav-item text-portfolio-muted flex items-center gap-3 font-mono text-sm"
+          >
+            <Icon width={24} height={24} />
+            <span>{label}</span>
+          </a>
+        ))
+      }
+    </nav>
 
-  <div class="flex items-center gap-4">
-    <button
-      type="button"
-      data-theme-toggle
-      aria-label="Toggle light and dark theme"
-      class="text-portfolio-muted hover:text-portfolio-ink flex size-6 cursor-pointer items-center justify-center rounded-md transition-colors"
-    >
-      <Moon width={16} height={16} className="hidden dark:block" />
-      <Sun width={16} height={16} className="block dark:hidden" />
-    </button>
-    <!-- Filled in by the script below. min-w reserves the width so the
-         icons next to it don't shift when the text first appears. Hidden on
-         phones, where there isn't room for it beside the icons. -->
-    <time
-      data-clock
-      class="font-plex-sans text-portfolio-muted hidden min-w-[5.5rem] text-xs tabular-nums sm:block"
-    ></time>
-    <SocialLinks class="gap-1.5" />
+    <!-- Date/time, social links, then the theme toggle at the far right. -->
+    <div class="flex items-center gap-4">
+      <!-- Filled in by the script below. min-w reserves the width so the
+           icons next to it don't shift when the text first appears. Hidden on
+           phones, where there isn't room for it beside the icons. -->
+      <time
+        data-clock
+        class="font-plex-sans text-portfolio-muted hidden min-w-[4.625rem] text-xs tabular-nums sm:block"
+      ></time>
+      <SocialLinks class="gap-2" />
+      <button
+        type="button"
+        data-theme-toggle
+        aria-label="Toggle light and dark theme"
+        class="theme-toggle bg-portfolio-keycap text-portfolio-ink flex size-6 cursor-pointer items-center justify-center rounded-sm"
+      >
+        <MoonStar width={16} height={16} className="hidden dark:block" />
+        <Sun width={16} height={16} className="block dark:hidden" />
+      </button>
+    </div>
   </div>
 </header>
 
@@ -96,6 +104,12 @@ const navItems = [
   .top-nav-item[aria-current="page"] {
     color: var(--portfolio-ink);
     font-weight: 600;
+  }
+  .theme-toggle {
+    transition: background-color 0.2s ease-out;
+  }
+  .theme-toggle:hover {
+    background-color: color-mix(in srgb, var(--portfolio-ink) 24%, transparent);
   }
   .top-nav-item:not([aria-current="page"]):hover {
     color: var(--portfolio-ink);
