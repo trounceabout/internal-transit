@@ -118,7 +118,7 @@ const keyName = shortcut?.toLowerCase();
         label
       )
     }
-    {detail && <span class="text-portfolio-muted"> {detail}</span>}
+    {detail && <span class="action-detail"> {detail}</span>}
   </span>
 </Tag>
 
@@ -161,9 +161,14 @@ const keyName = shortcut?.toLowerCase();
   .action-button.is-featured :global(.bg-portfolio-keycap) {
     background-color: transparent;
   }
-  .action-button:hover :global(.text-portfolio-muted),
-  .action-button:focus-visible :global(.text-portfolio-muted),
-  .action-button.is-featured :global(.text-portfolio-muted) {
+  /* Resting color: Figma dims the project name to the page ink at 50%, which is
+     fainter than the shared muted token. */
+  .action-detail {
+    color: color-mix(in srgb, var(--portfolio-ink) 50%, transparent);
+  }
+  .action-button:hover .action-detail,
+  .action-button:focus-visible .action-detail,
+  .action-button.is-featured .action-detail {
     color: color-mix(in srgb, var(--portfolio-bg) 55%, transparent);
   }
 

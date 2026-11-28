@@ -29,15 +29,22 @@ const { items } = Astro.props;
     items.map((item) => (
       <figure class="m-0 flex min-w-0 flex-col gap-3">
         {item.kind === "image" && item.src ? (
-          <LightboxImage src={item.src} alt={item.alt} flat />
+          <LightboxImage
+            src={item.src}
+            alt={item.alt}
+            flat
+            ratio={item.caption ? undefined : "1440 / 882"}
+          />
         ) : item.webm && item.mp4 ? (
           <LoopVideo webm={item.webm} mp4={item.mp4} flat />
         ) : null}
-        <figcaption class="font-mono text-xs leading-4 uppercase">
-          <span class="text-portfolio-ink font-semibold">{item.label}</span>
-          {item.caption && (
-            <span class="text-portfolio-muted"> {item.caption}</span>
-          )}
+        {/* Figma: the whole caption is muted. A tile with a caption gets a
+          semibold label; a lone label (the Overview tile) is regular. */}
+        <figcaption class="text-portfolio-muted font-mono text-xs leading-4 uppercase">
+          <span class:list={[item.caption && "font-semibold"]}>
+            {item.label}
+          </span>
+          {item.caption && <span> {item.caption}</span>}
         </figcaption>
       </figure>
     ))

@@ -366,17 +366,28 @@ const actions: NavAction[] = [
        isn't clipped — the page-level overflow-x-hidden on <body>
        (BaseLayout.astro) is what stops it from ever causing a horizontal
        scrollbar on narrow viewports instead. */
-    inset: 0 -40px;
-    /* "1px, transparent 1px" (not "0, transparent 1px") is what makes a
-       crisp dot instead of a soft blurred blob — the color stays solid from
-       center out to the 1px radius, then cuts hard to transparent at that
-       same radius. */
-    background-image: radial-gradient(
-      circle,
-      var(--section-border-color) 1px,
-      transparent 1px
-    );
-    background-size: 24px 24px;
+    inset: 32px 0 auto 0;
+    height: 342px;
+    /* Figma's grid is lines, not dots: cells of about 53.2 x 39.7px drawn over
+       the heading + copy block only (y 32-374 of the section). Vertical lines
+       start 52px in; horizontal lines start 31px down (y 63 in the frame). */
+    background-image:
+      linear-gradient(
+        to right,
+        var(--section-border-color) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        to bottom,
+        var(--section-border-color) 1px,
+        transparent 1px
+      );
+    background-size:
+      53.2px 100%,
+      100% 39.7px;
+    background-position:
+      52px 0,
+      0 31px;
     /* Fades the grid out near all four edges instead of cutting off hard
        — two gradients (one per axis) multiplied together via
        mask-composite: intersect, so a point only stays fully opaque where
