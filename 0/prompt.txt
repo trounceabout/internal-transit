@@ -1,0 +1,11 @@
+Can you take a look at all the recent work (v2.0 pr stack) and compare it to Figma to make sure it's accurate. Be extremely thorough and look very, very closely (as closely as you can) to make sure it's all pixel perfect. Here are the frames in Figma:
+
+<pasted_content id="08ae">
+- Projects page: https://www.figma.com/design/yQsyiiyNzkw04y8TR6UCcK/Examples?node-id=56-11907&t=XVgE2imuhGfLIvqq-11
+- Case study, overview: https://www.figma.com/design/yQsyiiyNzkw04y8TR6UCcK/Examples?node-id=64-4769&t=XVgE2imuhGfLIvqq-11
+- Case study, Deep dive: https://www.figma.com/design/yQsyiiyNzkw04y8TR6UCcK/Examples?node-id=59-4620&t=XVgE2imuhGfLIvqq-11
+- Case study, deep dive (window sized): https://www.figma.com/design/yQsyiiyNzkw04y8TR6UCcK/Examples?node-id=56-12791&t=XVgE2imuhGfLIvqq-11
+- Case study, walkthrough: https://www.figma.com/design/yQsyiiyNzkw04y8TR6UCcK/Examples?node-id=56-13014&t=XVgE2imuhGfLIvqq-11
+- Case study, gallery: https://www.figma.com/design/yQsyiiyNzkw04y8TR6UCcK/Examples?node-id=56-13242&t=XVgE2imuhGfLIvqq-11
+- About: https://www.figma.com/design/yQsyiiyNzkw04y8TR6UCcK/Examples?node-id=64-5533&t=XVgE2imuhGfLIvqq-11
+</pasted_content id="08ae">
