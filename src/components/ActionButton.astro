@@ -57,8 +57,12 @@ const keyName = shortcut?.toLowerCase();
   type={href ? undefined : "button"}
   data-shortcut={keyName}
   class:list={[
-    "action-button text-portfolio-ink inline-flex shrink-0 cursor-pointer items-center gap-3 p-2 font-mono text-base font-medium whitespace-nowrap",
-    shape === "pill" ? "rounded-full" : "rounded-lg",
+    "action-button text-portfolio-ink inline-flex shrink-0 cursor-pointer items-center font-mono text-base font-medium whitespace-nowrap",
+    // Figma: the filled (primary) look is 12px/8px padding with a 4px icon gap;
+    // the plain secondary look is 8px padding with a 12px gap.
+    featured ? "gap-1 px-3 py-2" : "gap-3 p-2",
+    // Corners: fully round for the pill shape, otherwise 8px.
+    shape === "pill" ? "rounded-full" : "rounded-md",
     featured && "is-featured",
     className,
   ]}
@@ -71,7 +75,7 @@ const keyName = shortcut?.toLowerCase();
         class:list={[
           "keycap bg-portfolio-keycap flex h-6 items-center justify-center rounded-sm",
           // ESC is three letters wide; every other key is a square tile.
-          keyName === "esc" ? "px-1.5 text-xs tracking-wider" : "w-6",
+          keyName === "esc" ? "w-10 text-xs tracking-wider" : "w-6",
         ]}
       >
         {keyName === "enter" ? (
@@ -130,9 +134,13 @@ const keyName = shortcut?.toLowerCase();
   /* While the button is filled with ink, the key-cap and the dimmed detail
      text need to follow the inverted colors, or they'd vanish. */
   .action-button:hover :global(.bg-portfolio-keycap),
-  .action-button:focus-visible :global(.bg-portfolio-keycap),
-  .action-button.is-featured :global(.bg-portfolio-keycap) {
+  .action-button:focus-visible :global(.bg-portfolio-keycap) {
     background-color: color-mix(in srgb, var(--portfolio-bg) 18%, transparent);
+  }
+  /* On the always-filled primary look Figma shows the arrow directly on the
+     fill, with no tile behind it. */
+  .action-button.is-featured :global(.bg-portfolio-keycap) {
+    background-color: transparent;
   }
   .action-button:hover :global(.text-portfolio-muted),
   .action-button:focus-visible :global(.text-portfolio-muted),

@@ -12,6 +12,9 @@ import type { NavAction } from "@/layouts/BottomNav.astro";
 interface Props {
   title: string;
   description?: string;
+  // Which page layout this is. Sets `data-page` on <body>, which global.css
+  // uses to size the page column and gutter that the nav and content share.
+  page?: "home" | "case-study" | "about";
   // Hide the top nav (the start page has its own full-screen layout).
   hideTopNav?: boolean;
   // Actions for the persistent bottom bar. Omit (or pass none) for pages
@@ -24,6 +27,7 @@ interface Props {
 const {
   title,
   description = "Cody Keisler — product designer and design engineer in Rock Hill, SC.",
+  page,
   hideTopNav = false,
   actions = [],
 } = Astro.props;
@@ -73,6 +77,7 @@ const hasBottomNav = actions.length > 0;
     <slot name="head" />
   </head>
   <body
+    data-page={page}
     class:list={[
       "bg-portfolio-page flex min-h-screen flex-col overflow-x-hidden font-mono",
       // Leave room so the fixed bottom bar never covers the end of the page.
