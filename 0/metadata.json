@@ -1,0 +1,76 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "01M8G3917FV20J972VS1EA23B9",
+  "session_id": "6cfe4988-abe4-4264-81ed-5f50b28b9230",
+  "strategy": "manual-commit",
+  "created_at": "2026-11-28T03:30:45.123547Z",
+  "branch": "fix/figma-about",
+  "checkpoints_count": 2,
+  "save_step_count": 1,
+  "files_touched": [
+    "src/components/ActionButton.astro",
+    "src/components/case-study/Overview.astro",
+    "src/layouts/BottomNav.astro",
+    "src/layouts/HomeLayout.astro",
+    "src/lib/shortcuts.ts",
+    "src/pages/index.astro"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-sonnet-5-5",
+  "turn_id": "2687229a9751",
+  "checkpoint_transcript_start": 1343,
+  "transcript_lines_at_start": 1343,
+  "compact_transcript_start": 150,
+  "token_usage": {
+    "input_tokens": 64,
+    "cache_creation_tokens": 37989,
+    "cache_read_tokens": 12699757,
+    "output_tokens": 23393,
+    "api_call_count": 30
+  },
+  "session_metrics": {
+    "turn_count": 15
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-11-28T03:30:43.473213Z",
+    "agent_lines": 162,
+    "agent_removed": 42,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 162,
+    "total_lines_changed": 204,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 141,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/launch.json": 11,
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.json": 90,
+        ".claude/settings.local.json": 19,
+        ".conductor/settings.local.toml": 20
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 141,
+      "user_lines_removed": 0,
+      "agent_lines_added": 162,
+      "agent_lines_removed": 42,
+      "user_added_per_file": {
+        ".claude/launch.json": 11,
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.json": 90,
+        ".claude/settings.local.json": 19,
+        ".conductor/settings.local.toml": 20
+      }
+    }
+  ]
+}
