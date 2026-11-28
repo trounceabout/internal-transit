@@ -15,8 +15,8 @@ export interface NavAction {
   href: string;
   // Dimmed text after the label (e.g. the next project's name).
   detail?: string;
-  // Render filled at rest (the page's primary action).
-  featured?: boolean;
+  // Start out focused (filled) when the page loads.
+  autofocus?: boolean;
   // Only show while one of these case-study sections is active (space
   // separated ids in the DOM). Omit to always show. The case-study script
   // toggles the `hidden` attribute as the reader scrolls.
@@ -46,7 +46,7 @@ const { actions } = Astro.props;
           detail={action.detail}
           shortcut={action.shortcut}
           href={action.href}
-          featured={action.featured}
+          autofocus={action.autofocus}
           data-sections={action.sections?.join(" ")}
           hidden={
             action.sections ? !action.sections.includes("overview") : undefined

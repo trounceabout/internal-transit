@@ -1,9 +1,12 @@
 ---
-// ActionButton.astro — the "secondary" button from Figma's "New buttons"
-// section: transparent at rest, and on hover/focus it fills with the theme's
-// ink color (text flips to the page color) and lifts with the shared
-// --media-frame-shadow. A small key-cap tile on the right tells the visitor
-// which keyboard key triggers the same action.
+// ActionButton.astro — the button from Figma's "New buttons" section:
+// transparent at rest, and the one button that has focus is filled with the
+// theme's ink color (text flips to the page color) and lifts with the shared
+// --media-frame-shadow. There is no separate "primary" variant: a page marks the
+// button that should start out focused with `autofocus`, and the arrow keys and
+// mouse hover (src/lib/shortcuts.ts) move the focus, and with it the fill,
+// between buttons. A small key-cap tile on the right tells the visitor which
+// keyboard key triggers the same action.
 //
 // Renders an <a> when `href` is given, otherwise a <button>.
 //
@@ -24,8 +27,9 @@ interface Props {
   // uppercase single character (e.g. "x", "w").
   shortcut?: "enter" | "esc" | (string & {});
   href?: string;
-  // Always-filled look (the same as hover), for the page's primary action.
-  featured?: boolean;
+  // Start out focused (and so filled) when the page loads. Only one button per
+  // page should set this; shortcuts.ts does the focusing.
+  autofocus?: boolean;
   // The large, full-width "menu item" form used in the case-study Overview:
   // 18px text, a pill with 16px/12px padding, label on the left and the key
   // tile pushed to the far right.
@@ -42,7 +46,7 @@ const {
   detail,
   shortcut,
   href,
-  featured = false,
+  autofocus = false,
   block = false,
   class: className,
   id,
@@ -58,25 +62,24 @@ const keyName = shortcut?.toLowerCase();
   href={href}
   type={href ? undefined : "button"}
   data-shortcut={keyName}
+  data-autofocus={autofocus ? "" : undefined}
   class:list={[
     "action-button text-portfolio-ink inline-flex shrink-0 cursor-pointer items-center font-mono whitespace-nowrap",
     block
-      ? // Large menu item: 360px-ish pill, label left, key tile right. Only the
-        // filled primary item is medium weight and full-strength ink; the rest are
-        // regular weight at 80% ink.
-        [
-          "w-full justify-between gap-3 rounded-md px-4 py-3 text-lg leading-[normal]",
-          featured ? "font-medium" : "text-portfolio-ink/80 font-normal",
-        ]
+      ? // Large menu item: 360px-ish pill, label left, key tile right. Weight and
+        // color (regular at 80% ink, medium at full strength when focused) are
+        // set in the styles below.
+        "w-full justify-between gap-3 rounded-md px-4 py-3 text-lg leading-[normal]"
       : [
           "text-base font-medium",
-          // Figma: the filled (primary) look is 12px/8px padding with a 4px icon
-          // gap; the plain secondary look is 8px padding with a 12px gap.
-          featured ? "gap-1 px-3 py-2" : "gap-3 p-2",
+          // Figma: the Enter button is 12px/8px padding with a 4px icon gap
+          // (the arrow sits right against the label); the others are 8px
+          // padding with a 12px gap. Set by key, not by focus, so the buttons
+          // never change size when the focus moves.
+          keyName === "enter" ? "gap-1 px-3 py-2" : "gap-3 p-2",
           // Every button has 8px corners.
           "rounded-md",
         ],
-    featured && "is-featured",
     block && "is-block",
     className,
   ]}
@@ -133,30 +136,38 @@ const keyName = shortcut?.toLowerCase();
       color 0.15s ease-out;
   }
 
-  /* Browsers show the default focus ring on some mouse clicks (Safari); we
-     only want a ring for keyboard focus, and hover/focus-visible already
-     share the filled look below. */
+  /* The filled look IS the focus state: no outline, the fill is the indicator.
+     shortcuts.ts moves focus with the arrow keys and on mouse hover, so exactly
+     one button is filled at a time. */
   .action-button:focus {
     outline: none;
   }
 
-  .action-button:hover,
-  .action-button:focus-visible,
-  .action-button.is-featured {
+  .action-button:focus {
     background-color: var(--portfolio-ink);
     color: var(--portfolio-bg);
     box-shadow: var(--media-frame-shadow);
   }
 
+  /* The large Overview menu items rest at regular weight and 80% ink, and step
+     up to medium weight and full-strength ink when focused. (Monospace, so the
+     heavier weight doesn't change the width.) */
+  .action-button.is-block {
+    font-weight: 400;
+    color: color-mix(in srgb, var(--portfolio-ink) 80%, transparent);
+  }
+  .action-button.is-block:focus {
+    font-weight: 500;
+    color: var(--portfolio-bg);
+  }
+
   /* While the button is filled with ink, the key-cap and the dimmed detail
      text need to follow the inverted colors, or they'd vanish. */
-  .action-button:hover :global(.bg-portfolio-keycap),
-  .action-button:focus-visible :global(.bg-portfolio-keycap) {
+  .action-button:focus :global(.bg-portfolio-keycap) {
     background-color: color-mix(in srgb, var(--portfolio-bg) 18%, transparent);
   }
-  /* On the always-filled primary look Figma shows the arrow directly on the
-     fill, with no tile behind it. */
-  .action-button.is-featured :global(.bg-portfolio-keycap) {
+  /* Figma shows the Enter arrow directly on the fill, with no tile behind it. */
+  .action-button[data-shortcut="enter"]:focus :global(.bg-portfolio-keycap) {
     background-color: transparent;
   }
   /* Resting color: Figma dims the project name to the page ink at 50%, which is
@@ -164,9 +175,7 @@ const keyName = shortcut?.toLowerCase();
   .action-detail {
     color: color-mix(in srgb, var(--portfolio-ink) 50%, transparent);
   }
-  .action-button:hover .action-detail,
-  .action-button:focus-visible .action-detail,
-  .action-button.is-featured .action-detail {
+  .action-button:focus .action-detail {
     color: color-mix(in srgb, var(--portfolio-bg) 55%, transparent);
   }
 
