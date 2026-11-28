@@ -1,10 +1,10 @@
 ---
 // LoopVideo.astro — silent, looping, autoplaying inline video used to
-// illustrate a case-study beat. Shares the same rounded/shadow "media frame"
-// treatment as ProjectLayout's Loom embed box and the static screenshots
-// elsewhere in a case study, so all inline media reads as one visual family.
-import { MEDIA_FRAME_SHADOW } from "@/lib/media";
-
+// illustrate a case-study beat (Figma "Video" frame: 4px corners on a neutral
+// surface, with a small "LOOP · 5S" tag in the top-left corner).
+//
+// The tag's length is read from the video itself once its metadata loads, so
+// no one has to keep a hand-typed duration in sync with the file.
 interface Props {
   webm: string;
   mp4: string;
@@ -15,14 +15,12 @@ const { webm, mp4, caption } = Astro.props;
 ---
 
 <figure class="m-0 flex flex-col gap-4">
-  <div
-    class="relative overflow-hidden rounded-lg"
-    style={{ boxShadow: MEDIA_FRAME_SHADOW }}
-  >
+  <div class="loop-video relative overflow-hidden rounded-[4px]">
     <video class="block h-auto w-full" autoplay loop muted playsinline>
       <source src={webm} type="video/webm" />
       <source src={mp4} type="video/mp4" />
     </video>
+    <span class="loop-tag" hidden>LOOP</span>
   </div>
   {
     caption && (
@@ -32,3 +30,46 @@ const { webm, mp4, caption } = Astro.props;
     )
   }
 </figure>
+
+<style>
+  .loop-video {
+    background-color: color-mix(in srgb, var(--portfolio-ink) 8%, transparent);
+  }
+  /* A frosted cream chip with dark mono text, in both themes (it sits on top
+     of the video, not the page). */
+  .loop-tag {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    padding: 3px 8px;
+    border-radius: 3px;
+    background-color: rgba(255, 249, 242, 0.7);
+    color: #18181b;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 16px;
+    white-space: nowrap;
+  }
+</style>
+
+<script>
+  // "LOOP · 5S" / "LOOP · 6.5S": whole seconds drop the decimal.
+  function labelLoops() {
+    document.querySelectorAll<HTMLElement>(".loop-video").forEach((box) => {
+      const video = box.querySelector("video");
+      const tag = box.querySelector<HTMLElement>(".loop-tag");
+      if (!video || !tag || tag.dataset.ready) return;
+      const apply = () => {
+        if (!Number.isFinite(video.duration)) return;
+        const secs = Math.round(video.duration * 2) / 2;
+        tag.textContent = `LOOP · ${secs}S`;
+        tag.hidden = false;
+        tag.dataset.ready = "true";
+      };
+      if (video.readyState >= 1) apply();
+      else video.addEventListener("loadedmetadata", apply, { once: true });
+    });
+  }
+  document.addEventListener("astro:page-load", labelLoops);
+</script>

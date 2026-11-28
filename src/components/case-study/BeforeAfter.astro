@@ -1,0 +1,77 @@
+---
+// BeforeAfter.astro — the side-by-side comparison in "The approach" (Figma
+// "Before / After"): two equal 276px-tall screenshots, each cropped to fit,
+// with a mono caption underneath. The "After" label takes the project color.
+import LightboxImage from "@/components/case-study/LightboxImage.astro";
+
+interface Side {
+  src: string;
+  alt: string;
+  label: string;
+  caption: string;
+}
+
+interface Props {
+  before: Side;
+  after: Side;
+}
+
+const { before, after } = Astro.props;
+---
+
+<div class="before-after">
+  {
+    [
+      { side: before, after: false },
+      { side: after, after: true },
+    ].map(({ side, after: isAfter }) => (
+      <figure class="side">
+        <LightboxImage src={side.src} alt={side.alt} flat />
+        <figcaption>
+          <span class:list={["label", isAfter && "label--after"]}>
+            {side.label}
+          </span>
+          <span>{side.caption}</span>
+        </figcaption>
+      </figure>
+    ))
+  }
+</div>
+
+<style>
+  .before-after {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  @media (min-width: 40rem) {
+    .before-after {
+      flex-direction: row;
+    }
+  }
+  .side {
+    flex: 1 1 0;
+    min-width: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  figcaption {
+    display: flex;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 16px;
+    text-transform: uppercase;
+    color: var(--portfolio-muted);
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .label {
+    font-weight: 600;
+  }
+  .label--after {
+    color: var(--icon-color);
+  }
+</style>
