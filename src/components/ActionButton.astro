@@ -2,7 +2,7 @@
 // ActionButton.astro — the "secondary" button from Figma's "New buttons"
 // section: transparent at rest, and on hover/focus it fills with the theme's
 // ink color (text flips to the page color) and lifts with the shared
-// --media-frame-shadow. A small key-cap tile on the left tells the visitor
+// --media-frame-shadow. A small key-cap tile on the right tells the visitor
 // which keyboard key triggers the same action.
 //
 // Renders an <a> when `href` is given, otherwise a <button>.
@@ -88,8 +88,9 @@ const keyName = shortcut?.toLowerCase();
         aria-hidden="true"
         class:list={[
           "keycap bg-portfolio-keycap flex h-6 items-center justify-center rounded-sm",
-          // In the block form the key tile sits at the far right, after the label.
-          block && "order-last",
+          // The key tile always sits after the label (at the far right in the
+          // block form).
+          "order-last",
           // ESC is three letters wide; every other key is a square tile.
           keyName === "esc" ? "w-10 text-xs tracking-wider" : "w-6",
         ]}
