@@ -1,0 +1,2 @@
+Let's also fix the icon bar on the projects page. It should scroll like this when a new one is clicked:
+https://www.figma.com/design/yQsyiiyNzkw04y8TR6UCcK/Examples?node-id=83-6072&t=XVgE2imuhGfLIvqq-11
