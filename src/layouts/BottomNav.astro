@@ -36,7 +36,7 @@ const { actions } = Astro.props;
 >
   <div
     style="max-width: calc(var(--page-max) + 3rem);"
-    class="bottom-actions pointer-events-auto mx-auto flex w-full items-center gap-x-2 overflow-x-auto px-6 sm:gap-x-6 lg:pl-[calc(1.5rem+var(--page-gutter))]"
+    class="bottom-actions pointer-events-auto mx-auto flex w-full items-center gap-x-2 overflow-x-auto px-6 sm:gap-x-[var(--bottom-gap,1.5rem)] lg:pl-[calc(1.5rem+var(--bottom-gutter,var(--page-gutter)))]"
   >
     {
       actions.map((action) => (
@@ -63,6 +63,12 @@ const { actions } = Astro.props;
      sideways instead of stacking up over the page content. */
   .bottom-actions {
     scrollbar-width: none;
+  }
+  /* The left inset changes between case-study sections; slide rather than jump. */
+  @media (prefers-reduced-motion: no-preference) {
+    .bottom-actions {
+      transition: padding-left 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    }
   }
   /* If a row is still wider than the screen, fade its right edge as a hint
      that it scrolls. (When everything fits, the fade lands on empty padding.) */

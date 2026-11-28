@@ -16,8 +16,8 @@
 import { getCollection } from "astro:content";
 import { Clock } from "pixelarticons/react/Clock";
 import { Play } from "pixelarticons/react/Play";
-import { Reload } from "pixelarticons/react/Reload";
 import { projectIconMap } from "@/lib/projectIconMap";
+import { slashList, typeIcon } from "@/lib/projectMeta";
 
 interface Props {
   // Which project to preview. Omit for the first one (the /home page).
@@ -30,6 +30,7 @@ const projects = (
 
 const current = projects.find((p) => p.id === Astro.props.slug) ?? projects[0];
 const { data } = current;
+const TypeIcon = data.type ? typeIcon(data.type) : null;
 
 // Per-project colors are passed as inline custom properties; global.css
 // resolves them to --icon-color / --badge-color for the active theme.
@@ -47,10 +48,6 @@ const shortName = (name: string) => name.replace(/^Project\s+/, "");
 
 // Split the headline around the accent phrase so it can be italicized and
 // tinted in the project's own color.
-// Role and scope are stored as comma-separated lists; Figma shows them with
-// " / " between items ("PRODUCT FRAMING / UX STRATEGY / ...").
-const slashList = (value: string) => value.split(/,\s*/).join(" / ");
-
 const tagline = data.tagline;
 const accentIndex = data.accentPhrase ? tagline.indexOf(data.accentPhrase) : -1;
 const before = accentIndex >= 0 ? tagline.slice(0, accentIndex) : tagline;
@@ -150,7 +147,7 @@ const after =
           </dt>
           <dd data-animate class="m-0">
             <span class="meta-badge">
-              <Reload width={16} height={16} />
+              {TypeIcon && <TypeIcon width={16} height={16} />}
               {data.type}
             </span>
           </dd>

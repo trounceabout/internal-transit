@@ -1,0 +1,173 @@
+---
+// WatchtowerCpuCard.astro — the Watchtower Overview's hero: a CPU utilization
+// card (75%, +20%, a user/system/I-O/idle breakdown) that fades out toward its
+// bottom edge, so the headline can sit over its lower half like a watermark.
+//
+// A static picture of the Watchtower monitoring module, laid out at Figma's
+// exact sizes inside a 597.9 x 275 box; it's not the interactive demo from the
+// case study. The card is deliberately a dark "product UI" in both themes.
+const stats = [
+  { label: "User", value: "59%" },
+  { label: "System", value: "18%" },
+  { label: "I/O wait", value: "9%" },
+  { label: "Idle", value: "14%" },
+];
+---
+
+<div class="cpu-card" aria-hidden="true">
+  <!-- The faint utilization line sits behind the stats and continues past the
+       card's lower edge, where the fade hides it. -->
+  <svg
+    class="cpu-graph"
+    viewBox="0 0 598 160"
+    preserveAspectRatio="none"
+    fill="none"
+  >
+    <path
+      d="M0 92 C 90 90, 190 64, 290 60 S 480 86, 598 94"
+      stroke="#ca8a04"
+      stroke-opacity="0.55"
+      stroke-width="2"></path>
+  </svg>
+
+  <div class="cpu-content">
+    <div class="cpu-highlight">
+      <span class="cpu-score">75%</span>
+      <div class="cpu-extras">
+        <span class="cpu-unit">4 vCPUs avg</span>
+        <span class="cpu-change">
+          <svg
+            viewBox="0 0 24 24"
+            width="30.591"
+            height="30.591"
+            fill="none"
+            stroke="#a7a49f"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M16 7h6v6"></path>
+            <path d="m22 7-8.5 8.5-5-5L2 17"></path>
+          </svg>
+          +20%
+        </span>
+      </div>
+    </div>
+
+    <div class="cpu-stats">
+      {
+        stats.map((s, i) => (
+          <>
+            {i > 0 && <span class="cpu-dot">&bull;</span>}
+            {/* Figma's row wraps after "I/O wait 9% •", leaving "Idle" on its own line. */}
+            {i === 3 && <span class="cpu-break" />}
+            <span class="cpu-stat">
+              <span class="cpu-label">{s.label}</span>
+              <span class="cpu-value">{s.value}</span>
+            </span>
+          </>
+        ))
+      }
+    </div>
+  </div>
+</div>
+
+<style>
+  .cpu-card {
+    position: relative;
+    box-sizing: border-box;
+    width: 597.927px;
+    height: 274.987px;
+    overflow: hidden;
+    border: 1.91px solid #43413d;
+    border-radius: 22.923px;
+    background-color: rgb(38, 37, 35);
+    background-image: linear-gradient(
+      0deg,
+      rgba(133, 77, 14, 0.25) 0%,
+      rgba(38, 37, 35, 0.25) 100%
+    );
+    font-family: "Geist Sans", sans-serif;
+    /* The card fully shows at the top and dissolves toward the bottom. */
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      #000 0%,
+      #000 46%,
+      transparent 92%
+    );
+    mask-image: linear-gradient(to bottom, #000 0%, #000 46%, transparent 92%);
+  }
+  .cpu-graph {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 104px;
+    width: 100%;
+    height: 160px;
+  }
+  .cpu-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 22.959px;
+    padding: 30.019px 33.771px;
+  }
+  .cpu-highlight {
+    display: flex;
+    align-items: center;
+    gap: 15.296px;
+  }
+  .cpu-score {
+    font-size: 67.98px;
+    line-height: 72.654px;
+    letter-spacing: -1.0877px;
+    color: #fde047;
+    white-space: nowrap;
+  }
+  .cpu-extras {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+  .cpu-unit,
+  .cpu-change {
+    font-family: "Geist Mono", monospace;
+    font-size: 26.767px;
+    line-height: normal;
+    color: #a7a49f;
+    white-space: nowrap;
+  }
+  .cpu-change {
+    display: flex;
+    align-items: center;
+    gap: 7.648px;
+  }
+  .cpu-stats {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 15.306px;
+    font-size: 21.046px;
+    line-height: 21.046px;
+    letter-spacing: 0.2105px;
+    white-space: nowrap;
+  }
+  /* A zero-height, full-width item: forces the next item onto a new line. */
+  .cpu-break {
+    flex-basis: 100%;
+    height: 0;
+    margin: -15.306px 0 0;
+  }
+  .cpu-stat {
+    display: flex;
+    gap: 7.653px;
+  }
+  .cpu-label,
+  .cpu-dot {
+    color: #a7a49f;
+  }
+  .cpu-value {
+    font-weight: 500;
+    color: #ffffff;
+  }
+</style>

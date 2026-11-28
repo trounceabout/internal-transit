@@ -35,6 +35,9 @@ const projects = defineCollection({
     // Short first-person blurb shown under the headline on the Projects (home)
     // preview. Falls back to `description` when a project doesn't have one yet.
     summary: z.string().optional(),
+    // Which artwork the case-study Overview shows above the headline: a stack of
+    // toast notifications, the Undercurrent logo mark, or a CPU utilization card.
+    heroArt: z.enum(["toasts", "mark", "cpu-card"]).optional(),
     // Substring of `description` (or `tagline`, as a fallback) to render
     // italicized in the project's own `iconColor`.
     accentPhrase: z.string().optional(),

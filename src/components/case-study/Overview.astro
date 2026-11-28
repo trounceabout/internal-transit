@@ -1,15 +1,20 @@
 ---
-// Overview.astro — the case study's opening "presentation": a big icon tile,
-// the project name, an oversized headline with the accent phrase tinted in
-// the project color, the description, and the key facts. Meant to feel larger
-// than life; the section's own buttons live in the bottom nav (Deep dive /
-// Walkthrough / Gallery), which jump straight to those sections.
+// Overview.astro — the case study's opening "presentation" (Figma: the
+// "Project — Detail" frames). From top to bottom:
+//   1. a centered hero: per-project artwork, an oversized headline with the
+//      accent phrase in the project color, and a small project chip
+//   2. the description
+//   3. a two-column row: an action menu (Read deep dive / Watch walkthrough /
+//      View gallery) on the left, the project's type, role and scope on the right
 //
-// The `data-ov` attributes are hooks for the entrance animation in
-// src/lib/caseStudy.ts (built with Motion).
+// The menu items are real buttons with keyboard shortcuts (Enter / W / G), so
+// they don't need entries in the bottom nav. The `data-ov` attributes are hooks
+// for the entrance animation in src/lib/caseStudy.ts (built with Motion).
 import type { ComponentType, SVGProps } from "react";
 import { Play } from "pixelarticons/react/Play";
-import { Reload } from "pixelarticons/react/Reload";
+import ActionButton from "@/components/ActionButton.astro";
+import HeroArt from "@/components/case-study/hero/HeroArt.astro";
+import { slashList, typeIcon } from "@/lib/projectMeta";
 
 interface Props {
   name: string;
@@ -17,10 +22,12 @@ interface Props {
   accentPhrase?: string;
   description?: string;
   icon: ComponentType<SVGProps<SVGSVGElement>>;
+  heroArt?: "toasts" | "mark" | "cpu-card";
   type?: string;
   role?: string;
   scope?: string;
   hasWalkthrough?: boolean;
+  hasGallery?: boolean;
 }
 
 const {
@@ -29,11 +36,15 @@ const {
   accentPhrase,
   description,
   icon: Icon,
+  heroArt,
   type,
   role,
   scope,
   hasWalkthrough,
+  hasGallery,
 } = Astro.props;
+
+const TypeIcon = type ? typeIcon(type) : null;
 
 // Split the headline into words (so each can animate in on its own), marking
 // the words that fall inside the accent phrase.
@@ -49,134 +60,267 @@ const words = tagline.split(" ").map((text) => {
 });
 ---
 
-<div class="flex flex-col items-start gap-6">
-  <div class="flex items-center gap-5">
-    <span
-      data-ov="tile"
-      class="overview-tile flex size-20 items-center justify-center rounded-2xl"
-    >
-      <Icon width={36} height={36} />
-    </span>
-    <p data-ov="name" class="text-portfolio-ink font-mono text-2xl">{name}</p>
+<div class="overview">
+  <div class="hero">
+    <HeroArt art={heroArt} />
+
+    <div class="hero-title">
+      <h1 class="overview-headline m-0">
+        {
+          words.map(({ text, accent }) => (
+            <span
+              data-ov="word"
+              class:list={["inline-block", accent && "italic"]}
+              style={accent ? "color: var(--icon-color);" : undefined}
+            >
+              {text}&nbsp;
+            </span>
+          ))
+        }
+      </h1>
+
+      <div data-ov="name" class="project-chip">
+        <span class="chip-tile">
+          <Icon width={15} height={15} />
+        </span>
+        <span class="chip-name">{name}</span>
+      </div>
+    </div>
   </div>
 
-  <h1 class="overview-headline m-0">
+  <div class="overview-body">
     {
-      words.map(({ text, accent }) => (
-        <span
-          data-ov="word"
-          class:list={["inline-block", accent && "italic"]}
-          style={accent ? "color: var(--icon-color);" : undefined}
-        >
-          {text}&nbsp;
-        </span>
-      ))
+      description && (
+        <p data-ov="desc" class="overview-description">
+          {description}
+        </p>
+      )
     }
-  </h1>
 
-  {
-    description && (
-      <p
-        data-ov="desc"
-        class="font-plex-sans text-portfolio-ink max-w-[38rem] text-lg leading-8"
-      >
-        {description}
-      </p>
-    )
-  }
+    <div data-ov="meta" class="overview-row">
+      <div class="action-menu">
+        <ActionButton
+          block
+          featured
+          label="Read deep dive"
+          shortcut="enter"
+          href="#deep-dive"
+        />
+        {
+          hasWalkthrough && (
+            <ActionButton
+              block
+              label="Watch walkthrough"
+              shortcut="w"
+              href="#walkthrough"
+            />
+          )
+        }
+        {
+          hasGallery && (
+            <ActionButton
+              block
+              label="View gallery"
+              shortcut="g"
+              href="#gallery"
+            />
+          )
+        }
+      </div>
 
-  <dl data-ov="meta" class="m-0 flex flex-wrap gap-x-12 gap-y-6">
-    {
-      type && (
-        <div class="flex flex-col gap-2">
-          <dt class="meta-label">Type</dt>
-          <dd class="meta-badge m-0">
-            <Reload width={16} height={16} />
-            {type}
-          </dd>
+      <div class="overview-details">
+        <div class="chip-row">
+          {
+            type && TypeIcon && (
+              <span class="meta-badge">
+                <TypeIcon width={16} height={16} />
+                {type}
+              </span>
+            )
+          }
+          {
+            hasWalkthrough && (
+              <span class="meta-badge">
+                <Play width={14} height={14} />
+                Video walkthrough
+              </span>
+            )
+          }
         </div>
-      )
-    }
-    {
-      hasWalkthrough && (
-        <div class="flex flex-col gap-2">
-          <dt class="meta-label">Accessories</dt>
-          <dd class="meta-badge m-0">
-            <Play width={16} height={16} />
-            Video walkthrough
-          </dd>
-        </div>
-      )
-    }
-    {
-      role && (
-        <div class="flex flex-col gap-2">
-          <dt class="meta-label">Role</dt>
-          <dd class="meta-value">{role}</dd>
-        </div>
-      )
-    }
-    {
-      scope && (
-        <div class="flex max-w-[28rem] flex-col gap-2">
-          <dt class="meta-label">Scope</dt>
-          <dd class="meta-value">{scope}</dd>
-        </div>
-      )
-    }
-  </dl>
+        {
+          role && (
+            <div class="detail">
+              <p class="detail-label">Role</p>
+              <p class="detail-value">{slashList(role)}</p>
+            </div>
+          )
+        }
+        {
+          scope && (
+            <div class="detail">
+              <p class="detail-label">Scope</p>
+              <p class="detail-value detail-value--wrap">{slashList(scope)}</p>
+            </div>
+          )
+        }
+      </div>
+    </div>
+  </div>
 </div>
 
 <style>
-  .overview-tile {
-    background-color: var(--icon-color);
-    /* Cream icon on the project color in both themes (same as the home tile). */
-    color: #fff9f2;
-    box-shadow: var(--media-frame-shadow);
+  .overview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 80px;
+    width: 100%;
   }
 
-  /* The oversized Redaction headline — one step bigger than .portfolio-headline
-     since the overview is meant to feel like a title slide. The min() with vh
-     keeps it from outgrowing short windows (laptops), where the whole overview
-     should still fit on one screen. */
+  /* ─── Hero ─────────────────────────────────────────────────────────────── */
+  .hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 888px;
+  }
+  .hero-title {
+    position: relative; /* so the headline can sit over a CPU card behind it */
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 48px;
+    width: 100%;
+  }
+  /* Redaction 35 at 72px, 0.94 line height, -2.16px tracking, centered. */
   .overview-headline {
+    max-width: 888px;
+    text-align: center;
     font-family: var(--font-redaction);
-    font-size: clamp(2.75rem, min(1.4rem + 5vw, 8.5vh), 6rem);
-    line-height: 0.94;
+    font-size: clamp(2.75rem, 1.2rem + 4.8vw, 4.5rem);
+    font-weight: 400;
+    line-height: 0.9444; /* 68px at 72px: two lines are 136px tall, as in Figma */
     letter-spacing: -0.03em;
     color: var(--portfolio-ink);
-    font-weight: 400;
   }
 
-  .meta-label {
-    font-family: var(--font-plex-sans);
-    font-size: 0.875rem;
-    text-transform: uppercase;
-    color: var(--portfolio-muted);
-    letter-spacing: 0.02em;
-  }
-  .meta-value {
-    margin: 0;
-    font-family: var(--font-mono);
-    font-size: 0.875rem;
-    text-transform: uppercase;
-    color: var(--portfolio-ink);
-    line-height: 1.65;
-  }
-  .meta-badge {
-    display: inline-flex;
+  /* "Project Ping": a 24px tile in the project's tint, then the name. */
+  .project-chip {
+    display: flex;
     align-items: center;
-    align-self: flex-start;
-    gap: 0.5rem;
-    border-radius: 0.25rem;
-    padding: 0.25rem 0.5rem;
-    background-color: var(--badge-color, var(--portfolio-keycap));
+    gap: 12.8px;
+  }
+  .chip-tile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    background-color: color-mix(in srgb, var(--icon-color) 15%, transparent);
+    color: var(--icon-color);
+  }
+  .chip-name {
+    font-family: var(--font-mono);
+    font-size: 16px;
+    line-height: 1.4;
+    letter-spacing: -0.16px;
+    color: var(--portfolio-ink);
+  }
+
+  /* ─── Body ─────────────────────────────────────────────────────────────── */
+  .overview-body {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    width: 100%;
+    max-width: 900px;
+  }
+  .overview-description {
+    margin: 0;
+    font-family: var(--font-plex-sans);
+    font-size: 18px;
+    line-height: 28px;
+    color: color-mix(in srgb, var(--portfolio-ink) 85%, transparent);
+  }
+  /* Stacked on small screens; side by side (360px menu, 80px gap) from lg. */
+  .overview-row {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+  @media (min-width: 64rem) {
+    .overview-row {
+      flex-direction: row;
+      gap: 80px;
+    }
+    .action-menu {
+      flex: none;
+      width: 360px;
+    }
+    .overview-details {
+      flex: 1 1 0;
+      min-width: 0;
+    }
+  }
+  .action-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  /* ─── Details ──────────────────────────────────────────────────────────── */
+  .overview-details {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  .chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  /* The same chips as the Projects page: project tint, 4px corners. */
+  .meta-badge {
+    display: flex;
+    width: fit-content;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background-color: color-mix(in srgb, var(--icon-color) 15%, transparent);
     color: var(--portfolio-ink);
     font-family: var(--font-mono);
-    font-size: 0.875rem;
-    font-weight: 600;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: normal;
   }
   .meta-badge :global(svg) {
     color: var(--icon-color);
+  }
+  /* A label stacked over its value, 8px apart. */
+  .detail {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .detail-label,
+  .detail-value {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: normal;
+    text-transform: uppercase;
+  }
+  .detail-label {
+    color: var(--portfolio-muted);
+  }
+  .detail-value {
+    color: var(--portfolio-ink);
+  }
+  .detail-value--wrap {
+    line-height: 24px;
   }
 </style>

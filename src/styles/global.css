@@ -198,12 +198,35 @@
 :root {
   --page-max: 1200px;
   --page-gutter: 0px;
+  /* Space above the nav row inside the 80px sticky header: Figma puts the nav
+     41px down on the Projects page and 56px down on the other pages. */
+  --nav-top: 41px;
 }
 @media (min-width: 64rem) {
   /* Home / Projects: 990px column, 176px gutter (152px label column + 24px gap). */
   body[data-page="home"] {
     --page-max: 990px;
     --page-gutter: 176px;
+  }
+}
+
+@media (min-width: 64rem) {
+  /* Case study: a 1200px column. Past the Overview, a 260px side nav + 40px gap
+     fill the left gutter (300px) and the top nav starts after it; the bottom
+     action bar starts 10px further in. On the Overview there's no side nav: the
+     nav spans the full width and the action bar centers under the 900px body
+     column (150px in, plus the same 10px). Changing section animates between
+     the two (see the transitions on the nav). */
+  body[data-page="case-study"] {
+    --page-max: 1200px;
+    --page-gutter: 300px;
+    --bottom-gutter: 310px;
+    --bottom-gap: 37px;
+    --nav-top: 56px;
+  }
+  body[data-page="case-study"][data-section="overview"] {
+    --page-gutter: 0px;
+    --bottom-gutter: 160px;
   }
 }
 
