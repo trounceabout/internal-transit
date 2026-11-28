@@ -30,6 +30,12 @@ const projects = (
 
 const current = projects.find((p) => p.id === Astro.props.slug) ?? projects[0];
 const { data } = current;
+
+// How far the icon bar is shifted left so the selected tile lines up with the
+// text column: every tile before it takes up 72px (its unselected width) plus
+// the 24px gap. See --bar-shift in the styles and the script below.
+const currentIndex = projects.findIndex((p) => p.id === current.id);
+const barShift = -currentIndex * (72 + 24);
 const TypeIcon = data.type ? typeIcon(data.type) : null;
 
 // Per-project colors are passed as inline custom properties; global.css
@@ -68,7 +74,8 @@ const after =
     transition:persist="project-bar"
     aria-label="Projects"
     data-project-bar
-    class="project-bar -mx-6 flex items-center gap-6 overflow-x-auto px-6 lg:pl-[calc(1.5rem+var(--page-gutter))]"
+    style={`--bar-shift: ${barShift}px;`}
+    class="project-bar -mx-6 flex items-center gap-6 overflow-x-auto px-6 lg:overflow-x-clip lg:pl-[calc(1.5rem+var(--page-gutter))]"
   >
     {
       projects.map((project, index) => {
@@ -203,6 +210,23 @@ const after =
   }
   .project-bar::-webkit-scrollbar {
     display: none;
+  }
+
+  /* From lg the bar doesn't scroll (there's no overflow to scroll through).
+     Instead every tile slides left by --bar-shift, which the script keeps in
+     step with the selection, so the selected tile always sits at the text
+     column's left edge and the tiles before it tuck into the gutter (Figma:
+     the second project's tile is at x=176, the first at x=80). The tiles'
+     width change and this slide share one easing, so they move together. */
+  @media (min-width: 64rem) {
+    .project-tile {
+      transform: translateX(var(--bar-shift, 0px));
+    }
+  }
+  @media (min-width: 64rem) and (prefers-reduced-motion: no-preference) {
+    .project-tile {
+      transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    }
   }
 
   /* ─── Cartridge tiles ──────────────────────────────────────────────────── */
@@ -448,9 +472,19 @@ const after =
       else t.removeAttribute("aria-current");
     });
 
-    // Slide the bar (not the page) so the selected tile sits in the middle.
-    // 128 is the selected tile's final width (see the CSS above), so the
-    // math doesn't depend on where the width transition currently is.
+    // From lg, shift every tile left so the selected one lines up with the text
+    // column (see --bar-shift in the CSS). Tiles before the selected one end up
+    // 72px wide, so the shift is a fixed step per position and doesn't depend on
+    // where the width transition currently is.
+    const gap = parseFloat(getComputedStyle(bar).columnGap) || 24;
+    bar.style.setProperty(
+      "--bar-shift",
+      `${-tiles.indexOf(active) * (72 + gap)}px`,
+    );
+
+    // Below lg the bar scrolls sideways instead: slide it (not the page) so the
+    // selected tile sits in the middle. 128 is the selected tile's final width.
+    if (window.matchMedia("(min-width: 64rem)").matches) return;
     const left = active.offsetLeft - (bar.clientWidth - 128) / 2;
     const reduce = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
