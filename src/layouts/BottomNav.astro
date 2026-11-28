@@ -47,7 +47,6 @@ const { actions } = Astro.props;
           shortcut={action.shortcut}
           href={action.href}
           featured={action.featured}
-          shape={action.featured ? "pill" : "rounded"}
           data-sections={action.sections?.join(" ")}
           hidden={
             action.sections ? !action.sections.includes("overview") : undefined

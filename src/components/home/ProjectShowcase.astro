@@ -404,7 +404,7 @@ const after =
   .meta-value--wrap {
     line-height: 24px;
   }
-  /* The chips: 15% project-color fill, 8px/3px padding, 4px corners. */
+  /* The chips: 15% project-color fill, 8px/3px padding, fully rounded. */
   .meta-badge {
     /* Block-level (not inline-flex) so the surrounding <dd> doesn't add a line
        box around it, which would make each chip row taller than the chip. */
@@ -413,7 +413,7 @@ const after =
     align-items: center;
     gap: 6px;
     padding: 3px 8px;
-    border-radius: 4px;
+    border-radius: 9999px;
     background-color: color-mix(in srgb, var(--icon-color) 15%, transparent);
     color: var(--portfolio-ink);
     font-family: var(--font-mono);

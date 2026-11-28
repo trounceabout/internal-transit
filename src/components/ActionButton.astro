@@ -24,8 +24,6 @@ interface Props {
   // uppercase single character (e.g. "x", "w").
   shortcut?: "enter" | "esc" | (string & {});
   href?: string;
-  // Pill shape (Start page) vs. the slightly squarer bottom-nav shape.
-  shape?: "pill" | "rounded";
   // Always-filled look (the same as hover), for the page's primary action.
   featured?: boolean;
   // The large, full-width "menu item" form used in the case-study Overview:
@@ -44,7 +42,6 @@ const {
   detail,
   shortcut,
   href,
-  shape = "rounded",
   featured = false,
   block = false,
   class: className,
@@ -68,7 +65,7 @@ const keyName = shortcut?.toLowerCase();
         // filled primary item is medium weight and full-strength ink; the rest are
         // regular weight at 80% ink.
         [
-          "w-full justify-between gap-3 rounded-full px-4 py-3 text-lg leading-[normal]",
+          "w-full justify-between gap-3 rounded-md px-4 py-3 text-lg leading-[normal]",
           featured ? "font-medium" : "text-portfolio-ink/80 font-normal",
         ]
       : [
@@ -76,8 +73,8 @@ const keyName = shortcut?.toLowerCase();
           // Figma: the filled (primary) look is 12px/8px padding with a 4px icon
           // gap; the plain secondary look is 8px padding with a 12px gap.
           featured ? "gap-1 px-3 py-2" : "gap-3 p-2",
-          // Corners: fully round for the pill shape, otherwise 8px.
-          shape === "pill" ? "rounded-full" : "rounded-md",
+          // Every button has 8px corners.
+          "rounded-md",
         ],
     featured && "is-featured",
     block && "is-block",
