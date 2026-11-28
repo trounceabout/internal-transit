@@ -46,6 +46,8 @@ export interface Company {
   // Optional path to a logo image in /public (square, shown in a 40px tile).
   // Without one the tile shows the company's first letter.
   logo?: string;
+  // Optional pixel-cornered tile shape drawn behind the logo (also in /public).
+  tile?: string;
   roles: Role[];
 }
 
@@ -53,6 +55,8 @@ export const workHistory: Company[] = [
   {
     name: "Nexcess (Liquid Web)",
     tenure: "4 yrs",
+    logo: "/about/logo-nexcess.svg",
+    tile: "/about/tile-nexcess.svg",
     roles: [
       {
         dates: "Apr 2025 – Present",
@@ -97,6 +101,8 @@ export const workHistory: Company[] = [
   {
     name: "University of South Carolina Aiken",
     tenure: "8.5 yrs",
+    logo: "/about/logo-usc.svg",
+    tile: "/about/tile-usc.svg",
     roles: [
       {
         dates: "Mar 2021 – Jun 2022",

@@ -52,6 +52,39 @@ const { sections } = Astro.props;
   .section-link[aria-current="true"] {
     background-color: var(--portfolio-nav-active);
     color: var(--portfolio-ink);
+    /* Figma's pill has stepped, pixel-style corners (8px deep, in 2 / 2 / 4px
+       bands) rather than a smooth radius. */
+    border-radius: 0;
+    clip-path: polygon(
+      6px 0,
+      calc(100% - 6px) 0,
+      calc(100% - 6px) 2px,
+      calc(100% - 4px) 2px,
+      calc(100% - 4px) 4px,
+      calc(100% - 2px) 4px,
+      calc(100% - 2px) 8px,
+      100% 8px,
+      100% calc(100% - 8px),
+      calc(100% - 2px) calc(100% - 8px),
+      calc(100% - 2px) calc(100% - 4px),
+      calc(100% - 4px) calc(100% - 4px),
+      calc(100% - 4px) calc(100% - 2px),
+      calc(100% - 6px) calc(100% - 2px),
+      calc(100% - 6px) 100%,
+      6px 100%,
+      6px calc(100% - 2px),
+      4px calc(100% - 2px),
+      4px calc(100% - 4px),
+      2px calc(100% - 4px),
+      2px calc(100% - 8px),
+      0 calc(100% - 8px),
+      0 8px,
+      2px 8px,
+      2px 4px,
+      4px 4px,
+      4px 2px,
+      6px 2px
+    );
   }
   @media (prefers-reduced-motion: reduce) {
     .section-link {

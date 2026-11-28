@@ -25,7 +25,7 @@ const actions: NavAction[] = [
     shortLabel: "Open",
     shortcut: "enter",
     href: `/projects/${current.id}`,
-    featured: true,
+    autofocus: true,
   },
   // Only projects with a video get the walkthrough action.
   ...(current.data.loomUrl

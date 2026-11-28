@@ -14,9 +14,12 @@ interface Props {
   // Figma's Before/After tiles: no frame shadow, 8px corners, a fixed 276px
   // height with the screenshot cropped (from its top-left) to fill it.
   flat?: boolean;
+  // Flat tiles only: crop to this aspect ratio (e.g. "1440 / 882") instead of
+  // the fixed 276px height. Figma's Gallery "Overview" tile is 442 x 270.7.
+  ratio?: string;
 }
 
-const { src, alt, class: className, flat = false } = Astro.props;
+const { src, alt, class: className, flat = false, ratio } = Astro.props;
 ---
 
 <span
@@ -46,8 +49,10 @@ const { src, alt, class: className, flat = false } = Astro.props;
       alt={alt}
       class:list={[
         "block w-full",
-        flat && "h-[276px] object-cover object-left-top",
+        flat && "object-cover object-left-top",
+        flat && !ratio && "h-[276px]",
       ]}
+      style={flat && ratio ? { aspectRatio: ratio } : undefined}
     />
   </div>
   <ArrowsScale width={32} height={32} className="lightbox-expand-icon" />

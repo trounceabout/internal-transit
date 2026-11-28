@@ -520,6 +520,16 @@ const actions: NavAction[] = [
       opacity: 0;
     }
   }
+  /* The deep dive and gallery are taller than the screen. With only a `start`
+     snap point they have nothing to rest on at their bottom: scrolling down
+     jumped straight on to the next section before the end (the postscript) was
+     readable, and scrolling back up shot to the section's top. `start end` adds
+     a second snap point with the section's bottom edge at the bottom of the
+     screen, and the browser still scrolls freely between the two. */
+  #deep-dive,
+  #gallery {
+    scroll-snap-align: start end;
+  }
   .case-section {
     scroll-snap-align: start;
     min-height: 100dvh;
