@@ -1,0 +1,3 @@
+We have a strange bug. I can't see the postscript on any of the deep dives because as I get to it, it snap scrolls to the walkthrough section. How do we fix it so that I can scroll to the bottom of that section before further scrolling to snap to walkthrough.
+
+Related to this, when I scroll back up from walkthrough to deep dive, it shoots all the way to the top of the section. It should just snap to the bottom of walkthrough
